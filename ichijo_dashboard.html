@@ -5,555 +5,588 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>一条工務店 都道府県別ダッシュボード</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
-  :root {
-    --primary: #1a5fa8;
-    --primary-light: #e8f0fb;
-    --accent: #d94e30;
-    --bg: #f5f7fa;
-    --card-bg: #ffffff;
-    --border: #dde3ec;
-    --text: #1a2332;
-    --text-muted: #6b7a99;
-    --green: #2e7d52;
-    --orange: #c06c00;
-    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  :root{
+    --primary:#1a5fa8;--primary-light:#e8f0fb;--accent:#d94e30;
+    --bg:#f5f7fa;--card-bg:#fff;--border:#dde3ec;--text:#1a2332;
+    --muted:#6b7a99;--green:#2e7d52;--orange:#c06c00;--purple:#7c3aed;
+    --shadow:0 2px 8px rgba(0,0,0,.08);
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', 'Hiragino Sans', 'Yu Gothic', sans-serif; background: var(--bg); color: var(--text); font-size: 13px; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI','Hiragino Sans','Yu Gothic',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
+  header{background:var(--primary);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:12px}
+  header h1{font-size:17px;font-weight:700}
+  header p{font-size:11px;opacity:.8;margin-top:2px}
+  .hbadge{background:rgba(255,255,255,.2);padding:4px 12px;border-radius:20px;font-size:11px;margin-left:auto}
+  .container{max-width:1700px;margin:0 auto;padding:14px}
 
-  header { background: var(--primary); color: #fff; padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
-  header h1 { font-size: 18px; font-weight: 700; }
-  header p { font-size: 11px; opacity: 0.8; margin-top: 2px; }
-  .header-badge { background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 20px; font-size: 11px; margin-left: auto; }
+  .kpi-row{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:14px}
+  .kpi{background:var(--card-bg);border-radius:8px;padding:12px 14px;box-shadow:var(--shadow);border-left:4px solid var(--primary)}
+  .kpi .lb{font-size:10px;color:var(--muted);letter-spacing:.4px}
+  .kpi .vl{font-size:20px;font-weight:700;color:var(--primary);margin-top:3px}
+  .kpi .sb{font-size:10px;color:var(--muted);margin-top:2px}
+  .kpi.a{border-left-color:var(--accent)}.kpi.a .vl{color:var(--accent)}
+  .kpi.g{border-left-color:var(--green)}.kpi.g .vl{color:var(--green)}
+  .kpi.o{border-left-color:var(--orange)}.kpi.o .vl{color:var(--orange)}
+  .kpi.p{border-left-color:var(--purple)}.kpi.p .vl{color:var(--purple)}
 
-  .container { max-width: 1600px; margin: 0 auto; padding: 16px; }
+  .tabs{display:flex;gap:3px;margin-bottom:0;border-bottom:2px solid var(--primary)}
+  .tab-btn{padding:8px 18px;border:1px solid var(--border);border-bottom:none;border-radius:6px 6px 0 0;
+    background:#f0f2f5;color:var(--muted);cursor:pointer;font-size:12px;font-weight:600}
+  .tab-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+  .tab-content{display:none;padding-top:14px}
+  .tab-content.active{display:block}
 
-  .kpi-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 16px; }
-  .kpi-card { background: var(--card-bg); border-radius: 8px; padding: 14px 16px; box-shadow: var(--shadow); border-left: 4px solid var(--primary); }
-  .kpi-card .label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-  .kpi-card .value { font-size: 22px; font-weight: 700; color: var(--primary); margin-top: 4px; }
-  .kpi-card .sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
-  .kpi-card.accent { border-left-color: var(--accent); }
-  .kpi-card.accent .value { color: var(--accent); }
-  .kpi-card.green { border-left-color: var(--green); }
-  .kpi-card.green .value { color: var(--green); }
+  .card{background:var(--card-bg);border-radius:8px;padding:14px;box-shadow:var(--shadow)}
+  .ctitle{font-size:13px;font-weight:700;color:var(--primary);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+  .ctitle::before{content:'';display:inline-block;width:3px;height:14px;background:var(--primary);border-radius:2px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
 
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .tw{overflow-x:auto;overflow-y:auto;border-radius:6px;border:1px solid var(--border)}
+  .mh350{max-height:350px}.mh400{max-height:400px}.mh500{max-height:500px}.mh600{max-height:600px}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th{background:var(--primary);color:#fff;padding:7px 9px;text-align:left;font-weight:600;font-size:11px;cursor:pointer;white-space:nowrap;position:sticky;top:0;z-index:1;user-select:none}
+  th:hover{background:#1248a0}
+  td{padding:6px 9px;border-bottom:1px solid var(--border)}
+  tr:hover td{background:var(--primary-light)}
+  tr:last-child td{border-bottom:none}
+  td.num{text-align:right;font-variant-numeric:tabular-nums}
+  td.center{text-align:center}
 
-  .card { background: var(--card-bg); border-radius: 8px; padding: 16px; box-shadow: var(--shadow); }
-  .card-title { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-  .card-title::before { content: ''; display: inline-block; width: 3px; height: 14px; background: var(--primary); border-radius: 2px; }
+  .tag{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;white-space:nowrap}
+  .tn{background:#dbeafe;color:#1e40af}.te{background:#dcfce7;color:#166534}
+  .tm{background:#fef3c7;color:#92400e}.tw2{background:#fce7f3;color:#9d174d}.tg{background:#f3f4f6;color:#374151}
+  .r1{background:#ffd700;color:#5a3e00;display:inline-block;width:24px;height:24px;border-radius:50%;font-size:10px;font-weight:700;text-align:center;line-height:24px}
+  .r2{background:#c0c0c0;color:#333;display:inline-block;width:24px;height:24px;border-radius:50%;font-size:10px;font-weight:700;text-align:center;line-height:24px}
+  .r3{background:#cd7f32;color:#fff;display:inline-block;width:24px;height:24px;border-radius:50%;font-size:10px;font-weight:700;text-align:center;line-height:24px}
+  .rn{background:#e5e7eb;color:#6b7280;display:inline-block;width:24px;height:24px;border-radius:50%;font-size:10px;font-weight:700;text-align:center;line-height:24px}
+  .ph-h{background:#fee2e2;color:#991b1b;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:700}
+  .ph-m{background:#fef3c7;color:#78350f;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:700}
+  .ph-l{background:#dcfce7;color:#166534;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:700}
+  .ph-n{background:#f3f4f6;color:#6b7280;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:700}
+  .htcb{background:#1a5fa8;color:#fff;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700}
+  .mob{background:#7c3aed;color:#fff;padding:2px 5px;border-radius:10px;font-size:9px}
+  .bar{display:inline-block;height:8px;background:var(--primary);border-radius:4px;vertical-align:middle}
 
-  .filters { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; align-items: center; }
-  .filters input, .filters select { padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; outline: none; }
-  .filters input:focus, .filters select:focus { border-color: var(--primary); }
+  .frow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+  .frow input,.frow select{padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;outline:none}
+  .frow input:focus,.frow select:focus{border-color:var(--primary)}
+  .fcnt{margin-left:auto;color:var(--muted);font-size:11px}
 
-  table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  th { background: var(--primary); color: #fff; padding: 8px 10px; text-align: left; font-weight: 600; font-size: 11px; cursor: pointer; white-space: nowrap; position: sticky; top: 0; z-index: 1; }
-  th:hover { background: #1248a0; }
-  th .sort-icon { margin-left: 4px; opacity: 0.6; }
-  td { padding: 7px 10px; border-bottom: 1px solid var(--border); }
-  tr:hover td { background: var(--primary-light); }
-  tr:last-child td { border-bottom: none; }
+  canvas{max-height:260px}
+  .note{background:#fff8e1;border-left:3px solid #f59e0b;padding:9px 13px;border-radius:4px;font-size:11px;color:#78350f;margin-bottom:12px}
+  .section-h{font-size:14px;font-weight:700;color:var(--primary);margin:16px 0 10px;padding-bottom:5px;border-bottom:2px solid var(--primary)}
 
-  .table-wrap { overflow-x: auto; max-height: 520px; overflow-y: auto; border-radius: 6px; border: 1px solid var(--border); }
+  /* Map */
+  #mapContainer{height:540px;border-radius:8px;overflow:hidden;box-shadow:var(--shadow)}
+  .map-ctrl{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+  .map-ctrl button{padding:6px 14px;border:1px solid var(--border);border-radius:6px;background:#fff;cursor:pointer;font-size:12px;font-weight:600}
+  .map-ctrl button.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+  .map-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;align-items:center;margin-top:8px}
+  .legend-dot{width:12px;height:12px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
 
-  .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 600; white-space: nowrap; }
-  .tag-north { background: #dbeafe; color: #1e40af; }
-  .tag-east { background: #dcfce7; color: #166534; }
-  .tag-mid { background: #fef3c7; color: #92400e; }
-  .tag-west { background: #fce7f3; color: #9d174d; }
-  .tag-gc { background: #f3f4f6; color: #374151; }
+  /* HTC cards */
+  .htc-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-bottom:14px}
+  .htc-card{background:var(--card-bg);border-radius:8px;padding:14px;box-shadow:var(--shadow);border-top:3px solid var(--primary)}
+  .htc-card h3{font-size:13px;font-weight:700;color:var(--primary);margin-bottom:6px}
+  .htc-card .pref-tag{font-size:11px;color:var(--muted);margin-bottom:8px}
+  .htc-card .feat{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+  .feat-tag{background:var(--primary-light);color:var(--primary);padding:3px 8px;border-radius:12px;font-size:10px;font-weight:600}
+  .htc-card .addr{font-size:11px;color:var(--muted);margin-top:6px}
 
-  .bar { height: 6px; background: var(--border); border-radius: 3px; min-width: 40px; }
-  .bar-fill { height: 6px; border-radius: 3px; background: var(--primary); }
-  .bar-fill.accent { background: var(--accent); }
-  .bar-fill.green { background: var(--green); }
-
-  .rank-badge { display: inline-block; width: 22px; height: 22px; border-radius: 50%; font-size: 10px; font-weight: 700; text-align: center; line-height: 22px; }
-  .rank-1 { background: #ffd700; color: #5a3e00; }
-  .rank-2 { background: #c0c0c0; color: #333; }
-  .rank-3 { background: #cd7f32; color: #fff; }
-  .rank-other { background: var(--border); color: var(--text-muted); }
-
-  .ph-badge { padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; }
-  .ph-high { background: #fee2e2; color: #991b1b; }
-  .ph-mid { background: #fef3c7; color: #78350f; }
-  .ph-low { background: #dcfce7; color: #166534; }
-  .ph-na { background: #f3f4f6; color: #6b7280; }
-
-  .htc-table td:first-child { font-weight: 600; color: var(--primary); }
-  .htc-badge { background: #1a5fa8; color: #fff; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; }
-
-  canvas { max-height: 280px; }
-
-  .data-note { background: #fff8e1; border-left: 3px solid #f59e0b; padding: 10px 14px; border-radius: 4px; font-size: 11px; color: #78350f; margin-bottom: 12px; }
-
-  .tab-bar { display: flex; gap: 4px; margin-bottom: 12px; }
-  .tab { padding: 6px 14px; border-radius: 6px 6px 0 0; font-size: 12px; cursor: pointer; border: 1px solid var(--border); border-bottom: none; background: #f0f2f5; color: var(--text-muted); }
-  .tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-
-  .section-title { font-size: 15px; font-weight: 700; color: var(--primary); margin: 20px 0 12px; padding-bottom: 6px; border-bottom: 2px solid var(--primary); }
-
-  .legend-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 10px; font-size: 11px; }
-  .legend-item { display: flex; align-items: center; gap: 6px; }
-  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
-
-  @media (max-width: 1100px) {
-    .kpi-row { grid-template-columns: repeat(3, 1fr); }
-    .grid-3 { grid-template-columns: 1fr; }
-    .grid-2 { grid-template-columns: 1fr; }
-  }
+  @media(max-width:1100px){.kpi-row{grid-template-columns:repeat(3,1fr)}.grid3,.grid4{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
 <header>
-  <div>
-    <h1>一条工務店 都道府県別ダッシュボード</h1>
-    <p>2024年度データ（着工棟数・拠点数・営業PH）</p>
-  </div>
-  <span class="header-badge">データ基準: 2024年度（2404-2503）</span>
+  <div><h1>一条工務店 都道府県別ダッシュボード</h1><p>2024年度データ（棟数・拠点数・営業PH・拠点別ランキング・地図）</p></div>
+  <span class="hbadge">基準: 2024年度（2404-2503）</span>
 </header>
 
 <div class="container">
+<div class="kpi-row">
+  <div class="kpi"><div class="lb">全国 着工棟数</div><div class="vl">17,365</div><div class="sb">前年比 +4.0%（JSK実績）</div></div>
+  <div class="kpi a"><div class="lb">全国 拠点数</div><div class="vl">630</div><div class="sb">総合481/単独45/商業8/移動96</div></div>
+  <div class="kpi g"><div class="lb">営業人数合計</div><div class="vl">3,687</div><div class="sb">直営エリアのみ（GC除く）</div></div>
+  <div class="kpi"><div class="lb">全国平均 PH</div><div class="vl">4.71</div><div class="sb">棟数÷営業人数</div></div>
+  <div class="kpi o"><div class="lb">1拠点当たり棟数</div><div class="vl">27.6</div><div class="sb">17,365棟÷630拠点</div></div>
+  <div class="kpi g"><div class="lb">1拠点当たり営業人数</div><div class="vl">5.85</div><div class="sb">3,687人÷630拠点</div></div>
+  <div class="kpi p"><div class="lb">個別拠点データ</div><div class="vl">624</div><div class="sb">拠点別ランキング参照</div></div>
+</div>
 
-  <!-- KPI Cards -->
-  <div class="kpi-row">
-    <div class="kpi-card">
-      <div class="label">全国 着工棟数</div>
-      <div class="value">17,365</div>
-      <div class="sub">前年比 +4.0%（16,681→17,345 JSK実績）</div>
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('t1',this)">📊 都道府県別サマリー</button>
+  <button class="tab-btn" onclick="showTab('t2',this)">🏆 拠点別ランキング</button>
+  <button class="tab-btn" onclick="showTab('t3',this)">🗾 地図</button>
+  <button class="tab-btn" onclick="showTab('t4',this)">🏠 HTC体験館</button>
+  <button class="tab-btn" onclick="showTab('t5',this)">📈 グラフ分析</button>
+</div>
+
+<!-- TAB1: 都道府県別 -->
+<div id="t1" class="tab-content active">
+  <div class="frow" style="margin-top:12px">
+    <input type="text" id="s1" placeholder="都道府県名で検索..." oninput="drawPrefTable()">
+    <select id="a1" onchange="drawPrefTable()">
+      <option value="">全エリア</option>
+      <option value="i-North">i-North 東北・北海道</option>
+      <option value="i-Mideast">i-Mideast 関東甲信越</option>
+      <option value="i-East">i-East 関東</option>
+      <option value="i-Midwest">i-Midwest 東海</option>
+      <option value="i-west">i-west 近畿・中四国・九州</option>
+      <option value="GC">GC グループ会社</option>
+    </select>
+    <select id="r1" onchange="drawPrefTable()">
+      <option value="">全順位</option>
+      <option value="1">シェア1位</option>
+      <option value="2">シェア2位</option>
+      <option value="3">3位以下</option>
+    </select>
+    <span id="cnt1" class="fcnt"></span>
+  </div>
+  <div class="tw mh600">
+    <table><thead><tr>
+      <th onclick="psort(0)">都道府県 ↕</th>
+      <th onclick="psort(1)">エリア ↕</th>
+      <th onclick="psort(2)">着工棟数 ↕</th>
+      <th onclick="psort(3)">シェア% ↕</th>
+      <th onclick="psort(4)">シェア順位 ↕</th>
+      <th onclick="psort(5)">全展示場数 ↕</th>
+      <th>総合</th><th>単独</th><th>商業</th><th>移動式</th>
+      <th onclick="psort(10)">営業人数 ↕</th>
+      <th onclick="psort(11)">PH（棟/人） ↕</th>
+      <th onclick="psort(14)">1拠点当たり棟数 ↕</th>
+      <th onclick="psort(15)">1拠点当たり営業人数 ↕</th>
+      <th onclick="psort(12)">2014年棟数 ↕</th>
+      <th onclick="psort(13)">成長率（倍） ↕</th>
+      <th>HTC</th>
+    </tr></thead><tbody id="ptbody"></tbody></table>
+  </div>
+</div>
+
+<!-- TAB2: 拠点別ランキング -->
+<div id="t2" class="tab-content">
+  <div class="note">⚠ 拠点別の棟数データは展示場一覧シートに含まれていないため、営業人数での比較表示です。</div>
+  <div class="frow" style="margin-top:12px">
+    <input type="text" id="s2" placeholder="展示場名・都道府県で検索..." oninput="drawLocTable()">
+    <select id="a2" onchange="drawLocTable()"><option value="">全都道府県</option></select>
+    <select id="m2" onchange="drawLocTable()">
+      <option value="">移動式含む</option>
+      <option value="no">移動式除く</option>
+      <option value="yes">移動式のみ</option>
+    </select>
+    <select id="s2sort" onchange="drawLocTable()">
+      <option value="sales_desc">営業人数 多い順</option>
+      <option value="sales_asc">営業人数 少ない順</option>
+      <option value="name_asc">展示場名 昇順</option>
+      <option value="pref_asc">都道府県 昇順</option>
+    </select>
+    <span id="cnt2" class="fcnt"></span>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="ctitle">全国 営業人数ランキング TOP50</div>
+      <div class="tw mh500"><table><thead>
+        <tr><th>順位</th><th>展示場名</th><th>都道府県</th><th>営業人数</th><th>種別</th></tr>
+      </thead><tbody id="rtbody"></tbody></table></div>
     </div>
-    <div class="kpi-card accent">
-      <div class="label">全国 拠点数（展示場）</div>
-      <div class="value">630</div>
-      <div class="sub">総合481 / 単独45 / 商業8 / 移動式96</div>
-    </div>
-    <div class="kpi-card green">
-      <div class="label">営業人数（合計）</div>
-      <div class="value">3,687</div>
-      <div class="sub">直営エリアのみ（GC除く）</div>
-    </div>
-    <div class="kpi-card">
-      <div class="label">全国平均 PH</div>
-      <div class="value">4.71</div>
-      <div class="sub">棟数 ÷ 営業人数（1人当たり着工棟数）</div>
-    </div>
-    <div class="kpi-card accent">
-      <div class="label">エリア数</div>
-      <div class="value">45</div>
-      <div class="sub">都道府県（高知・沖縄除く）</div>
-    </div>
-    <div class="kpi-card green">
-      <div class="label">HTC拠点数（確認分）</div>
-      <div class="value">3+</div>
-      <div class="sub">HP参照データ（別表参照）</div>
+    <div class="card">
+      <div class="ctitle">全拠点一覧（検索・フィルタ可）</div>
+      <div class="tw mh500"><table><thead>
+        <tr><th>都道府県</th><th>展示場名</th><th>営業人数</th><th>種別</th></tr>
+      </thead><tbody id="ltbody"></tbody></table></div>
     </div>
   </div>
+  <div class="grid2">
+    <div class="card"><div class="ctitle">1拠点当たり営業人数（都道府県別）</div><canvas id="chartPerLoc"></canvas></div>
+    <div class="card"><div class="ctitle">1拠点当たり棟数（都道府県別）</div><canvas id="chartPerLocTons"></canvas></div>
+  </div>
+</div>
 
-  <!-- Charts Row -->
-  <div class="grid-3">
+<!-- TAB3: 地図 -->
+<div id="t3" class="tab-content">
+  <div class="map-ctrl">
+    <button id="mapBtnAll" class="active" onclick="setMapMode('all',this)">🏢 全展示場（都道府県別）</button>
+    <button id="mapBtnHTC" onclick="setMapMode('htc',this)">🏠 HTC体験館</button>
+    <button id="mapBtnBoth" onclick="setMapMode('both',this)">📍 全表示</button>
+    <select id="mapAreaFilter" onchange="updateMapMarkers()">
+      <option value="">全エリア</option>
+      <option value="i-North">i-North 東北・北海道</option>
+      <option value="i-Mideast">i-Mideast 関東甲信越</option>
+      <option value="i-East">i-East 関東</option>
+      <option value="i-Midwest">i-Midwest 東海</option>
+      <option value="i-west">i-west 近畿・中四国・九州</option>
+      <option value="GC">GC</option>
+    </select>
+  </div>
+  <div id="mapContainer"></div>
+  <div class="map-legend">
+    <span><span class="legend-dot" style="background:#3b82f6"></span>i-North 東北</span>
+    <span><span class="legend-dot" style="background:#10b981"></span>i-Mideast 関甲信越</span>
+    <span><span class="legend-dot" style="background:#f59e0b"></span>i-East 関東</span>
+    <span><span class="legend-dot" style="background:#8b5cf6"></span>i-Midwest 東海</span>
+    <span><span class="legend-dot" style="background:#ef4444"></span>i-west 近畿等</span>
+    <span><span class="legend-dot" style="background:#9ca3af"></span>GC</span>
+    <span><span class="legend-dot" style="background:#1a5fa8;border:2px solid #ff6b35"></span>HTC体験館</span>
+    <span style="margin-left:8px;color:var(--muted)">※円の大きさ = 棟数規模</span>
+  </div>
+</div>
+
+<!-- TAB4: HTC体験館 -->
+<div id="t4" class="tab-content">
+  <div class="note">⚠ HTC情報は <strong>https://www.ichijo.co.jp/guide/experience/</strong> の最新情報と合わせてご確認ください。本表はExcelデータ・公開情報をもとにまとめたものです。</div>
+
+  <div class="section-h">住まいの体験館（HTC）一覧</div>
+  <div class="htc-cards" id="htcCards"></div>
+
+  <div class="grid2">
     <div class="card">
-      <div class="card-title">着工棟数 TOP15 都道府県</div>
-      <canvas id="chartTop15"></canvas>
+      <div class="ctitle">HTC拠点詳細リスト</div>
+      <div class="tw mh400"><table><thead>
+        <tr><th>拠点名</th><th>都道府県</th><th>エリア</th><th>主な体験内容</th><th>備考</th></tr>
+      </thead><tbody id="htcTbody"></tbody></table></div>
     </div>
     <div class="card">
-      <div class="card-title">営業PH（棟/人）ランキング TOP15</div>
-      <canvas id="chartPH"></canvas>
-    </div>
-    <div class="card">
-      <div class="card-title">エリア別 棟数構成比</div>
-      <canvas id="chartArea"></canvas>
+      <div class="ctitle">都道府県別 棟数・拠点・PH・HTC状況</div>
+      <div class="tw mh400"><table><thead>
+        <tr><th>都道府県</th><th>棟数</th><th>拠点数</th><th>PH</th><th>1拠点棟数</th><th>HTC</th></tr>
+      </thead><tbody id="htcSumTbody"></tbody></table></div>
     </div>
   </div>
+</div>
 
-  <!-- Main Table -->
-  <div class="card" style="margin-bottom:16px;">
-    <div class="card-title">都道府県別 詳細データ一覧</div>
-    <div class="filters">
-      <input type="text" id="searchInput" placeholder="都道府県名で検索..." oninput="filterTable()">
-      <select id="areaFilter" onchange="filterTable()">
-        <option value="">全エリア</option>
-        <option value="i-North">i-North（東北・北海道）</option>
-        <option value="i-Mideast">i-Mideast（関東甲信越）</option>
-        <option value="i-East">i-East（関東）</option>
-        <option value="i-Midwest">i-Midwest（東海）</option>
-        <option value="i-west">i-west（近畿・中四国・九州）</option>
-        <option value="GC">GC（グループ会社）</option>
-      </select>
-      <select id="rankFilter" onchange="filterTable()">
-        <option value="">全順位</option>
-        <option value="1">シェア1位</option>
-        <option value="2">シェア2位</option>
-        <option value="3">シェア3位以下</option>
-      </select>
-      <span id="rowCount" style="margin-left:auto;color:var(--text-muted);font-size:11px;"></span>
-    </div>
-    <div class="table-wrap">
-      <table id="mainTable">
-        <thead>
-          <tr>
-            <th onclick="sortTable(0)">都道府県 <span class="sort-icon">↕</span></th>
-            <th onclick="sortTable(1)">エリア <span class="sort-icon">↕</span></th>
-            <th onclick="sortTable(2)">着工棟数 <span class="sort-icon">↕</span></th>
-            <th onclick="sortTable(3)">シェア率 <span class="sort-icon">↕</span></th>
-            <th onclick="sortTable(4)">シェア順位 <span class="sort-icon">↕</span></th>
-            <th onclick="sortTable(5)">全展示場数 <span class="sort-icon">↕</span></th>
-            <th>うち総合 <span class="sort-icon">↕</span></th>
-            <th>単独 <span class="sort-icon">↕</span></th>
-            <th>商業 <span class="sort-icon">↕</span></th>
-            <th>移動式 <span class="sort-icon">↕</span></th>
-            <th onclick="sortTable(10)">営業人数 <span class="sort-icon">↕</span></th>
-            <th onclick="sortTable(11)">営業PH <span class="sort-icon">↕</span></th>
-            <th onclick="sortTable(12)">2014年棟数 <span class="sort-icon">↕</span></th>
-            <th onclick="sortTable(13)">成長率 <span class="sort-icon">↕</span></th>
-          </tr>
-        </thead>
-        <tbody id="mainTbody"></tbody>
-      </table>
-    </div>
+<!-- TAB5: グラフ -->
+<div id="t5" class="tab-content">
+  <div class="grid2">
+    <div class="card"><div class="ctitle">着工棟数 TOP15</div><canvas id="cTop15"></canvas></div>
+    <div class="card"><div class="ctitle">営業PH ランキング（15未満）</div><canvas id="cPH"></canvas></div>
   </div>
-
-  <!-- HTC Section -->
-  <div class="section-title">HTC（一条工務店体験センター）一覧</div>
-
-  <div class="data-note">
-    ⚠️ HTC一覧は <strong>https://www.ichijo.co.jp/guide/experience/</strong> の最新情報を参照してください。本表はExcelデータ内で確認できた拠点 + 公開情報をもとにまとめたものです。展示場HPの最新情報と異なる場合があります。
+  <div class="grid2">
+    <div class="card"><div class="ctitle">エリア別 棟数構成比</div><canvas id="cArea"></canvas></div>
+    <div class="card"><div class="ctitle">シェア率 TOP20</div><canvas id="cShare"></canvas></div>
   </div>
-
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-title">HTC拠点一覧（確認分）</div>
-      <div class="table-wrap" style="max-height:360px;">
-        <table id="htcTable" class="htc-table">
-          <thead>
-            <tr>
-              <th>拠点名</th>
-              <th>都道府県</th>
-              <th>エリア</th>
-              <th>備考</th>
-            </tr>
-          </thead>
-          <tbody id="htcTbody"></tbody>
-        </table>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">都道府県別 HTC有無・拠点・PH 総括表</div>
-      <div class="table-wrap" style="max-height:360px;">
-        <table>
-          <thead>
-            <tr>
-              <th>都道府県</th>
-              <th>棟数</th>
-              <th>拠点数</th>
-              <th>PH</th>
-              <th>HTC</th>
-            </tr>
-          </thead>
-          <tbody id="htcSummaryTbody"></tbody>
-        </table>
-      </div>
-    </div>
+  <div class="grid2">
+    <div class="card"><div class="ctitle">2014→2024 棟数成長率 TOP10</div><canvas id="cGrowth"></canvas></div>
+    <div class="card"><div class="ctitle">拠点別 営業人数 分布（全624拠点）</div><canvas id="cDist"></canvas></div>
   </div>
-
-  <!-- Bottom Charts -->
-  <div class="grid-2" style="margin-top:16px;">
-    <div class="card">
-      <div class="card-title">シェア率分布（都道府県別）</div>
-      <canvas id="chartShare"></canvas>
-    </div>
-    <div class="card">
-      <div class="card-title">2014→2024 棟数成長率 TOP10</div>
-      <canvas id="chartGrowth"></canvas>
-    </div>
-  </div>
+</div>
 
 </div>
 
 <script>
 // ===== DATA =====
-const prefData = [
-  // [都道府県, エリア, 棟数, シェア%, 順位, 全拠点, 総合, 単独, 商業, 移動式, 営業人数, PH, 2014棟数, 成長率]
-  ["北海道","i-North",875,7.27,1,43,24,7,0,12,187,4.68,315,2.78],
-  ["青森県","i-North",277,7.85,1,9,6,2,0,1,66,4.20,140,1.98],
-  ["岩手県","i-North",233,6.15,2,13,6,1,0,6,42,5.55,160,1.46],
-  ["宮城県","i-North",278,3.21,5,12,9,0,0,3,56,4.96,350,0.79],
-  ["秋田県","i-North",178,7.12,2,6,4,2,0,0,39,4.56,115,1.55],
-  ["山形県","i-North",213,6.28,1,8,5,3,0,0,42,5.07,125,1.70],
-  ["福島県","i-North",426,7.21,2,18,16,2,0,0,96,4.44,145,2.94],
-  ["東京都","i-Mideast",839,2.31,10,29,25,0,0,4,217,3.87,null,null],
-  ["神奈川県","i-Mideast",822,2.82,3,30,26,0,0,4,206,3.99,null,null],
-  ["埼玉県","i-East",1040,3.51,5,35,30,0,0,5,210,4.95,null,null],
-  ["千葉県","i-Mideast",887,3.93,2,27,27,0,0,0,196,4.53,null,null],
-  ["栃木県","i-East",386,5.43,1,14,12,0,1,1,77,5.01,240,1.61],
-  ["茨城県","i-East",681,6.20,1,19,16,0,0,3,119,5.72,480,1.42],
-  ["群馬県","GC",354,4.53,2,8,8,0,0,0,null,null,250,1.42],
-  ["山梨県","i-Mideast",194,6.17,1,6,5,1,0,0,41,4.73,110,1.76],
-  ["長野県","i-Mideast",555,6.66,1,18,18,0,0,0,135,4.11,280,1.98],
-  ["新潟県","i-Mideast",355,5.06,2,10,9,1,0,0,71,5.00,165,2.15],
-  ["富山県","GC",83,2.23,2,4,4,0,0,0,null,null,130,0.64],
-  ["石川県","GC",43,0.91,7,3,3,0,0,0,null,null,null,null],
-  ["福井県","i-west",102,3.92,2,5,3,2,0,0,28,3.64,95,1.07],
-  ["静岡県","i-Midwest",1059,8.31,1,40,29,2,4,5,219,4.84,715,1.48],
-  ["愛知県","i-Midwest",1412,4.69,1,46,40,0,0,6,339,4.17,985,1.43],
-  ["岐阜県","i-Midwest",383,5.54,1,16,11,2,1,2,97,3.95,350,1.09],
-  ["三重県","i-Midwest",563,9.52,1,15,13,0,0,2,104,5.41,345,1.63],
-  ["大阪府","i-west",619,2.83,1,26,21,0,0,5,186,3.33,340,1.82],
-  ["京都府","i-west",229,3.32,2,13,7,3,0,3,68,3.37,155,1.48],
-  ["奈良県","i-west",242,6.08,2,10,7,0,0,3,55,4.40,175,1.38],
-  ["滋賀県","i-west",333,5.88,1,11,10,0,0,1,80,4.16,160,2.08],
-  ["兵庫県","i-west",673,4.59,1,17,14,3,0,0,117,5.75,455,1.48],
-  ["和歌山県","i-west",180,6.68,1,4,3,1,0,0,32,5.63,90,2.00],
-  ["徳島県","i-west",104,4.77,2,4,3,0,0,1,12,8.67,null,null],
-  ["香川県","i-west",130,4.85,4,5,4,0,0,1,30,4.33,70,1.86],
-  ["愛媛県","i-west",174,4.69,2,9,6,0,1,2,46,3.78,null,null],
-  ["鳥取県","i-west",133,7.23,1,6,0,3,1,2,null,null,65,2.05],
-  ["島根県","i-west",168,9.02,1,4,0,3,0,1,9,18.67,55,3.05],
-  ["岡山県","GC",177,2.93,8,8,5,2,0,1,16,11.06,135,1.31],
-  ["広島県","i-west",131,1.59,12,9,6,0,0,3,46,2.85,null,null],
-  ["山口県","i-west",307,7.86,1,13,7,0,0,6,63,4.87,175,1.75],
-  ["福岡県","i-west",615,3.96,2,15,14,0,0,1,124,4.96,null,null],
-  ["佐賀県","i-west",130,4.40,1,3,2,1,0,0,25,5.20,75,1.73],
-  ["大分県","i-west",180,5.43,1,8,4,2,0,2,43,4.19,75,2.40],
-  ["長崎県","i-west",158,4.89,2,6,5,0,0,1,38,4.16,105,1.50],
-  ["熊本県","i-west",240,3.28,3,7,7,0,0,0,58,4.14,null,null],
-  ["宮崎県","i-west",104,2.81,4,9,2,1,0,6,17,6.12,null,null],
-  ["鹿児島県","i-west",100,2.09,6,9,5,1,0,3,35,2.86,null,null],
+const P=[
+["北海道","i-North",875,7.27,1,43,24,7,0,12,187,4.68,315,2.78],
+["青森県","i-North",277,7.85,1,9,6,2,0,1,66,4.20,140,1.98],
+["岩手県","i-North",233,6.15,2,13,6,1,0,6,42,5.55,160,1.46],
+["宮城県","i-North",278,3.21,5,12,9,0,0,3,56,4.96,350,0.79],
+["秋田県","i-North",178,7.12,2,6,4,2,0,0,39,4.56,115,1.55],
+["山形県","i-North",213,6.28,1,8,5,3,0,0,42,5.07,125,1.70],
+["福島県","i-North",426,7.21,2,18,16,2,0,0,96,4.44,145,2.94],
+["東京都","i-Mideast",839,2.31,10,29,25,0,0,4,217,3.87,null,null],
+["神奈川県","i-Mideast",822,2.82,3,30,26,0,0,4,206,3.99,null,null],
+["埼玉県","i-East",1040,3.51,5,35,30,0,0,5,210,4.95,null,null],
+["千葉県","i-Mideast",887,3.93,2,27,27,0,0,0,196,4.53,null,null],
+["栃木県","i-East",386,5.43,1,14,12,0,1,1,77,5.01,240,1.61],
+["茨城県","i-East",681,6.20,1,19,16,0,0,3,119,5.72,480,1.42],
+["群馬県","GC",354,4.53,2,8,8,0,0,0,null,null,250,1.42],
+["山梨県","i-Mideast",194,6.17,1,6,5,1,0,0,41,4.73,110,1.76],
+["長野県","i-Mideast",555,6.66,1,18,18,0,0,0,135,4.11,280,1.98],
+["新潟県","i-Mideast",355,5.06,2,10,9,1,0,0,71,5.00,165,2.15],
+["富山県","GC",83,2.23,2,4,4,0,0,0,null,null,130,0.64],
+["石川県","GC",43,0.91,7,3,3,0,0,0,null,null,null,null],
+["福井県","i-west",102,3.92,2,5,3,2,0,0,28,3.64,95,1.07],
+["静岡県","i-Midwest",1059,8.31,1,40,29,2,4,5,219,4.84,715,1.48],
+["愛知県","i-Midwest",1412,4.69,1,46,40,0,0,6,339,4.17,985,1.43],
+["岐阜県","i-Midwest",383,5.54,1,16,11,2,1,2,97,3.95,350,1.09],
+["三重県","i-Midwest",563,9.52,1,15,13,0,0,2,104,5.41,345,1.63],
+["大阪府","i-west",619,2.83,1,26,21,0,0,5,186,3.33,340,1.82],
+["京都府","i-west",229,3.32,2,13,7,3,0,3,68,3.37,155,1.48],
+["奈良県","i-west",242,6.08,2,10,7,0,0,3,55,4.40,175,1.38],
+["滋賀県","i-west",333,5.88,1,11,10,0,0,1,80,4.16,160,2.08],
+["兵庫県","i-west",673,4.59,1,17,14,3,0,0,117,5.75,455,1.48],
+["和歌山県","i-west",180,6.68,1,4,3,1,0,0,32,5.63,90,2.00],
+["徳島県","i-west",104,4.77,2,4,3,0,0,1,12,8.67,null,null],
+["香川県","i-west",130,4.85,4,5,4,0,0,1,30,4.33,70,1.86],
+["愛媛県","i-west",174,4.69,2,9,6,0,1,2,46,3.78,null,null],
+["鳥取県","i-west",133,7.23,1,6,0,3,1,2,null,null,65,2.05],
+["島根県","i-west",168,9.02,1,4,0,3,0,1,9,18.67,55,3.05],
+["岡山県","GC",177,2.93,8,8,5,2,0,1,16,11.06,135,1.31],
+["広島県","i-west",131,1.59,12,9,6,0,0,3,46,2.85,null,null],
+["山口県","i-west",307,7.86,1,13,7,0,0,6,63,4.87,175,1.75],
+["福岡県","i-west",615,3.96,2,15,14,0,0,1,124,4.96,null,null],
+["佐賀県","i-west",130,4.40,1,3,2,1,0,0,25,5.20,75,1.73],
+["大分県","i-west",180,5.43,1,8,4,2,0,2,43,4.19,75,2.40],
+["長崎県","i-west",158,4.89,2,6,5,0,0,1,38,4.16,105,1.50],
+["熊本県","i-west",240,3.28,3,7,7,0,0,0,58,4.14,null,null],
+["宮崎県","i-west",104,2.81,4,9,2,1,0,6,17,6.12,null,null],
+["鹿児島県","i-west",100,2.09,6,9,5,1,0,3,35,2.86,null,null],
 ];
+P.forEach(d=>{d[14]=d[5]>0?+(d[2]/d[5]).toFixed(1):null;d[15]=d[10]!==null&&d[5]>0?+(d[10]/d[5]).toFixed(2):null;});
 
-// HTC data (from Excel + known locations)
-const htcData = [
-  {name:"盛岡HTC",pref:"岩手県",area:"i-North",note:"体験型展示施設・確認済み"},
-  {name:"栃木HTC 下野展示場",pref:"栃木県",area:"i-East",note:"完全予約制・体験棟"},
-  {name:"神奈川HTC A",pref:"神奈川県",area:"i-Mideast",note:"体験型施設・分譲展示場併設"},
-  {name:"平塚市大神体験棟",pref:"神奈川県",area:"i-Mideast",note:"体験棟"},
-  {name:"大磯町石神台体験棟",pref:"神奈川県",area:"i-Mideast",note:"体験棟"},
-  {name:"栃木県 体験棟",pref:"栃木県",area:"i-East",note:"宿泊体験棟"},
-  {name:"ICHIJO-Lab Annex",pref:"大阪府",area:"i-west",note:"ATCビル ITM棟2階"},
-  {name:"南港ATC展示場",pref:"大阪府",area:"i-west",note:"体験・展示"},
-];
+const LOC=[{"pref": "北海道", "name": "旭川展示場", "sales": 8, "mobile": false}, {"pref": "北海道", "name": "旭川南展示場", "sales": 5, "mobile": false}, {"pref": "北海道", "name": "宮の沢展示場", "sales": 7, "mobile": false}, {"pref": "北海道", "name": "宮の沢東展示場", "sales": 7, "mobile": false}, {"pref": "北海道", "name": "札幌太平展示場", "sales": 7, "mobile": false}, {"pref": "北海道", "name": "札幌太平東展示場", "sales": 5, "mobile": false}, {"pref": "北海道", "name": "札幌森林公園展示場", "sales": 8, "mobile": false}, {"pref": "北海道", "name": "札幌森林公園東展示場", "sales": 7, "mobile": false}, {"pref": "北海道", "name": "札幌展示場", "sales": 9, "mobile": false}, {"pref": "北海道", "name": "札幌豊平展示場", "sales": 7, "mobile": false}, {"pref": "北海道", "name": "札幌豊平東展示場", "sales": 12, "mobile": false}, {"pref": "北海道", "name": "札幌平岡展示場", "sales": 7, "mobile": false}, {"pref": "北海道", "name": "札幌平岡南展示場", "sales": 6, "mobile": false}, {"pref": "北海道", "name": "札幌円山展示場", "sales": null, "mobile": false}, {"pref": "北海道", "name": "札幌北展示場", "sales": 7, "mobile": false}, {"pref": "北海道", "name": "札幌北二十四条展示場", "sales": 6, "mobile": false}, {"pref": "北海道", "name": "小樽展示場", "sales": 5, "mobile": false}, {"pref": "北海道", "name": "千歳展示場", "sales": 6, "mobile": false}, {"pref": "北海道", "name": "滝川展示場", "sales": 5, "mobile": false}, {"pref": "北海道", "name": "釧路展示場", "sales": 5, "mobile": false}, {"pref": "北海道", "name": "釧路昭和展示場", "sales": 4, "mobile": false}, {"pref": "北海道", "name": "帯広展示場", "sales": 6, "mobile": false}, {"pref": "北海道", "name": "帯広東展示場", "sales": 7, "mobile": false}, {"pref": "北海道", "name": "函館展示場", "sales": 6, "mobile": false}, {"pref": "北海道", "name": "函館東展示場", "sales": 6, "mobile": false}, {"pref": "北海道", "name": "苫小牧展示場", "sales": 6, "mobile": false}, {"pref": "北海道", "name": "室蘭展示場", "sales": 6, "mobile": false}, {"pref": "北海道", "name": "名寄展示場", "sales": 4, "mobile": false}, {"pref": "北海道", "name": "北見展示場", "sales": 4, "mobile": false}, {"pref": "北海道", "name": "中標津展示場", "sales": 3, "mobile": false}, {"pref": "青森県", "name": "むつ展示場", "sales": 5, "mobile": false}, {"pref": "青森県", "name": "青森展示場", "sales": 8, "mobile": false}, {"pref": "青森県", "name": "下田展示場", "sales": 6, "mobile": false}, {"pref": "青森県", "name": "下田南展示場", "sales": 5, "mobile": false}, {"pref": "青森県", "name": "青森浜田展示場", "sales": 7, "mobile": false}, {"pref": "青森県", "name": "青森浜田東展示場", "sales": 12, "mobile": false}, {"pref": "青森県", "name": "弘前神田展示場", "sales": 6, "mobile": false}, {"pref": "青森県", "name": "弘前神田東展示場", "sales": 6, "mobile": false}, {"pref": "青森県", "name": "八戸展示場", "sales": 7, "mobile": false}, {"pref": "青森県", "name": "八戸沼館展示場", "sales": 6, "mobile": false}, {"pref": "青森県", "name": "八戸沼館南展示場", "sales": 6, "mobile": false}, {"pref": "岩手県", "name": "盛岡日報展示場", "sales": 6, "mobile": false}, {"pref": "岩手県", "name": "盛岡日報東展示場", "sales": 8, "mobile": false}, {"pref": "岩手県", "name": "花巻星が丘展示場", "sales": 8, "mobile": false}, {"pref": "岩手県", "name": "釜石分譲展示場", "sales": 8, "mobile": true}, {"pref": "岩手県", "name": "盛岡本宮東展示場", "sales": 8, "mobile": false}, {"pref": "岩手県", "name": "リアルハウジング盛岡展示場", "sales": 8, "mobile": false}, {"pref": "岩手県", "name": "北上展示場", "sales": 4, "mobile": false}, {"pref": "岩手県", "name": "北上分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "岩手県", "name": "一関展示場", "sales": 7, "mobile": false}, {"pref": "岩手県", "name": "陸前高田分譲展示場(完全予約制)", "sales": 5, "mobile": true}, {"pref": "宮城県", "name": "利府展示場", "sales": 7, "mobile": false}, {"pref": "宮城県", "name": "仙台利府展示場", "sales": 7, "mobile": false}, {"pref": "宮城県", "name": "石巻分譲展示場(完全予約制)", "sales": 5, "mobile": true}, {"pref": "宮城県", "name": "仙台寺岡展示場", "sales": 6, "mobile": false}, {"pref": "宮城県", "name": "寺岡展示場", "sales": 6, "mobile": false}, {"pref": "宮城県", "name": "エコノハ仙台港展示場", "sales": 7, "mobile": false}, {"pref": "宮城県", "name": "仙台榴ヶ岡展示場", "sales": 5, "mobile": false}, {"pref": "宮城県", "name": "長町展示場", "sales": 6, "mobile": false}, {"pref": "宮城県", "name": "名取田高分譲展示場(完全予約制)", "sales": 7, "mobile": true}, {"pref": "宮城県", "name": "仙台名取展示場", "sales": 6, "mobile": false}, {"pref": "宮城県", "name": "名取ジアス展示場", "sales": 5, "mobile": false}, {"pref": "宮城県", "name": "本田町分譲展示場(完全予約制)", "sales": 7, "mobile": true}, {"pref": "秋田県", "name": "秋田AKT展示場", "sales": 6, "mobile": false}, {"pref": "秋田県", "name": "秋田AKT保戸野展示場", "sales": 7, "mobile": false}, {"pref": "秋田県", "name": "秋田さきがけ展示場", "sales": 6, "mobile": false}, {"pref": "秋田県", "name": "秋田さきがけ東展示場", "sales": 5, "mobile": false}, {"pref": "秋田県", "name": "大館展示場", "sales": 5, "mobile": false}, {"pref": "秋田県", "name": "横手展示場", "sales": 6, "mobile": false}, {"pref": "山形県", "name": "庄内みかわ展示場", "sales": 5, "mobile": false}, {"pref": "山形県", "name": "庄内みかわ東展示場", "sales": 5, "mobile": false}, {"pref": "山形県", "name": "酒田展示場", "sales": 5, "mobile": false}, {"pref": "山形県", "name": "庄内展示場", "sales": 6, "mobile": false}, {"pref": "山形県", "name": "TUY嶋展示場", "sales": 7, "mobile": false}, {"pref": "山形県", "name": "山形平清水展示場", "sales": 6, "mobile": false}, {"pref": "山形県", "name": "山形平清水東展示場", "sales": 6, "mobile": false}, {"pref": "山形県", "name": "米沢展示場", "sales": 6, "mobile": false}, {"pref": "福島県", "name": "福島飯坂展示場", "sales": 6, "mobile": false}, {"pref": "福島県", "name": "福島飯坂東展示場", "sales": 5, "mobile": false}, {"pref": "福島県", "name": "福島TUF展示場", "sales": 6, "mobile": false}, {"pref": "福島県", "name": "南福島展示場", "sales": 6, "mobile": false}, {"pref": "福島県", "name": "南福島太平寺展示場", "sales": 8, "mobile": false}, {"pref": "福島県", "name": "原町展示場", "sales": 8, "mobile": false}, {"pref": "福島県", "name": "原町i-smart展示場", "sales": 7, "mobile": false}, {"pref": "福島県", "name": "郡山北展示場", "sales": 6, "mobile": false}, {"pref": "福島県", "name": "郡山八山田展示場", "sales": 8, "mobile": false}, {"pref": "福島県", "name": "郡山朝日展示場", "sales": 3, "mobile": false}, {"pref": "福島県", "name": "郡山南展示場", "sales": 7, "mobile": false}, {"pref": "福島県", "name": "郡山南第2展示場", "sales": null, "mobile": false}, {"pref": "福島県", "name": "会津若松展示場", "sales": 8, "mobile": false}, {"pref": "福島県", "name": "白河展示場", "sales": 9, "mobile": false}, {"pref": "福島県", "name": "いわき西展示場", "sales": 7, "mobile": false}, {"pref": "福島県", "name": "いわき東展示場", "sales": null, "mobile": false}, {"pref": "福島県", "name": "いわき南展示場", "sales": 6, "mobile": false}, {"pref": "福島県", "name": "いわき泉展示場", "sales": 5, "mobile": false}, {"pref": "東京都", "name": "江戸川展示場", "sales": 5, "mobile": false}, {"pref": "東京都", "name": "東小松川分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "東京都", "name": "加平展示場", "sales": 6, "mobile": false}, {"pref": "東京都", "name": "西新井展示場", "sales": 7, "mobile": false}, {"pref": "東京都", "name": "イイコトテラス鹿浜分譲展示場(完全予約制)", "sales": 10, "mobile": true}, {"pref": "東京都", "name": "錦糸町展示場", "sales": 7, "mobile": false}, {"pref": "東京都", "name": "豊洲展示場", "sales": 9, "mobile": false}, {"pref": "東京都", "name": "豊洲東展示場", "sales": 9, "mobile": false}, {"pref": "東京都", "name": "池袋千川展示場", "sales": 8, "mobile": false}, {"pref": "東京都", "name": "西東京小平展示場", "sales": 7, "mobile": false}, {"pref": "東京都", "name": "練馬インター展示場", "sales": 9, "mobile": false}, {"pref": "東京都", "name": "石神井展示場", "sales": 8, "mobile": false}, {"pref": "東京都", "name": "上井草分譲展示場(完全予約制)", "sales": 8, "mobile": true}, {"pref": "東京都", "name": "新宿東展示場", "sales": 8, "mobile": false}, {"pref": "東京都", "name": "世田谷区北烏山分譲展示場(完全予約制)", "sales": 9, "mobile": true}, {"pref": "東京都", "name": "浜田山展示場", "sales": 7, "mobile": false}, {"pref": "東京都", "name": "瀬田展示場", "sales": 11, "mobile": false}, {"pref": "東京都", "name": "オークラランド展示場", "sales": 8, "mobile": false}, {"pref": "東京都", "name": "駒沢展示場", "sales": 7, "mobile": false}, {"pref": "東京都", "name": "武蔵野展示場", "sales": 8, "mobile": false}, {"pref": "東京都", "name": "三鷹展示場", "sales": 12, "mobile": false}, {"pref": "東京都", "name": "小金井府中展示場", "sales": 7, "mobile": false}, {"pref": "東京都", "name": "立川展示場", "sales": 7, "mobile": false}, {"pref": "東京都", "name": "立川東展示場", "sales": 11, "mobile": false}, {"pref": "東京都", "name": "立川北展示場", "sales": 11, "mobile": false}, {"pref": "東京都", "name": "立川南展示場", "sales": 8, "mobile": false}, {"pref": "東京都", "name": "八王子展示場", "sales": null, "mobile": false}, {"pref": "東京都", "name": "八王子東展示場", "sales": 11, "mobile": false}, {"pref": "東京都", "name": "八王子南展示場", "sales": 10, "mobile": false}, {"pref": "東京都", "name": "町田森野展示場", "sales": 6, "mobile": false}, {"pref": "神奈川県", "name": "川崎展示場", "sales": 7, "mobile": false}, {"pref": "神奈川県", "name": "川崎平間展示場", "sales": 11, "mobile": false}, {"pref": "神奈川県", "name": "新百合ヶ丘展示場", "sales": 10, "mobile": false}, {"pref": "神奈川県", "name": "横浜鶴見展示場", "sales": 8, "mobile": false}, {"pref": "神奈川県", "name": "横浜港北展示場", "sales": 7, "mobile": false}, {"pref": "神奈川県", "name": "横浜港北東展示場", "sales": 8, "mobile": false}, {"pref": "神奈川県", "name": "たまプラーザ展示場", "sales": 7, "mobile": false}, {"pref": "神奈川県", "name": "横浜平沼展示場", "sales": 9, "mobile": false}, {"pref": "神奈川県", "name": "横浜平沼東展示場", "sales": 8, "mobile": false}, {"pref": "神奈川県", "name": "横浜平沼南展示場", "sales": 7, "mobile": false}, {"pref": "神奈川県", "name": "横浜平沼西展示場", "sales": 8, "mobile": false}, {"pref": "神奈川県", "name": "二俣川展示場", "sales": 8, "mobile": false}, {"pref": "神奈川県", "name": "港南台展示場", "sales": 9, "mobile": false}, {"pref": "神奈川県", "name": "横須賀展示場", "sales": 7, "mobile": false}, {"pref": "神奈川県", "name": "相模原展示場", "sales": 8, "mobile": false}, {"pref": "神奈川県", "name": "相模原古淵展示場", "sales": 11, "mobile": false}, {"pref": "神奈川県", "name": "レジデンスサイト横浜町田展示場", "sales": 9, "mobile": false}, {"pref": "神奈川県", "name": "海老名展示場", "sales": 6, "mobile": false}, {"pref": "神奈川県", "name": "厚木展示場", "sales": 9, "mobile": false}, {"pref": "神奈川県", "name": "厚木東展示場", "sales": 7, "mobile": false}, {"pref": "神奈川県", "name": "藤沢展示場", "sales": 7, "mobile": false}, {"pref": "神奈川県", "name": "藤沢東展示場", "sales": 5, "mobile": false}, {"pref": "神奈川県", "name": "藤沢南展示場", "sales": 6, "mobile": false}, {"pref": "神奈川県", "name": "平塚展示場", "sales": 9, "mobile": false}, {"pref": "神奈川県", "name": "平塚東展示場", "sales": 7, "mobile": false}, {"pref": "神奈川県", "name": "平塚市大神体験棟(完全予約制)", "sales": 7, "mobile": true}, {"pref": "神奈川県", "name": "秦野展示場", "sales": 6, "mobile": false}, {"pref": "神奈川県", "name": "小田原国府津展示場", "sales": 6, "mobile": false}, {"pref": "神奈川県", "name": "大磯町石神台体験棟(完全予約制)", "sales": 7, "mobile": true}, {"pref": "埼玉県", "name": "熊谷展示場", "sales": 9, "mobile": false}, {"pref": "埼玉県", "name": "熊谷石原展示場", "sales": 8, "mobile": false}, {"pref": "埼玉県", "name": "上柴西分譲展示場(完全予約制)", "sales": 7, "mobile": true}, {"pref": "埼玉県", "name": "熊谷佐谷田展示場", "sales": 6, "mobile": false}, {"pref": "埼玉県", "name": "本庄展示場", "sales": 9, "mobile": false}, {"pref": "埼玉県", "name": "久喜展示場", "sales": 8, "mobile": false}, {"pref": "埼玉県", "name": "久喜菖蒲展示場", "sales": 5, "mobile": false}, {"pref": "埼玉県", "name": "イイコトテラス下高柳分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "埼玉県", "name": "東松山展示場", "sales": 6, "mobile": false}, {"pref": "埼玉県", "name": "春日部展示場", "sales": 6, "mobile": false}, {"pref": "埼玉県", "name": "春日部東展示場", "sales": 5, "mobile": false}, {"pref": "埼玉県", "name": "上尾展示場", "sales": 6, "mobile": false}, {"pref": "埼玉県", "name": "イオンモール上尾展示場", "sales": 8, "mobile": false}, {"pref": "埼玉県", "name": "新越谷展示場", "sales": 6, "mobile": false}, {"pref": "埼玉県", "name": "大宮北展示場", "sales": 6, "mobile": false}, {"pref": "埼玉県", "name": "さいたま市北区本郷分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "埼玉県", "name": "さいたまコクーンシティ展示場", "sales": 9, "mobile": false}, {"pref": "埼玉県", "name": "さいたまコクーンシティ南展示場", "sales": 8, "mobile": false}, {"pref": "埼玉県", "name": "さいたま市緑区三室分譲展示場(完全予約制)", "sales": 9, "mobile": true}, {"pref": "埼玉県", "name": "浦和展示場", "sales": 4, "mobile": false}, {"pref": "埼玉県", "name": "武蔵浦和展示場", "sales": 5, "mobile": false}, {"pref": "埼玉県", "name": "川越展示場", "sales": 7, "mobile": false}, {"pref": "埼玉県", "name": "川越小仙波展示場", "sales": 7, "mobile": false}, {"pref": "埼玉県", "name": "川越小仙波東展示場", "sales": 7, "mobile": false}, {"pref": "埼玉県", "name": "鶴ヶ島展示場", "sales": 6, "mobile": false}, {"pref": "埼玉県", "name": "三郷展示場", "sales": 7, "mobile": false}, {"pref": "埼玉県", "name": "川口展示場", "sales": 7, "mobile": false}, {"pref": "埼玉県", "name": "川口東展示場", "sales": 7, "mobile": false}, {"pref": "埼玉県", "name": "新座朝霞展示場", "sales": 7, "mobile": false}, {"pref": "埼玉県", "name": "新座朝霞東展示場", "sales": 7, "mobile": false}, {"pref": "埼玉県", "name": "新座朝霞南展示場", "sales": 8, "mobile": false}, {"pref": "埼玉県", "name": "所沢展示場", "sales": 9, "mobile": false}, {"pref": "埼玉県", "name": "所沢西展示場", "sales": 13, "mobile": false}, {"pref": "埼玉県", "name": "所沢市西狭山ヶ丘分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "埼玉県", "name": "新所沢展示場", "sales": 6, "mobile": false}, {"pref": "千葉県", "name": "旭展示場", "sales": 9, "mobile": false}, {"pref": "千葉県", "name": "成田寺台展示場", "sales": 8, "mobile": false}, {"pref": "千葉県", "name": "成田寺台東展示場", "sales": 7, "mobile": false}, {"pref": "千葉県", "name": "千葉ニュータウン展示場", "sales": 7, "mobile": false}, {"pref": "千葉県", "name": "千葉ニュータウン東展示場", "sales": 9, "mobile": false}, {"pref": "千葉県", "name": "柏インター展示場", "sales": 12, "mobile": false}, {"pref": "千葉県", "name": "柏インター東展示場", "sales": 7, "mobile": false}, {"pref": "千葉県", "name": "かしわ沼南展示場", "sales": 6, "mobile": false}, {"pref": "千葉県", "name": "かしわ沼南東展示場", "sales": 9, "mobile": false}, {"pref": "千葉県", "name": "流山おおたかの森展示場", "sales": 7, "mobile": false}, {"pref": "千葉県", "name": "松戸展示場", "sales": 7, "mobile": false}, {"pref": "千葉県", "name": "松戸東展示場", "sales": 7, "mobile": false}, {"pref": "千葉県", "name": "船橋南展示場", "sales": 6, "mobile": false}, {"pref": "千葉県", "name": "船橋夏見展示場", "sales": 8, "mobile": false}, {"pref": "千葉県", "name": "市川展示場", "sales": 8, "mobile": false}, {"pref": "千葉県", "name": "市川南展示場", "sales": 7, "mobile": false}, {"pref": "千葉県", "name": "千葉展示場", "sales": 6, "mobile": false}, {"pref": "千葉県", "name": "千葉東展示場", "sales": 6, "mobile": false}, {"pref": "千葉県", "name": "幕張展示場", "sales": 8, "mobile": false}, {"pref": "千葉県", "name": "幕張南展示場", "sales": 9, "mobile": false}, {"pref": "千葉県", "name": "幕張東展示場", "sales": 7, "mobile": false}, {"pref": "千葉県", "name": "市原展示場", "sales": 7, "mobile": false}, {"pref": "千葉県", "name": "市原東展示場", "sales": 9, "mobile": false}, {"pref": "千葉県", "name": "茂原東展示場", "sales": 7, "mobile": false}, {"pref": "千葉県", "name": "木更津展示場", "sales": 7, "mobile": false}, {"pref": "千葉県", "name": "木更津東展示場", "sales": 7, "mobile": false}, {"pref": "千葉県", "name": "千葉北第一展示場", "sales": 6, "mobile": false}, {"pref": "栃木県", "name": "那須塩原展示場", "sales": 7, "mobile": false}, {"pref": "栃木県", "name": "那須塩原東展示場", "sales": 6, "mobile": false}, {"pref": "栃木県", "name": "宇都宮西展示場", "sales": 8, "mobile": false}, {"pref": "栃木県", "name": "宇都宮ベルモール展示場", "sales": 8, "mobile": false}, {"pref": "栃木県", "name": "宇都宮西川田展示場", "sales": 5, "mobile": false}, {"pref": "栃木県", "name": "宇都宮インターパーク展示場", "sales": 5, "mobile": false}, {"pref": "栃木県", "name": "宇都宮インターパーク東展示場", "sales": 9, "mobile": false}, {"pref": "栃木県", "name": "佐野展示場", "sales": 8, "mobile": false}, {"pref": "栃木県", "name": "ICHIJO PLAZA佐野", "sales": 6, "mobile": false}, {"pref": "栃木県", "name": "小山展示場", "sales": 6, "mobile": false}, {"pref": "栃木県", "name": "栃木HTC下野展示場(完全予約制)", "sales": 6, "mobile": true}, {"pref": "栃木県", "name": "小山東ニュータウン展示場", "sales": 8, "mobile": false}, {"pref": "栃木県", "name": "足利展示場", "sales": 5, "mobile": false}, {"pref": "栃木県", "name": "栃木展示場", "sales": 6, "mobile": false}, {"pref": "茨城県", "name": "日立展示場", "sales": 7, "mobile": false}, {"pref": "茨城県", "name": "ひたちなか展示場", "sales": 7, "mobile": false}, {"pref": "茨城県", "name": "ひたちなか東展示場", "sales": 5, "mobile": false}, {"pref": "茨城県", "name": "イイコトテラス須和間碧葉の風分譲展示場(完全予約制)", "sales": 6, "mobile": true}, {"pref": "茨城県", "name": "水戸笠原東展示場", "sales": 6, "mobile": false}, {"pref": "茨城県", "name": "水戸笠原展示場", "sales": 7, "mobile": false}, {"pref": "茨城県", "name": "水戸笠原南展示場", "sales": 7, "mobile": false}, {"pref": "茨城県", "name": "常盤の杜分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "茨城県", "name": "常盤の杜Ⅱ分譲展示場(完全予約制)", "sales": 6, "mobile": true}, {"pref": "茨城県", "name": "水戸赤塚展示場", "sales": 13, "mobile": false}, {"pref": "茨城県", "name": "筑西展示場", "sales": 7, "mobile": false}, {"pref": "茨城県", "name": "土浦展示場", "sales": 7, "mobile": false}, {"pref": "茨城県", "name": "土浦東展示場", "sales": 6, "mobile": false}, {"pref": "茨城県", "name": "つくばANNEX展示場", "sales": 7, "mobile": false}, {"pref": "茨城県", "name": "つくば展示場", "sales": 8, "mobile": false}, {"pref": "茨城県", "name": "つくば東展示場", "sales": 7, "mobile": false}, {"pref": "茨城県", "name": "古河展示場", "sales": 6, "mobile": false}, {"pref": "茨城県", "name": "守谷展示場", "sales": 7, "mobile": false}, {"pref": "茨城県", "name": "鹿島展示場", "sales": 8, "mobile": false}, {"pref": "群馬県", "name": "前橋展示場", "sales": null, "mobile": false}, {"pref": "群馬県", "name": "吉岡展示場", "sales": 7, "mobile": false}, {"pref": "群馬県", "name": "伊勢崎展示場", "sales": null, "mobile": false}, {"pref": "群馬県", "name": "伊勢崎西展示場", "sales": 8, "mobile": false}, {"pref": "群馬県", "name": "太田展示場", "sales": null, "mobile": false}, {"pref": "群馬県", "name": "太田東展示場", "sales": null, "mobile": false}, {"pref": "群馬県", "name": "高崎展示場", "sales": null, "mobile": false}, {"pref": "群馬県", "name": "高崎南展示場", "sales": null, "mobile": false}, {"pref": "山梨県", "name": "昭和常永展示場", "sales": null, "mobile": false}, {"pref": "山梨県", "name": "甲府昭和南展示場", "sales": 8, "mobile": false}, {"pref": "山梨県", "name": "甲府昭和展示場", "sales": 7, "mobile": false}, {"pref": "山梨県", "name": "甲府小瀬展示場", "sales": 13, "mobile": false}, {"pref": "山梨県", "name": "甲府小瀬東展示場", "sales": 7, "mobile": false}, {"pref": "山梨県", "name": "富士吉田展示場", "sales": 6, "mobile": false}, {"pref": "長野県", "name": "長野中央展示場", "sales": 8, "mobile": false}, {"pref": "長野県", "name": "長野中央東展示場", "sales": 13, "mobile": false}, {"pref": "長野県", "name": "長野中央南展示場", "sales": 7, "mobile": false}, {"pref": "長野県", "name": "長野古牧展示場", "sales": 6, "mobile": false}, {"pref": "長野県", "name": "長野展示場", "sales": 9, "mobile": false}, {"pref": "長野県", "name": "上田展示場", "sales": 6, "mobile": false}, {"pref": "長野県", "name": "あづみの展示場", "sales": 10, "mobile": false}, {"pref": "長野県", "name": "佐久展示場", "sales": 9, "mobile": false}, {"pref": "長野県", "name": "佐久中央展示場", "sales": 8, "mobile": false}, {"pref": "長野県", "name": "松本展示場", "sales": 7, "mobile": false}, {"pref": "長野県", "name": "松本東展示場", "sales": 9, "mobile": false}, {"pref": "長野県", "name": "松本南展示場", "sales": 9, "mobile": false}, {"pref": "長野県", "name": "諏訪展示場", "sales": 8, "mobile": false}, {"pref": "長野県", "name": "諏訪東展示場", "sales": 8, "mobile": false}, {"pref": "長野県", "name": "伊那展示場", "sales": 7, "mobile": false}, {"pref": "長野県", "name": "伊那東展示場", "sales": 6, "mobile": false}, {"pref": "長野県", "name": "飯田展示場", "sales": 6, "mobile": false}, {"pref": "長野県", "name": "飯田東展示場", "sales": 5, "mobile": false}, {"pref": "新潟県", "name": "新発田展示場", "sales": 6, "mobile": false}, {"pref": "新潟県", "name": "新潟南展示場", "sales": 6, "mobile": false}, {"pref": "新潟県", "name": "新潟中央展示場", "sales": 8, "mobile": false}, {"pref": "新潟県", "name": "新潟八千代展示場", "sales": 8, "mobile": false}, {"pref": "新潟県", "name": "新潟桜木インター展示場", "sales": 3, "mobile": false}, {"pref": "新潟県", "name": "新潟西展示場", "sales": 8, "mobile": false}, {"pref": "新潟県", "name": "燕三条展示場", "sales": 7, "mobile": false}, {"pref": "新潟県", "name": "長岡展示場", "sales": 7, "mobile": false}, {"pref": "新潟県", "name": "長岡東展示場", "sales": 7, "mobile": false}, {"pref": "新潟県", "name": "上越展示場", "sales": 7, "mobile": false}, {"pref": "富山県", "name": "i-smart富山展示場", "sales": 5, "mobile": false}, {"pref": "富山県", "name": "富山南展示場", "sales": 6, "mobile": false}, {"pref": "富山県", "name": "高岡展示場", "sales": 7, "mobile": false}, {"pref": "富山県", "name": "魚津展示場", "sales": 9, "mobile": false}, {"pref": "石川県", "name": "金沢展示場", "sales": null, "mobile": false}, {"pref": "石川県", "name": "金沢東展示場", "sales": null, "mobile": false}, {"pref": "石川県", "name": "野々市展示場", "sales": null, "mobile": false}, {"pref": "福井県", "name": "福井家の森展示場", "sales": 7, "mobile": false}, {"pref": "福井県", "name": "福井家の森第2展示場", "sales": 8, "mobile": false}, {"pref": "福井県", "name": "福井ハウジングパーク東展示場", "sales": 8, "mobile": false}, {"pref": "福井県", "name": "敦賀展示場", "sales": 3, "mobile": false}, {"pref": "福井県", "name": "小浜展示場", "sales": 7, "mobile": false}, {"pref": "静岡県", "name": "御殿場展示場", "sales": 8, "mobile": false}, {"pref": "静岡県", "name": "御殿場東展示場", "sales": 8, "mobile": false}, {"pref": "静岡県", "name": "三島展示場", "sales": 8, "mobile": false}, {"pref": "静岡県", "name": "三島東展示場", "sales": 6, "mobile": false}, {"pref": "静岡県", "name": "沼津展示場", "sales": 5, "mobile": false}, {"pref": "静岡県", "name": "ICHIJO PLAZA沼津", "sales": 5, "mobile": false}, {"pref": "静岡県", "name": "三島南展示場", "sales": 5, "mobile": false}, {"pref": "静岡県", "name": "富士展示場", "sales": 8, "mobile": false}, {"pref": "静岡県", "name": "富士東展示場", "sales": 5, "mobile": false}, {"pref": "静岡県", "name": "富士南展示場", "sales": 8, "mobile": false}, {"pref": "静岡県", "name": "富士宮市舞々木町分譲展示場(完全予約制)", "sales": 7, "mobile": true}, {"pref": "静岡県", "name": "清水展示場", "sales": 6, "mobile": false}, {"pref": "静岡県", "name": "清水東展示場", "sales": 8, "mobile": false}, {"pref": "静岡県", "name": "清水区大曲分譲展示場(完全予約制)", "sales": 7, "mobile": true}, {"pref": "静岡県", "name": "静岡展示場", "sales": 7, "mobile": false}, {"pref": "静岡県", "name": "静岡東展示場", "sales": 7, "mobile": false}, {"pref": "静岡県", "name": "静岡中央展示場", "sales": 11, "mobile": false}, {"pref": "静岡県", "name": "静岡葵展示場", "sales": 7, "mobile": false}, {"pref": "静岡県", "name": "静岡葵東展示場", "sales": 6, "mobile": false}, {"pref": "静岡県", "name": "ICHIJO PLAZA静岡", "sales": 6, "mobile": false}, {"pref": "静岡県", "name": "藤枝展示場", "sales": 6, "mobile": false}, {"pref": "静岡県", "name": "藤枝東展示場", "sales": 6, "mobile": false}, {"pref": "静岡県", "name": "藤枝高洲展示場", "sales": 7, "mobile": false}, {"pref": "静岡県", "name": "焼津分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "静岡県", "name": "掛川展示場", "sales": 6, "mobile": false}, {"pref": "静岡県", "name": "掛川東展示場", "sales": 6, "mobile": false}, {"pref": "静岡県", "name": "掛川南展示場", "sales": 6, "mobile": false}, {"pref": "静岡県", "name": "掛川市上張分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "静岡県", "name": "掛川弥生展示場", "sales": 6, "mobile": false}, {"pref": "静岡県", "name": "袋井展示場", "sales": 7, "mobile": false}, {"pref": "静岡県", "name": "磐田岩井展示場", "sales": 4, "mobile": false}, {"pref": "静岡県", "name": "ICHIJO PLAZA磐田", "sales": null, "mobile": false}, {"pref": "静岡県", "name": "浜北展示場", "sales": 7, "mobile": false}, {"pref": "静岡県", "name": "浜北第2展示場", "sales": 7, "mobile": false}, {"pref": "静岡県", "name": "浜松中央展示場", "sales": 4, "mobile": false}, {"pref": "静岡県", "name": "浜松東陽展示場", "sales": 8, "mobile": false}, {"pref": "静岡県", "name": "浜松東展示場", "sales": 7, "mobile": false}, {"pref": "静岡県", "name": "浜松南展示場", "sales": 5, "mobile": false}, {"pref": "静岡県", "name": "浜松信陽展示場", "sales": 8, "mobile": false}, {"pref": "静岡県", "name": "浜松西展示場", "sales": 8, "mobile": false}, {"pref": "静岡県", "name": "ICHIJO PLAZA浜松", "sales": 8, "mobile": false}, {"pref": "静岡県", "name": "浜松白羽分譲展示場(平屋・完全予約制)", "sales": 7, "mobile": true}, {"pref": "愛知県", "name": "豊橋南展示場", "sales": 5, "mobile": false}, {"pref": "愛知県", "name": "豊橋西展示場", "sales": 8, "mobile": false}, {"pref": "愛知県", "name": "豊橋神野展示場", "sales": 7, "mobile": false}, {"pref": "愛知県", "name": "豊橋北展示場", "sales": 8, "mobile": false}, {"pref": "愛知県", "name": "豊橋東展示場", "sales": null, "mobile": false}, {"pref": "愛知県", "name": "岡崎展示場", "sales": 8, "mobile": false}, {"pref": "愛知県", "name": "岡崎東展示場", "sales": 7, "mobile": false}, {"pref": "愛知県", "name": "岡崎グラン展示場", "sales": 7, "mobile": false}, {"pref": "愛知県", "name": "豊田展示場", "sales": 7, "mobile": false}, {"pref": "愛知県", "name": "豊田東展示場", "sales": 10, "mobile": false}, {"pref": "愛知県", "name": "豊田グラン展示場", "sales": 8, "mobile": false}, {"pref": "愛知県", "name": "刈谷展示場", "sales": 10, "mobile": false}, {"pref": "愛知県", "name": "刈谷南展示場", "sales": 9, "mobile": false}, {"pref": "愛知県", "name": "西尾展示場", "sales": 6, "mobile": false}, {"pref": "愛知県", "name": "西尾グラン展示場", "sales": 7, "mobile": false}, {"pref": "愛知県", "name": "西尾北展示場", "sales": 7, "mobile": false}, {"pref": "愛知県", "name": "一宮展示場", "sales": 8, "mobile": false}, {"pref": "愛知県", "name": "一宮東展示場", "sales": 7, "mobile": false}, {"pref": "愛知県", "name": "一宮南展示場", "sales": 7, "mobile": false}, {"pref": "愛知県", "name": "一宮市「馬引」分譲展示場(完全予約制)", "sales": 7, "mobile": true}, {"pref": "愛知県", "name": "小牧展示場", "sales": 7, "mobile": false}, {"pref": "愛知県", "name": "春日井展示場", "sales": 7, "mobile": false}, {"pref": "愛知県", "name": "春日井東展示場", "sales": 11, "mobile": false}, {"pref": "愛知県", "name": "春日井南展示場", "sales": 7, "mobile": false}, {"pref": "愛知県", "name": "犬山市五郎丸分譲展示場(完全予約制)", "sales": 7, "mobile": true}, {"pref": "愛知県", "name": "神宮展示場", "sales": 8, "mobile": false}, {"pref": "愛知県", "name": "神宮南展示場", "sales": 8, "mobile": false}, {"pref": "愛知県", "name": "名駅北展示場", "sales": 7, "mobile": false}, {"pref": "愛知県", "name": "鳴海展示場", "sales": 9, "mobile": false}, {"pref": "愛知県", "name": "長久手展示場", "sales": 11, "mobile": false}, {"pref": "愛知県", "name": "長久手東展示場", "sales": 11, "mobile": false}, {"pref": "愛知県", "name": "日進展示場", "sales": 9, "mobile": false}, {"pref": "愛知県", "name": "日進東展示場", "sales": 9, "mobile": false}, {"pref": "愛知県", "name": "日進西展示場", "sales": 6, "mobile": false}, {"pref": "愛知県", "name": "日進南展示場", "sales": 9, "mobile": false}, {"pref": "愛知県", "name": "大府展示場", "sales": 7, "mobile": false}, {"pref": "愛知県", "name": "大府東展示場", "sales": 7, "mobile": false}, {"pref": "愛知県", "name": "大府南展示場", "sales": 8, "mobile": false}, {"pref": "愛知県", "name": "豊明市分譲展示場(完全予約制)", "sales": 8, "mobile": true}, {"pref": "愛知県", "name": "半田展示場", "sales": 6, "mobile": false}, {"pref": "愛知県", "name": "半田東展示場", "sales": 8, "mobile": false}, {"pref": "愛知県", "name": "阿久比町i-smart分譲展示場(完全予約制)", "sales": 10, "mobile": true}, {"pref": "愛知県", "name": "阿久比町GRAN SMART分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "愛知県", "name": "蟹江展示場", "sales": 11, "mobile": false}, {"pref": "愛知県", "name": "蟹江東展示場", "sales": 8, "mobile": false}, {"pref": "岐阜県", "name": "中津川展示場", "sales": 5, "mobile": false}, {"pref": "岐阜県", "name": "中津川市千旦林分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "岐阜県", "name": "高山展示場", "sales": 8, "mobile": false}, {"pref": "岐阜県", "name": "可児展示場", "sales": 7, "mobile": false}, {"pref": "岐阜県", "name": "可児東展示場", "sales": 5, "mobile": false}, {"pref": "岐阜県", "name": "ICHIJO PLAZA御嵩", "sales": null, "mobile": false}, {"pref": "岐阜県", "name": "土岐展示場", "sales": 4, "mobile": false}, {"pref": "岐阜県", "name": "土岐東展示場", "sales": 6, "mobile": false}, {"pref": "岐阜県", "name": "瑞浪市須野志分譲展示場(完全予約制)", "sales": 7, "mobile": true}, {"pref": "岐阜県", "name": "各務原展示場", "sales": 1, "mobile": false}, {"pref": "岐阜県", "name": "各務原東展示場", "sales": 8, "mobile": false}, {"pref": "岐阜県", "name": "各務原南展示場", "sales": 7, "mobile": false}, {"pref": "岐阜県", "name": "岐阜県庁前展示場", "sales": 8, "mobile": false}, {"pref": "岐阜県", "name": "岐阜県庁前東展示場", "sales": 7, "mobile": false}, {"pref": "岐阜県", "name": "大垣展示場", "sales": 8, "mobile": false}, {"pref": "岐阜県", "name": "大垣東展示場", "sales": 4, "mobile": false}, {"pref": "三重県", "name": "桑名展示場", "sales": 8, "mobile": false}, {"pref": "三重県", "name": "桑名南展示場", "sales": 9, "mobile": false}, {"pref": "三重県", "name": "四日市展示場", "sales": 6, "mobile": false}, {"pref": "三重県", "name": "四日市東展示場", "sales": 10, "mobile": false}, {"pref": "三重県", "name": "四日市南展示場", "sales": 9, "mobile": false}, {"pref": "三重県", "name": "鈴鹿展示場", "sales": 8, "mobile": false}, {"pref": "三重県", "name": "鈴鹿南展示場", "sales": 7, "mobile": false}, {"pref": "三重県", "name": "伊賀市平野分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "三重県", "name": "津展示場", "sales": 7, "mobile": false}, {"pref": "三重県", "name": "津東展示場", "sales": 8, "mobile": false}, {"pref": "三重県", "name": "津中央展示場", "sales": 7, "mobile": false}, {"pref": "三重県", "name": "名張展示場", "sales": 6, "mobile": false}, {"pref": "三重県", "name": "伊勢明和展示場", "sales": 7, "mobile": false}, {"pref": "三重県", "name": "伊勢明和東展示場", "sales": 7, "mobile": false}, {"pref": "三重県", "name": "明和分譲展示場(完全予約制)", "sales": 7, "mobile": true}, {"pref": "大阪府", "name": "高槻展示場", "sales": 9, "mobile": false}, {"pref": "大阪府", "name": "枚方展示場", "sales": 7, "mobile": false}, {"pref": "大阪府", "name": "箕面モデルハウス", "sales": 7, "mobile": false}, {"pref": "大阪府", "name": "箕面東モデルハウス", "sales": 11, "mobile": false}, {"pref": "大阪府", "name": "箕面南モデルハウス", "sales": 7, "mobile": false}, {"pref": "大阪府", "name": "箕面西モデルハウス", "sales": 9, "mobile": false}, {"pref": "大阪府", "name": "箕面森町分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "大阪府", "name": "大阪花博展示場", "sales": 9, "mobile": false}, {"pref": "大阪府", "name": "大阪花博東展示場", "sales": 9, "mobile": false}, {"pref": "大阪府", "name": "大阪花博南展示場", "sales": 9, "mobile": false}, {"pref": "大阪府", "name": "なんば東展示場", "sales": 9, "mobile": false}, {"pref": "大阪府", "name": "なんば展示場", "sales": 9, "mobile": false}, {"pref": "大阪府", "name": "南港ATC展示場", "sales": 9, "mobile": false}, {"pref": "大阪府", "name": "ICHIJO-Lab Annex", "sales": null, "mobile": false}, {"pref": "大阪府", "name": "中百舌鳥展示場", "sales": 8, "mobile": false}, {"pref": "大阪府", "name": "中百舌鳥東展示場", "sales": 9, "mobile": false}, {"pref": "大阪府", "name": "中百舌鳥グラン展示場", "sales": 8, "mobile": false}, {"pref": "大阪府", "name": "堺美原展示場", "sales": 6, "mobile": false}, {"pref": "大阪府", "name": "堺美原東展示場", "sales": 9, "mobile": false}, {"pref": "大阪府", "name": "イイコトテラス茱萸木分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "大阪府", "name": "イイコトテラス堺・菱木分譲展示場(完全予約制)", "sales": 9, "mobile": true}, {"pref": "大阪府", "name": "和泉中央展示場", "sales": 10, "mobile": false}, {"pref": "大阪府", "name": "和泉中央東展示場", "sales": 8, "mobile": false}, {"pref": "大阪府", "name": "泉佐野展示場", "sales": 8, "mobile": false}, {"pref": "大阪府", "name": "泉佐野東展示場", "sales": 6, "mobile": false}, {"pref": "大阪府", "name": "ゆめみヶ丘岸和田185分譲展示場(完全予約制)", "sales": 9, "mobile": true}, {"pref": "大阪府", "name": "ゆめみヶ丘岸和田184分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "京都府", "name": "舞鶴展示場", "sales": 4, "mobile": false}, {"pref": "京都府", "name": "福知山展示場", "sales": 5, "mobile": false}, {"pref": "京都府", "name": "京都四条展示場", "sales": 8, "mobile": false}, {"pref": "京都府", "name": "亀岡展示場", "sales": 4, "mobile": false}, {"pref": "京都府", "name": "京都五条展示場", "sales": 8, "mobile": false}, {"pref": "京都府", "name": "京都五条東展示場", "sales": 8, "mobile": false}, {"pref": "京都府", "name": "京都桃山展示場", "sales": 8, "mobile": false}, {"pref": "京都府", "name": "京都桃山東展示場", "sales": 4, "mobile": false}, {"pref": "京都府", "name": "京都久御山展示場", "sales": 8, "mobile": false}, {"pref": "京都府", "name": "京都久御山東展示場", "sales": 9, "mobile": false}, {"pref": "京都府", "name": "京丹後大宮分譲展示場(完全予約制)", "sales": 8, "mobile": true}, {"pref": "京都府", "name": "木津川市城山台分譲展示場(完全予約制)", "sales": 6, "mobile": true}, {"pref": "奈良県", "name": "奈良登美ヶ丘展示場", "sales": 8, "mobile": false}, {"pref": "奈良県", "name": "奈良登美ヶ丘東展示場", "sales": 9, "mobile": false}, {"pref": "奈良県", "name": "奈良南展示場", "sales": 10, "mobile": false}, {"pref": "奈良県", "name": "奈良柏木展示場", "sales": 7, "mobile": false}, {"pref": "奈良県", "name": "橿原八木展示場", "sales": 8, "mobile": false}, {"pref": "奈良県", "name": "橿原八木東展示場", "sales": 7, "mobile": false}, {"pref": "奈良県", "name": "広陵町三吉分譲展示場(完全予約制)", "sales": 9, "mobile": true}, {"pref": "奈良県", "name": "橿原市小綱分譲展示場(完全予約制)", "sales": 7, "mobile": true}, {"pref": "奈良県", "name": "橿原八木南展示場", "sales": 8, "mobile": false}, {"pref": "奈良県", "name": "橿原耳成南分譲展示場(完全予約制)", "sales": 6, "mobile": true}, {"pref": "滋賀県", "name": "長浜東展示場", "sales": 7, "mobile": false}, {"pref": "滋賀県", "name": "彦根展示場", "sales": 8, "mobile": false}, {"pref": "滋賀県", "name": "彦根東展示場", "sales": 12, "mobile": false}, {"pref": "滋賀県", "name": "近江八幡展示場", "sales": 7, "mobile": false}, {"pref": "滋賀県", "name": "近江八幡東展示場", "sales": 9, "mobile": false}, {"pref": "滋賀県", "name": "草津展示場", "sales": 6, "mobile": false}, {"pref": "滋賀県", "name": "草津東展示場", "sales": 10, "mobile": false}, {"pref": "滋賀県", "name": "草津南展示場", "sales": 7, "mobile": false}, {"pref": "滋賀県", "name": "大津展示場", "sales": 6, "mobile": false}, {"pref": "滋賀県", "name": "大津東展示場", "sales": 8, "mobile": false}, {"pref": "滋賀県", "name": "イイコトテラス湖南市三雲分譲展示場(完全予約制)", "sales": 8, "mobile": true}, {"pref": "兵庫県", "name": "伊丹展示場", "sales": 7, "mobile": false}, {"pref": "兵庫県", "name": "伊丹東展示場", "sales": 8, "mobile": false}, {"pref": "兵庫県", "name": "伊丹南展示場", "sales": 7, "mobile": false}, {"pref": "兵庫県", "name": "西宮北口展示場", "sales": 6, "mobile": false}, {"pref": "兵庫県", "name": "西宮北口東展示場", "sales": 9, "mobile": false}, {"pref": "兵庫県", "name": "西神中央展示場", "sales": 9, "mobile": false}, {"pref": "兵庫県", "name": "滝野社展示場", "sales": 5, "mobile": false}, {"pref": "兵庫県", "name": "滝野社第2展示場", "sales": 6, "mobile": false}, {"pref": "兵庫県", "name": "東加古川展示場", "sales": 10, "mobile": false}, {"pref": "兵庫県", "name": "東加古川中央展示場", "sales": 6, "mobile": false}, {"pref": "兵庫県", "name": "加古川展示場", "sales": 6, "mobile": false}, {"pref": "兵庫県", "name": "加古川南展示場", "sales": 7, "mobile": false}, {"pref": "兵庫県", "name": "加古川グラン展示場", "sales": 7, "mobile": false}, {"pref": "兵庫県", "name": "明石海岸通り展示場", "sales": 8, "mobile": false}, {"pref": "兵庫県", "name": "明石海岸通り東展示場", "sales": 9, "mobile": false}, {"pref": "兵庫県", "name": "姫路勝原展示場", "sales": 7, "mobile": false}, {"pref": "兵庫県", "name": "姫路中央展示場", "sales": 5, "mobile": false}, {"pref": "兵庫県", "name": "姫路リバーシティー展示場", "sales": 9, "mobile": false}, {"pref": "和歌山県", "name": "和歌山インター東展示場", "sales": 10, "mobile": false}, {"pref": "和歌山県", "name": "和歌山インター展示場", "sales": 9, "mobile": false}, {"pref": "和歌山県", "name": "和歌山ふじと台展示場", "sales": 5, "mobile": false}, {"pref": "和歌山県", "name": "和歌山小雑賀展示場", "sales": 12, "mobile": false}, {"pref": "徳島県", "name": "徳島展示場", "sales": 5, "mobile": false}, {"pref": "徳島県", "name": "徳島東展示場", "sales": 9, "mobile": false}, {"pref": "徳島県", "name": "松茂展示場", "sales": 5, "mobile": false}, {"pref": "徳島県", "name": "名東分譲展示場(完全予約制)", "sales": 9, "mobile": true}, {"pref": "香川県", "name": "高松展示場", "sales": 10, "mobile": false}, {"pref": "香川県", "name": "高松東展示場", "sales": 8, "mobile": false}, {"pref": "香川県", "name": "高松市伏石分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "香川県", "name": "宇多津展示場", "sales": 5, "mobile": false}, {"pref": "香川県", "name": "宇多津中央展示場", "sales": 7, "mobile": false}, {"pref": "愛媛県", "name": "松前展示場", "sales": 10, "mobile": false}, {"pref": "愛媛県", "name": "松前東展示場", "sales": 9, "mobile": false}, {"pref": "愛媛県", "name": "新居浜展示場", "sales": 7, "mobile": false}, {"pref": "愛媛県", "name": "新居浜中央展示場", "sales": 7, "mobile": false}, {"pref": "愛媛県", "name": "美しが丘にいはま分譲展示場(完全予約制)", "sales": 10, "mobile": true}, {"pref": "愛媛県", "name": "ICHIJO PLAZA今治(イオンモール今治新都市2階)", "sales": 8, "mobile": false}, {"pref": "愛媛県", "name": "松山市平田分譲展示場(完全予約制)", "sales": 6, "mobile": true}, {"pref": "愛媛県", "name": "松山パル展示場", "sales": 6, "mobile": false}, {"pref": "愛媛県", "name": "松山パル東展示場", "sales": 8, "mobile": false}, {"pref": "鳥取県", "name": "鳥取グランセゾン展示場", "sales": 4, "mobile": false}, {"pref": "鳥取県", "name": "鳥取浜坂グランスマート分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "鳥取県", "name": "米子i-smart展示場", "sales": 7, "mobile": false}, {"pref": "鳥取県", "name": "米子グランセゾン展示場", "sales": 8, "mobile": false}, {"pref": "鳥取県", "name": "ICHIJO PLAZA日吉津", "sales": null, "mobile": false}, {"pref": "鳥取県", "name": "米子河崎グランスマート展示場(完全予約制)", "sales": null, "mobile": false}, {"pref": "島根県", "name": "松江展示場", "sales": 9, "mobile": false}, {"pref": "島根県", "name": "出雲i-smart展示場", "sales": null, "mobile": false}, {"pref": "島根県", "name": "出雲グランセゾン展示場", "sales": null, "mobile": false}, {"pref": "島根県", "name": "出雲市西新町分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "岡山県", "name": "岡山北展示場", "sales": null, "mobile": false}, {"pref": "岡山県", "name": "岡山南展示場", "sales": 5, "mobile": false}, {"pref": "岡山県", "name": "岡山西展示場", "sales": 5, "mobile": false}, {"pref": "岡山県", "name": "岡山中央展示場", "sales": 6, "mobile": false}, {"pref": "岡山県", "name": "津山イーストランド展示場", "sales": 7, "mobile": false}, {"pref": "岡山県", "name": "津山i-smart展示場", "sales": 5, "mobile": false}, {"pref": "岡山県", "name": "津山グランセゾン展示場", "sales": 5, "mobile": false}, {"pref": "岡山県", "name": "倉敷市中畝分譲展示場(完全予約制)", "sales": 6, "mobile": true}, {"pref": "広島県", "name": "福山市山手町【平屋&2階建】分譲展示場", "sales": null, "mobile": true}, {"pref": "広島県", "name": "福山市神辺町道上分譲展示場", "sales": null, "mobile": true}, {"pref": "広島県", "name": "福山新涯展示場", "sales": 5, "mobile": false}, {"pref": "広島県", "name": "福山中央展示場", "sales": 5, "mobile": false}, {"pref": "広島県", "name": "尾道展示場", "sales": 5, "mobile": false}, {"pref": "広島県", "name": "広島アスタ展示場", "sales": 6, "mobile": false}, {"pref": "広島県", "name": "広島アスタ東展示場", "sales": 8, "mobile": false}, {"pref": "広島県", "name": "広島吉島展示場", "sales": 5, "mobile": false}, {"pref": "広島県", "name": "東広島展示場", "sales": 5, "mobile": false}, {"pref": "広島県", "name": "東広島市西条田口分譲展示場(完全予約制)", "sales": 5, "mobile": true}, {"pref": "山口県", "name": "徳山展示場", "sales": 8, "mobile": false}, {"pref": "山口県", "name": "下松展示場", "sales": 7, "mobile": false}, {"pref": "山口県", "name": "イイコトテラス田布施分譲展示場(完全予約制)", "sales": 8, "mobile": true}, {"pref": "山口県", "name": "山口展示場", "sales": 13, "mobile": false}, {"pref": "山口県", "name": "山口東展示場", "sales": 9, "mobile": false}, {"pref": "山口県", "name": "防府市分譲展示場(完全予約制)", "sales": 8, "mobile": true}, {"pref": "山口県", "name": "萩市分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "山口県", "name": "宇部展示場", "sales": 8, "mobile": false}, {"pref": "山口県", "name": "下関展示場", "sales": 9, "mobile": false}, {"pref": "山口県", "name": "下関市秋根分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "山口県", "name": "岩国展示場", "sales": 7, "mobile": false}, {"pref": "山口県", "name": "イイコトテラス玖珂町分譲展示場(完全予約制)", "sales": 8, "mobile": true}, {"pref": "山口県", "name": "岩国市周東町分譲展示場(完全予約制)", "sales": 8, "mobile": true}, {"pref": "福岡県", "name": "ひびきの展示場", "sales": 8, "mobile": false}, {"pref": "福岡県", "name": "小倉展示場", "sales": 6, "mobile": false}, {"pref": "福岡県", "name": "小倉北展示場", "sales": 8, "mobile": false}, {"pref": "福岡県", "name": "小倉南展示場", "sales": 10, "mobile": false}, {"pref": "福岡県", "name": "小倉東展示場", "sales": 8, "mobile": false}, {"pref": "福岡県", "name": "福津展示場", "sales": 6, "mobile": false}, {"pref": "福岡県", "name": "福岡マリナ通り展示場", "sales": 8, "mobile": false}, {"pref": "福岡県", "name": "福岡マリナ通り南展示場", "sales": 9, "mobile": false}, {"pref": "福岡県", "name": "香椎宮前展示場", "sales": 10, "mobile": false}, {"pref": "福岡県", "name": "大野城展示場", "sales": 7, "mobile": false}, {"pref": "福岡県", "name": "大野城東展示場", "sales": 10, "mobile": false}, {"pref": "福岡県", "name": "久留米展示場", "sales": 10, "mobile": false}, {"pref": "福岡県", "name": "久留米篠山展示場", "sales": 4, "mobile": false}, {"pref": "福岡県", "name": "久留米東展示場", "sales": 10, "mobile": false}, {"pref": "福岡県", "name": "スマートタウン津田分譲展示場(完全予約制)", "sales": 9, "mobile": true}, {"pref": "佐賀県", "name": "佐賀展示場", "sales": 12, "mobile": false}, {"pref": "佐賀県", "name": "佐賀市新栄東2-6-3", "sales": 4, "mobile": false}, {"pref": "佐賀県", "name": "唐津展示場", "sales": 9, "mobile": false}, {"pref": "佐賀県", "name": "佐賀イエス展示場", "sales": 11, "mobile": false}, {"pref": "大分県", "name": "中津展示場", "sales": 5, "mobile": false}, {"pref": "大分県", "name": "大分下郡展示場", "sales": 12, "mobile": false}, {"pref": "大分県", "name": "下郡体験館", "sales": null, "mobile": false}, {"pref": "大分県", "name": "大分TOS展示場", "sales": 9, "mobile": false}, {"pref": "大分県", "name": "大分TOS東展示場", "sales": 5, "mobile": false}, {"pref": "大分県", "name": "プレシャスサイド畑中分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "大分県", "name": "大分わさだ展示場", "sales": 8, "mobile": false}, {"pref": "大分県", "name": "中津市中殿分譲展示場(完全予約制)", "sales": 9, "mobile": true}, {"pref": "長崎県", "name": "佐世保展示場", "sales": 9, "mobile": false}, {"pref": "長崎県", "name": "佐世保東展示場", "sales": 7, "mobile": false}, {"pref": "長崎県", "name": "長崎喜々津展示場", "sales": 8, "mobile": false}, {"pref": "長崎県", "name": "長崎喜々津東展示場", "sales": 8, "mobile": false}, {"pref": "長崎県", "name": "雲仙市愛野分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "長崎県", "name": "長崎展示場", "sales": 7, "mobile": false}, {"pref": "熊本県", "name": "熊本合志展示場", "sales": 9, "mobile": false}, {"pref": "熊本県", "name": "熊本北展示場", "sales": 7, "mobile": false}, {"pref": "熊本県", "name": "熊本インター展示場", "sales": 8, "mobile": false}, {"pref": "熊本県", "name": "熊本西展示場", "sales": 9, "mobile": false}, {"pref": "熊本県", "name": "熊本はません展示場", "sales": 8, "mobile": false}, {"pref": "熊本県", "name": "荒尾展示場", "sales": 8, "mobile": false}, {"pref": "熊本県", "name": "熊本八代展示場", "sales": 8, "mobile": false}, {"pref": "宮崎県", "name": "宮崎UMK展示場", "sales": 11, "mobile": false}, {"pref": "宮崎県", "name": "都城体験館", "sales": null, "mobile": false}, {"pref": "宮崎県", "name": "都城市下長飯分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "宮崎県", "name": "延岡分譲展示場", "sales": 6, "mobile": true}, {"pref": "宮崎県", "name": "延岡古川分譲展示場(完全予約制)", "sales": 11, "mobile": true}, {"pref": "宮崎県", "name": "小松台西分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "宮崎県", "name": "下北方分譲展示場(完全予約制)", "sales": null, "mobile": true}, {"pref": "宮崎県", "name": "光陽台分譲展示場(完全予約制)", "sales": 6, "mobile": true}, {"pref": "宮崎県", "name": "薩摩川内展示場", "sales": 5, "mobile": false}, {"pref": "鹿児島県", "name": "鹿児島MBC展示場", "sales": 7, "mobile": false}, {"pref": "鹿児島県", "name": "鹿児島MBC南展示場", "sales": 6, "mobile": false}, {"pref": "鹿児島県", "name": "国分展示場", "sales": 6, "mobile": false}, {"pref": "鹿児島県", "name": "国分東展示場", "sales": 7, "mobile": false}, {"pref": "鹿児島県", "name": "国分広瀬分譲展示場(完全予約制)", "sales": 9, "mobile": true}, {"pref": "鹿児島県", "name": "薩摩川内展示場", "sales": 7, "mobile": false}, {"pref": "鹿児島県", "name": "宮崎町分譲展示場(完全予約制)", "sales": 5, "mobile": true}, {"pref": "鹿児島県", "name": "天辰町分譲展示場(完全予約制)", "sales": 3, "mobile": true}, {"pref": "鹿児島県", "name": "鹿児島あいら展示場", "sales": 4, "mobile": false}, {"pref": "鹿児島県", "name": "https://www.ichijo.co.jp/guide/detail/?exhId=620", "sales": 7, "mobile": false}, {"pref": "鹿児島県", "name": "https://www.ichijo.co.jp/guide/detail/?exhId=827", "sales": null, "mobile": false}, {"pref": "鹿児島県", "name": "https://www.ichijo.co.jp/guide/detail/?exhId=826", "sales": null, "mobile": false}, {"pref": "鹿児島県", "name": "https://www.ichijo.co.jp/guide/detail/?exhId=706", "sales": null, "mobile": false}];
+const PCOORDS={"北海道": [43.064, 141.347], "青森県": [40.824, 140.74], "岩手県": [39.703, 141.153], "宮城県": [38.269, 140.872], "秋田県": [39.718, 140.102], "山形県": [38.24, 140.363], "福島県": [37.75, 140.468], "東京都": [35.69, 139.692], "神奈川県": [35.448, 139.642], "埼玉県": [35.858, 139.649], "千葉県": [35.605, 140.123], "栃木県": [36.565, 139.883], "茨城県": [36.341, 140.447], "群馬県": [36.391, 139.06], "山梨県": [35.664, 138.568], "長野県": [36.651, 138.181], "新潟県": [37.902, 139.023], "富山県": [36.695, 137.211], "石川県": [36.594, 136.626], "福井県": [36.065, 136.222], "静岡県": [34.977, 138.383], "愛知県": [35.18, 136.907], "岐阜県": [35.391, 136.722], "三重県": [34.73, 136.509], "大阪府": [34.686, 135.52], "京都府": [35.021, 135.756], "奈良県": [34.685, 135.833], "滋賀県": [35.004, 135.869], "兵庫県": [34.691, 135.183], "和歌山県": [34.226, 135.168], "徳島県": [34.066, 134.56], "香川県": [34.34, 134.043], "愛媛県": [33.842, 132.766], "鳥取県": [35.504, 134.238], "島根県": [35.472, 133.051], "岡山県": [34.662, 133.935], "広島県": [34.397, 132.459], "山口県": [34.186, 131.471], "福岡県": [33.607, 130.418], "佐賀県": [33.249, 130.299], "大分県": [33.238, 131.612], "長崎県": [32.745, 129.874], "熊本県": [32.79, 130.742], "宮崎県": [31.911, 131.424], "鹿児島県": [31.56, 130.558]};
+const HTC=[{"name": "盛岡HTC", "pref": "岩手県", "area": "i-North", "address": "岩手県盛岡市", "lat": 39.703, "lng": 141.153, "features": ["断熱体験", "換気・空調体験(ロスガード)", "床暖房体験", "防音体験"], "note": "体験型施設・確認済み"}, {"name": "栃木HTC 下野展示場", "pref": "栃木県", "area": "i-East", "address": "栃木県下野市", "lat": 36.3, "lng": 139.8, "features": ["断熱体験", "宿泊体験", "さらぽか空調体験", "防音体験"], "note": "完全予約制・宿泊体験棟"}, {"name": "神奈川HTC A", "pref": "神奈川県", "area": "i-Mideast", "address": "神奈川県", "lat": 35.45, "lng": 139.64, "features": ["断熱体験", "換気体験", "窓断熱体験"], "note": "体験型施設・分譲展示場併設"}, {"name": "平塚市大神体験棟", "pref": "神奈川県", "area": "i-Mideast", "address": "神奈川県平塚市大神", "lat": 35.36, "lng": 139.37, "features": ["温熱環境体験", "断熱体験", "宿泊体験"], "note": "体験棟"}, {"name": "大磯町石神台体験棟", "pref": "神奈川県", "area": "i-Mideast", "address": "神奈川県大磯町", "lat": 35.31, "lng": 139.32, "features": ["断熱体験", "宿泊体験"], "note": "体験棟"}, {"name": "ICHIJO-Lab Annex", "pref": "大阪府", "area": "i-west", "address": "大阪府大阪市住之江区 ATCビルITM棟2階", "lat": 34.628, "lng": 135.423, "features": ["断熱体験", "換気体験(ロスガード)", "さらぽか空調体験", "防音体験", "窓断熱体験"], "note": "南港ATC内・体験・展示施設"}, {"name": "南港ATC展示場", "pref": "大阪府", "area": "i-west", "address": "大阪府大阪市住之江区 南港ATC", "lat": 34.63, "lng": 135.424, "features": ["展示・体験"], "note": "体験・展示"}];
 
-// HTC有無フラグ（都道府県別）
-const htcPrefSet = new Set(htcData.map(h=>h.pref));
+const areaTag={"i-North":"tn","i-Mideast":"te","i-East":"te","i-Midwest":"tm","i-west":"tw2","GC":"tg"};
+const areaColors={"i-North":"#3b82f6","i-Mideast":"#10b981","i-East":"#f59e0b","i-Midwest":"#8b5cf6","i-west":"#ef4444","GC":"#9ca3af"};
+const areaLabel={"i-North":"i-North 東北","i-Mideast":"i-Mideast 関東甲信越","i-East":"i-East 関東","i-Midwest":"i-Midwest 東海","i-west":"i-west 近畿等","GC":"GC"};
+const htcPrefs=new Set(HTC.map(h=>h.pref));
 
-const areaTagMap = {
-  "i-North":"tag-north","i-Mideast":"tag-east","i-East":"tag-east",
-  "i-Midwest":"tag-mid","i-west":"tag-west","GC":"tag-gc"
-};
-const areaLabel = {
-  "i-North":"i-North 東北","i-Mideast":"i-Mideast 関東甲信越",
-  "i-East":"i-East 関東","i-Midwest":"i-Midwest 東海",
-  "i-west":"i-west 近畿・中四国・九州","GC":"GC グループ会社"
-};
-
-let sortCol = 2, sortDir = -1;
-
+function phBadge(v){
+  if(v===null||v===undefined)return`<span class="ph-n">-</span>`;
+  if(v>=7)return`<span class="ph-h">${v.toFixed(1)}</span>`;
+  if(v>=5)return`<span class="ph-m">${v.toFixed(1)}</span>`;
+  return`<span class="ph-l">${v.toFixed(1)}</span>`;
+}
 function rankBadge(r){
-  if(r===1) return `<span class="rank-badge rank-1">1位</span>`;
-  if(r===2) return `<span class="rank-badge rank-2">2位</span>`;
-  if(r===3) return `<span class="rank-badge rank-3">3位</span>`;
-  return `<span class="rank-badge rank-other">${r}位</span>`;
+  if(r===1)return`<span class="r1">1</span>`;if(r===2)return`<span class="r2">2</span>`;
+  if(r===3)return`<span class="r3">3</span>`;return`<span class="rn">${r}</span>`;
 }
 
-function phBadge(ph){
-  if(ph===null) return `<span class="ph-badge ph-na">-</span>`;
-  if(ph>=7) return `<span class="ph-badge ph-high">${ph.toFixed(1)}</span>`;
-  if(ph>=5) return `<span class="ph-badge ph-mid">${ph.toFixed(1)}</span>`;
-  return `<span class="ph-badge ph-low">${ph.toFixed(1)}</span>`;
+// ===== TAB SWITCH =====
+function showTab(id,btn){
+  document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(e=>e.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='t2')initTab2();
+  if(id==='t3')initMap();
+  if(id==='t4'){buildHTCCards();buildHTCTable();buildHTCSum();}
+  if(id==='t5')initCharts();
 }
 
-function buildMainTable(data){
-  const maxTons = Math.max(...data.map(d=>d[2]));
-  const tbody = document.getElementById("mainTbody");
-  tbody.innerHTML = data.map(d=>{
-    const [pref,area,tons,share,rank,all,sogo,tandu,shop,move,sales,ph,t2014,growth] = d;
-    const tagClass = areaTagMap[area]||"tag-gc";
-    const barW = Math.round((tons/maxTons)*100);
-    const phV = ph!==null?ph:null;
-    const htcMark = htcPrefSet.has(pref)?`<span class="htc-badge">HTC</span>`:``;
-    return `<tr data-area="${area}" data-rank="${rank}" data-pref="${pref}">
-      <td><strong>${pref}</strong> ${htcMark}</td>
-      <td><span class="tag ${tagClass}">${area}</span></td>
-      <td>
-        <div style="display:flex;align-items:center;gap:6px;">
-          <span style="font-weight:700;min-width:38px">${tons.toLocaleString()}</span>
-          <div class="bar" style="width:70px"><div class="bar-fill" style="width:${barW}%"></div></div>
-        </div>
-      </td>
-      <td>${share.toFixed(2)}%</td>
-      <td>${rankBadge(rank)}</td>
-      <td style="font-weight:700;color:var(--primary)">${all}</td>
-      <td>${sogo||'-'}</td>
-      <td>${tandu||'-'}</td>
-      <td>${shop||'-'}</td>
-      <td>${move||'-'}</td>
-      <td>${sales!==null?sales:'-'}</td>
-      <td>${phBadge(phV)}</td>
-      <td>${t2014!==null?t2014.toLocaleString():'-'}</td>
-      <td>${growth!==null?growth.toFixed(2)+'x':'-'}</td>
-    </tr>`;
-  }).join("");
-  document.getElementById("rowCount").textContent = `${data.length}件表示`;
-}
-
-function filterTable(){
-  const q = document.getElementById("searchInput").value.trim().toLowerCase();
-  const areaF = document.getElementById("areaFilter").value;
-  const rankF = document.getElementById("rankFilter").value;
-  let filtered = prefData.filter(d=>{
-    const [pref,area,tons,share,rank] = d;
-    if(q && !pref.toLowerCase().includes(q)) return false;
-    if(areaF && area!==areaF) return false;
-    if(rankF==="1" && rank!==1) return false;
-    if(rankF==="2" && rank!==2) return false;
-    if(rankF==="3" && rank<3) return false;
+// ===== TAB1: 都道府県 =====
+let pSortCol=2,pSortDir=-1;
+function psort(c){if(pSortCol===c)pSortDir*=-1;else{pSortCol=c;pSortDir=-1;}drawPrefTable();}
+function drawPrefTable(){
+  const q=document.getElementById('s1').value.trim().toLowerCase();
+  const af=document.getElementById('a1').value;
+  const rf=document.getElementById('r1').value;
+  let data=P.filter(d=>{
+    if(q&&!d[0].toLowerCase().includes(q))return false;
+    if(af&&d[1]!==af)return false;
+    if(rf==='1'&&d[4]!==1)return false;if(rf==='2'&&d[4]!==2)return false;if(rf==='3'&&d[4]<3)return false;
     return true;
   });
-  filtered.sort((a,b)=>{
-    const va = a[sortCol], vb = b[sortCol];
-    if(va===null&&vb===null) return 0;
-    if(va===null) return 1;
-    if(vb===null) return -1;
-    return sortDir*(va<vb?-1:va>vb?1:0);
+  data.sort((a,b)=>{
+    const va=a[pSortCol],vb=b[pSortCol];
+    if(va===null&&vb===null)return 0;if(va===null)return 1;if(vb===null)return -1;
+    return pSortDir*(va<vb?-1:va>vb?1:0);
   });
-  buildMainTable(filtered);
-}
-
-function sortTable(col){
-  if(sortCol===col) sortDir*=-1; else { sortCol=col; sortDir=-1; }
-  filterTable();
-}
-
-// HTC Table
-function buildHtcTable(){
-  const tbody = document.getElementById("htcTbody");
-  tbody.innerHTML = htcData.map(h=>`<tr>
-    <td>${h.name}</td>
-    <td>${h.pref}</td>
-    <td><span class="tag ${areaTagMap[h.area]||'tag-gc'}">${h.area}</span></td>
-    <td style="color:var(--text-muted)">${h.note}</td>
-  </tr>`).join("");
-}
-
-function buildHtcSummary(){
-  const tbody = document.getElementById("htcSummaryTbody");
-  tbody.innerHTML = prefData.map(d=>{
-    const [pref,area,tons,share,rank,all,sogo,tandu,shop,move,sales,ph] = d;
-    const hasHtc = htcPrefSet.has(pref);
-    const phV = ph!==null?ph:null;
-    return `<tr>
-      <td><strong>${pref}</strong></td>
-      <td>${tons.toLocaleString()}</td>
-      <td>${all}</td>
-      <td>${phBadge(phV)}</td>
-      <td>${hasHtc?'<span class="htc-badge">HTC有</span>':'<span style="color:var(--text-muted);font-size:10px">-</span>'}</td>
+  const maxT=Math.max(...data.map(d=>d[2]));
+  document.getElementById('ptbody').innerHTML=data.map(d=>{
+    const tc=areaTag[d[1]]||'tg';
+    const bw=Math.round(d[2]/maxT*80);
+    const htc=htcPrefs.has(d[0])?`<span class="htcb">HTC</span>`:'';
+    return`<tr>
+      <td><b>${d[0]}</b> ${htc}</td>
+      <td><span class="tag ${tc}">${d[1]}</span></td>
+      <td class="num"><span style="min-width:38px;display:inline-block">${d[2].toLocaleString()}</span><span class="bar" style="width:${bw}px"></span></td>
+      <td class="num">${d[3].toFixed(2)}%</td><td class="center">${rankBadge(d[4])}</td>
+      <td class="num"><b>${d[5]}</b></td><td class="num">${d[6]||'-'}</td><td class="num">${d[7]||'-'}</td>
+      <td class="num">${d[8]||'-'}</td><td class="num">${d[9]||'-'}</td>
+      <td class="num">${d[10]!==null?d[10]:'-'}</td>
+      <td class="center">${phBadge(d[11])}</td>
+      <td class="num" style="font-weight:700;color:var(--orange)">${d[14]!==null?d[14].toFixed(1):'-'}</td>
+      <td class="num" style="font-weight:700;color:var(--green)">${d[15]!==null?d[15].toFixed(2):'-'}</td>
+      <td class="num">${d[12]!==null?d[12].toLocaleString():'-'}</td>
+      <td class="num">${d[13]!==null?d[13].toFixed(2)+'x':'-'}</td>
+      <td class="center">${htcPrefs.has(d[0])?'✓':''}</td>
     </tr>`;
-  }).join("");
+  }).join('');
+  document.getElementById('cnt1').textContent=`${data.length}件`;
 }
 
-// ===== CHARTS =====
-function buildCharts(){
-  // Top 15 棟数
-  const sorted = [...prefData].sort((a,b)=>b[2]-a[2]).slice(0,15);
-  new Chart(document.getElementById("chartTop15"),{
-    type:"bar",
-    data:{
-      labels:sorted.map(d=>d[0]),
-      datasets:[{
-        label:"着工棟数",
-        data:sorted.map(d=>d[2]),
-        backgroundColor:sorted.map(d=>d[1]==="GC"?"#9ca3af":"#1a5fa8"),
-        borderRadius:4
-      }]
-    },
-    options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}},maintainAspectRatio:true,responsive:true}
+// ===== TAB2: 拠点別 =====
+let tab2Init=false;
+function initTab2(){
+  if(tab2Init)return;tab2Init=true;
+  const prefs=[...new Set(LOC.map(l=>l.pref))];
+  const sel=document.getElementById('a2');
+  prefs.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;sel.appendChild(o);});
+  drawLocTable();buildPerLocCharts();
+}
+function drawLocTable(){
+  const q=document.getElementById('s2').value.trim().toLowerCase();
+  const pf=document.getElementById('a2').value;
+  const mf=document.getElementById('m2').value;
+  const sf=document.getElementById('s2sort').value;
+  let data=LOC.filter(l=>{
+    if(q&&!l.name.toLowerCase().includes(q)&&!l.pref.toLowerCase().includes(q))return false;
+    if(pf&&l.pref!==pf)return false;
+    if(mf==='no'&&l.mobile)return false;if(mf==='yes'&&!l.mobile)return false;
+    return true;
   });
+  if(sf==='sales_desc')data.sort((a,b)=>(b.sales||0)-(a.sales||0));
+  else if(sf==='sales_asc')data.sort((a,b)=>(a.sales||999)-(b.sales||999));
+  else if(sf==='name_asc')data.sort((a,b)=>a.name.localeCompare(b.name,'ja'));
+  else data.sort((a,b)=>a.pref.localeCompare(b.pref,'ja'));
+  document.getElementById('cnt2').textContent=`${data.length}件`;
+  const ranked=[...LOC].filter(l=>l.sales!==null).sort((a,b)=>b.sales-a.sales);
+  document.getElementById('rtbody').innerHTML=ranked.slice(0,50).map((l,i)=>`<tr>
+    <td class="center">${i<3?rankBadge(i+1):`<span class="rn">${i+1}</span>`}</td>
+    <td><b>${l.name}</b>${l.mobile?' <span class="mob">移動</span>':''}</td>
+    <td>${l.pref}</td>
+    <td class="num" style="font-weight:700;font-size:14px;color:var(--primary)">${l.sales}</td>
+    <td>${l.mobile?'移動式':'常設'}</td>
+  </tr>`).join('');
+  document.getElementById('ltbody').innerHTML=data.map(l=>`<tr>
+    <td>${l.pref}</td><td>${l.name}</td>
+    <td class="num">${l.sales!==null?`<b>${l.sales}</b>`:'<span style="color:var(--muted)">-</span>'}</td>
+    <td class="center">${l.mobile?'<span class="mob">移動</span>':'常設'}</td>
+  </tr>`).join('');
+}
+let perLocInit=false;
+function buildPerLocCharts(){
+  if(perLocInit)return;perLocInit=true;
+  const d1=[...P].filter(p=>p[15]!==null).sort((a,b)=>b[15]-a[15]).slice(0,20);
+  new Chart(document.getElementById('chartPerLoc'),{type:'bar',data:{
+    labels:d1.map(d=>d[0]),datasets:[{label:'1拠点当たり営業人数',data:d1.map(d=>d[15]),backgroundColor:'#2e7d52',borderRadius:4}]
+  },options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}},maintainAspectRatio:true}});
+  const d2=[...P].filter(p=>p[14]!==null).sort((a,b)=>b[14]-a[14]).slice(0,20);
+  new Chart(document.getElementById('chartPerLocTons'),{type:'bar',data:{
+    labels:d2.map(d=>d[0]),datasets:[{label:'1拠点当たり棟数',data:d2.map(d=>d[14]),backgroundColor:'#c06c00',borderRadius:4}]
+  },options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}},maintainAspectRatio:true}});
+}
 
-  // PH Chart
-  const phSorted = [...prefData].filter(d=>d[11]!==null&&d[11]<15).sort((a,b)=>b[11]-a[11]).slice(0,15);
-  new Chart(document.getElementById("chartPH"),{
-    type:"bar",
-    data:{
-      labels:phSorted.map(d=>d[0]),
-      datasets:[{
-        label:"PH（棟/人）",
-        data:phSorted.map(d=>d[11].toFixed(2)),
-        backgroundColor:phSorted.map(d=>d[11]>=5?"#d94e30":d[11]>=4?"#f59e0b":"#2e7d52"),
-        borderRadius:4
-      }]
-    },
-    options:{
-      plugins:{legend:{display:false}},
-      scales:{y:{beginAtZero:true,max:12}},
-      maintainAspectRatio:true,responsive:true
-    }
-  });
+// ===== TAB3: 地図 =====
+let mapObj=null,mapMode='all',prefMarkers=[],htcMarkers=[];
+function initMap(){
+  if(mapObj)return;
+  mapObj=L.map('mapContainer').setView([36.5,137.0],5);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'© OpenStreetMap contributors',maxZoom:18
+  }).addTo(mapObj);
+  updateMapMarkers();
+}
+function setMapMode(mode,btn){
+  mapMode=mode;
+  document.querySelectorAll('.map-ctrl button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  updateMapMarkers();
+}
+function updateMapMarkers(){
+  if(!mapObj)return;
+  prefMarkers.forEach(m=>mapObj.removeLayer(m));htcMarkers.forEach(m=>mapObj.removeLayer(m));
+  prefMarkers=[];htcMarkers=[];
+  const af=document.getElementById('mapAreaFilter').value;
+  const maxT=Math.max(...P.map(d=>d[2]));
+  if(mapMode==='all'||mapMode==='both'){
+    P.filter(d=>!af||d[1]===af).forEach(d=>{
+      const coords=PCOORDS[d[0]];if(!coords)return;
+      const r=8+Math.sqrt(d[2]/maxT)*30;
+      const color=areaColors[d[1]]||'#9ca3af';
+      const isHTC=htcPrefs.has(d[0]);
+      const m=L.circleMarker(coords,{
+        radius:r,fillColor:color,color:isHTC?'#ff6b35':'#fff',
+        weight:isHTC?3:1.5,opacity:1,fillOpacity:0.75
+      }).addTo(mapObj);
+      const perLoc=d[14]!==null?d[14].toFixed(1):'-';
+      const perSales=d[15]!==null?d[15].toFixed(2):'-';
+      m.bindPopup(`<b style="font-size:14px">${d[0]}</b><br>
+        <span style="color:#666">${areaLabel[d[1]]||d[1]}</span><br><hr style="margin:6px 0">
+        🏠 着工棟数: <b>${d[2].toLocaleString()}棟</b> (シェア${d[3].toFixed(2)}%・${d[4]}位)<br>
+        🏢 展示場数: <b>${d[5]}拠点</b> (総合${d[6]}・単独${d[7]||0}・移動${d[9]||0})<br>
+        👥 営業人数: <b>${d[10]!==null?d[10]+'名':'-'}</b><br>
+        📊 PH（棟/人）: <b>${d[11]!==null?d[11].toFixed(1):'-'}</b><br>
+        📍 1拠点当たり棟数: <b>${perLoc}棟</b><br>
+        👤 1拠点当たり営業人数: <b>${perSales}名</b><br>
+        ${isHTC?'<span style="background:#1a5fa8;color:#fff;padding:2px 8px;border-radius:8px;font-size:11px">HTC体験館あり</span>':''}`);
+      prefMarkers.push(m);
+    });
+  }
+  if(mapMode==='htc'||mapMode==='both'){
+    HTC.forEach(h=>{
+      const icon=L.divIcon({
+        html:`<div style="background:#ff6b35;width:20px;height:20px;border-radius:50%;border:3px solid #1a5fa8;display:flex;align-items:center;justify-content:center;font-size:10px;color:white;font-weight:700">H</div>`,
+        iconSize:[20,20],iconAnchor:[10,10],className:''
+      });
+      const m=L.marker([h.lat,h.lng],{icon}).addTo(mapObj);
+      m.bindPopup(`<b style="color:#1a5fa8;font-size:14px">🏠 ${h.name}</b><br>
+        <span style="color:#666">${h.pref} / ${h.area}</span><br><hr style="margin:6px 0">
+        📍 ${h.address}<br>
+        <b>体験内容:</b><br>
+        ${h.features.map(f=>`・${f}`).join('<br>')}
+        <br><small style="color:#999">${h.note}</small>`);
+      htcMarkers.push(m);
+    });
+  }
+}
 
-  // Area Pie
-  const areaMap = {};
-  prefData.forEach(d=>{
-    const a=d[1]; areaMap[a]=(areaMap[a]||0)+d[2];
-  });
-  const areaColors = {"i-North":"#3b82f6","i-Mideast":"#10b981","i-East":"#f59e0b","i-Midwest":"#8b5cf6","i-west":"#ef4444","GC":"#9ca3af"};
-  new Chart(document.getElementById("chartArea"),{
-    type:"doughnut",
-    data:{
-      labels:Object.keys(areaMap).map(k=>areaLabel[k]||k),
-      datasets:[{
-        data:Object.values(areaMap),
-        backgroundColor:Object.keys(areaMap).map(k=>areaColors[k]||"#ccc"),
-        borderWidth:2,borderColor:"#fff"
-      }]
-    },
-    options:{plugins:{legend:{position:"bottom",labels:{font:{size:10}}}},maintainAspectRatio:true,responsive:true}
-  });
+// ===== TAB4: HTC =====
+let htcInit=false;
+function buildHTCCards(){
+  if(document.getElementById('htcCards').innerHTML!=='')return;
+  document.getElementById('htcCards').innerHTML=HTC.map(h=>`
+    <div class="htc-card">
+      <h3>🏠 ${h.name}</h3>
+      <div class="pref-tag">📍 ${h.pref} ／ <span class="tag ${areaTag[h.area]||'tg'}">${h.area}</span></div>
+      <div style="font-size:11px;color:var(--muted)">${h.address}</div>
+      <div class="feat">${h.features.map(f=>`<span class="feat-tag">${f}</span>`).join('')}</div>
+      <div class="addr">${h.note}</div>
+    </div>`).join('');
+}
+function buildHTCTable(){
+  if(document.getElementById('htcTbody').innerHTML!=='')return;
+  document.getElementById('htcTbody').innerHTML=HTC.map(h=>`<tr>
+    <td><b>${h.name}</b></td><td>${h.pref}</td>
+    <td><span class="tag ${areaTag[h.area]||'tg'}">${h.area}</span></td>
+    <td>${h.features.join('・')}</td>
+    <td style="color:var(--muted)">${h.note}</td>
+  </tr>`).join('');
+}
+function buildHTCSum(){
+  if(document.getElementById('htcSumTbody').innerHTML!=='')return;
+  document.getElementById('htcSumTbody').innerHTML=P.map(d=>`<tr>
+    <td><b>${d[0]}</b></td>
+    <td class="num">${d[2].toLocaleString()}</td>
+    <td class="num">${d[5]}</td>
+    <td class="center">${phBadge(d[11])}</td>
+    <td class="num">${d[14]!==null?d[14].toFixed(1):'-'}</td>
+    <td class="center">${htcPrefs.has(d[0])?'<span class="htcb">HTC有</span>':'<span style="color:var(--muted)">-</span>'}</td>
+  </tr>`).join('');
+}
 
-  // Share Chart
-  const shareData = [...prefData].filter(d=>d[3]>0).sort((a,b)=>b[3]-a[3]).slice(0,20);
-  new Chart(document.getElementById("chartShare"),{
-    type:"bar",
-    data:{
-      labels:shareData.map(d=>d[0]),
-      datasets:[{
-        label:"シェア率（%）",
-        data:shareData.map(d=>d[3]),
-        backgroundColor:"#8b5cf6",
-        borderRadius:4
-      }]
-    },
-    options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}},maintainAspectRatio:true,responsive:true}
-  });
-
-  // Growth Chart
-  const growthData = [...prefData].filter(d=>d[13]!==null).sort((a,b)=>b[13]-a[13]).slice(0,10);
-  new Chart(document.getElementById("chartGrowth"),{
-    type:"bar",
-    data:{
-      labels:growthData.map(d=>d[0]),
-      datasets:[{
-        label:"成長率（倍）",
-        data:growthData.map(d=>d[13].toFixed(2)),
-        backgroundColor:"#2e7d52",
-        borderRadius:4
-      }]
-    },
-    options:{
-      plugins:{legend:{display:false}},
-      scales:{y:{beginAtZero:true,title:{display:true,text:"倍（2014→2024）"}}},
-      maintainAspectRatio:true,responsive:true
-    }
-  });
+// ===== TAB5: グラフ =====
+let chartsInit=false;
+function initCharts(){
+  if(chartsInit)return;chartsInit=true;
+  const t15=[...P].sort((a,b)=>b[2]-a[2]).slice(0,15);
+  new Chart(document.getElementById('cTop15'),{type:'bar',data:{
+    labels:t15.map(d=>d[0]),datasets:[{label:'着工棟数',data:t15.map(d=>d[2]),backgroundColor:t15.map(d=>areaColors[d[1]]||'#9ca3af'),borderRadius:4}]
+  },options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}},maintainAspectRatio:true}});
+  const ph=[...P].filter(d=>d[11]!==null&&d[11]<15).sort((a,b)=>b[11]-a[11]).slice(0,15);
+  new Chart(document.getElementById('cPH'),{type:'bar',data:{
+    labels:ph.map(d=>d[0]),datasets:[{label:'PH',data:ph.map(d=>d[11]),backgroundColor:ph.map(d=>d[11]>=5?'#d94e30':d[11]>=4?'#f59e0b':'#2e7d52'),borderRadius:4}]
+  },options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}},maintainAspectRatio:true}});
+  const am={};P.forEach(d=>{am[d[1]]=(am[d[1]]||0)+d[2];});
+  new Chart(document.getElementById('cArea'),{type:'doughnut',data:{
+    labels:Object.keys(am).map(k=>areaLabel[k]||k),
+    datasets:[{data:Object.values(am),backgroundColor:Object.keys(am).map(k=>areaColors[k]||'#ccc'),borderWidth:2,borderColor:'#fff'}]
+  },options:{plugins:{legend:{position:'bottom',labels:{font:{size:10}}}},maintainAspectRatio:true}});
+  const sh=[...P].sort((a,b)=>b[3]-a[3]).slice(0,20);
+  new Chart(document.getElementById('cShare'),{type:'bar',data:{
+    labels:sh.map(d=>d[0]),datasets:[{label:'シェア率%',data:sh.map(d=>d[3]),backgroundColor:'#8b5cf6',borderRadius:4}]
+  },options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}},maintainAspectRatio:true}});
+  const gr=[...P].filter(d=>d[13]!==null).sort((a,b)=>b[13]-a[13]).slice(0,10);
+  new Chart(document.getElementById('cGrowth'),{type:'bar',data:{
+    labels:gr.map(d=>d[0]),datasets:[{label:'成長率',data:gr.map(d=>d[13]),backgroundColor:'#2e7d52',borderRadius:4}]
+  },options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}},maintainAspectRatio:true}});
+  const sv=LOC.filter(l=>l.sales!==null).map(l=>l.sales);
+  const bins=[1,2,3,4,5,6,7,8,9,10,11,12,13,14];
+  new Chart(document.getElementById('cDist'),{type:'bar',data:{
+    labels:bins.map(b=>b+'人'),
+    datasets:[{label:'拠点数',data:bins.map(b=>sv.filter(v=>v===b).length),backgroundColor:'#1a5fa8',borderRadius:4}]
+  },options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}},maintainAspectRatio:true}});
 }
 
 // Init
-filterTable();
-buildHtcTable();
-buildHtcSummary();
-buildCharts();
+drawPrefTable();
 </script>
 </body>
 </html>
