@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>アイ工務店 都道府県別ダッシュボード</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root{
+    --primary:#E05A00;--primary-light:#fff1e8;--accent:#1a5fa8;
+    --bg:#f5f7fa;--card-bg:#fff;--border:#dde3ec;--text:#1a2332;
+    --muted:#6b7a99;--green:#2e7d52;--orange:#c06c00;--purple:#7c3aed;
+    --shadow:0 2px 8px rgba(0,0,0,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI','Hiragino Sans','Yu Gothic',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
+  header{background:var(--primary);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:12px}
+  header h1{font-size:17px;font-weight:700}
+  header p{font-size:11px;opacity:.8;margin-top:2px}
+  .hbadge{background:rgba(255,255,255,.2);padding:4px 12px;border-radius:20px;font-size:11px;margin-left:auto}
+  .container{max-width:1700px;margin:0 auto;padding:14px}
+
+  .kpi-row{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:14px}
+  .kpi{background:var(--card-bg);border-radius:8px;padding:12px 14px;box-shadow:var(--shadow);border-left:4px solid var(--primary)}
+  .kpi .lb{font-size:10px;color:var(--muted);letter-spacing:.4px}
+  .kpi .vl{font-size:20px;font-weight:700;color:var(--primary);margin-top:3px}
+  .kpi .sb{font-size:10px;color:var(--muted);margin-top:2px}
+  .kpi.a{border-left-color:var(--accent)}.kpi.a .vl{color:var(--accent)}
+  .kpi.g{border-left-color:var(--green)}.kpi.g .vl{color:var(--green)}
+  .kpi.o{border-left-color:var(--orange)}.kpi.o .vl{color:var(--orange)}
+  .kpi.p{border-left-color:var(--purple)}.kpi.p .vl{color:var(--purple)}
+
+  .tabs{display:flex;gap:3px;margin-bottom:0;border-bottom:2px solid var(--primary)}
+  .tab-btn{padding:8px 18px;border:1px solid var(--border);border-bottom:none;border-radius:6px 6px 0 0;
+    background:#f0f2f5;color:var(--muted);cursor:pointer;font-size:12px;font-weight:600}
+  .tab-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+  .tab-content{display:none;padding-top:14px}
+  .tab-content.active{display:block}
+
+  .card{background:var(--card-bg);border-radius:8px;padding:14px;box-shadow:var(--shadow)}
+  .ctitle{font-size:13px;font-weight:700;color:var(--primary);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+  .ctitle::before{content:'';display:inline-block;width:3px;height:14px;background:var(--primary);border-radius:2px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
+
+  .tw{overflow-x:auto;overflow-y:auto;border-radius:6px;border:1px solid var(--border)}
+  .mh350{max-height:350px}.mh400{max-height:400px}.mh500{max-height:500px}.mh600{max-height:600px}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th{background:var(--primary);color:#fff;padding:7px 9px;text-align:left;font-weight:600;font-size:11px;cursor:pointer;white-space:nowrap;position:sticky;top:0;z-index:1;user-select:none}
+  th:hover{background:#c04e00}
+  td{padding:6px 9px;border-bottom:1px solid var(--border)}
+  tr:hover td{background:var(--primary-light)}
+  tr:last-child td{border-bottom:none}
+  td.num{text-align:right;font-variant-numeric:tabular-nums}
+  td.center{text-align:center}
+
+  .tag{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;white-space:nowrap}
+  .tn{background:#e0f2fe;color:#0369a1}
+  .te{background:#dbeafe;color:#1e40af}
+  .tkg{background:#dcfce7;color:#166534}
+  .tsh{background:#fef3c7;color:#92400e}
+  .tni{background:#ede9fe;color:#6d28d9}
+  .tth{background:#cffafe;color:#0e7490}
+  .tk{background:#fee2e2;color:#991b1b}
+  .tch{background:#e0e7ff;color:#3730a3}
+  .tsk{background:#fce7f3;color:#9d174d}
+  .tkyu{background:#ffedd5;color:#9a3412}
+
+  .r1{background:#ffd700;color:#5a3e00;display:inline-block;width:24px;height:24px;border-radius:50%;font-size:10px;font-weight:700;text-align:center;line-height:24px}
+  .r2{background:#c0c0c0;color:#333;display:inline-block;width:24px;height:24px;border-radius:50%;font-size:10px;font-weight:700;text-align:center;line-height:24px}
+  .r3{background:#cd7f32;color:#fff;display:inline-block;width:24px;height:24px;border-radius:50%;font-size:10px;font-weight:700;text-align:center;line-height:24px}
+  .rn{background:#e5e7eb;color:#6b7280;display:inline-block;width:24px;height:24px;border-radius:50%;font-size:10px;font-weight:700;text-align:center;line-height:24px}
+  .ph-h{background:#fee2e2;color:#991b1b;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:700}
+  .ph-m{background:#fef3c7;color:#78350f;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:700}
+  .ph-l{background:#dcfce7;color:#166534;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:700}
+  .ph-n{background:#f3f4f6;color:#6b7280;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:700}
+
+  .frow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+  .frow input,.frow select{padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:12px;outline:none}
+  .frow input:focus,.frow select:focus{border-color:var(--primary)}
+  .fcnt{margin-left:auto;color:var(--muted);font-size:11px}
+  canvas{max-height:260px}
+  .note{background:#fff8e1;border-left:3px solid #f59e0b;padding:9px 13px;border-radius:4px;font-size:11px;color:#78350f;margin-bottom:12px}
+  .bar{display:inline-block;height:8px;background:var(--primary);border-radius:4px;vertical-align:middle}
+  #mapContainer{height:540px;border-radius:8px;overflow:hidden;box-shadow:var(--shadow)}
+  .map-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;align-items:center;margin-top:8px}
+  .legend-dot{width:12px;height:12px;border-radius:50%;display:inline-block;margin-right:4px;vertical-align:middle}
+  @media(max-width:1100px){.kpi-row{grid-template-columns:repeat(3,1fr)}.grid3{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>㈱アイ工務店 都道府県別ダッシュボード</h1>
+    <p>24年度データ（棟数・展示場・営業マン）　※出典：JSK住宅産業研究所 / 2025年8月展示場一覧</p>
+  </div>
+  <span class="hbadge">基準: 24年度（2024/7〜2025/6）</span>
+</header>
+
+<div class="container">
+<div class="kpi-row">
+  <div class="kpi"><div class="lb">全国 販売棟数（24年度）</div><div class="vl">5,549</div><div class="sb">前年比 +24.5%（JSK実績）</div></div>
+  <div class="kpi a"><div class="lb">展示場数（25年8月）</div><div class="vl">275</div><div class="sb">総合229 / 単独46</div></div>
+  <div class="kpi g"><div class="lb">支社・支店数</div><div class="vl">77</div><div class="sb">全国77拠点（25年8月）</div></div>
+  <div class="kpi"><div class="lb">在籍営業マン（25年3月推計）</div><div class="vl">1,254</div><div class="sb">全員直販（代販なし）</div></div>
+  <div class="kpi o"><div class="lb">全国平均 PH</div><div class="vl">4.4</div><div class="sb">棟数÷営業マン数</div></div>
+  <div class="kpi g"><div class="lb">1展示場当たり棟数</div><div class="vl">19.9</div><div class="sb">5,549棟÷275展示場</div></div>
+  <div class="kpi p"><div class="lb">総売上高（24年度）</div><div class="vl">2,000億</div><div class="sb">前年比 +24.5%</div></div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('t1',this)">📊 都道府県別サマリー</button>
+  <button class="tab-btn" onclick="showTab('t2',this)">🏢 展示場一覧</button>
+  <button class="tab-btn" onclick="showTab('t3',this)">🗾 地図</button>
+  <button class="tab-btn" onclick="showTab('t4',this)">📈 グラフ分析</button>
+</div>
+
+<!-- TAB1 -->
+<div id="t1" class="tab-content active">
+  <div class="frow" style="margin-top:12px">
+    <input type="text" id="s1" placeholder="都道府県名で検索..." oninput="drawPrefTable()">
+    <select id="a1" onchange="drawPrefTable()">
+      <option value="">全エリア</option>
+      <option value="北海道">北海道</option>
+      <option value="東北">東北</option>
+      <option value="北関東">北関東</option>
+      <option value="首都圏">首都圏</option>
+      <option value="北信越">北信越</option>
+      <option value="東海">東海</option>
+      <option value="近畿">近畿</option>
+      <option value="中国">中国</option>
+      <option value="四国">四国</option>
+      <option value="九州・沖縄">九州・沖縄</option>
+    </select>
+    <span id="cnt1" class="fcnt"></span>
+  </div>
+  <div class="tw mh600">
+    <table><thead><tr>
+      <th onclick="psort(0)">都道府県 ↕</th>
+      <th onclick="psort(1)">エリア ↕</th>
+      <th onclick="psort(2)">販売棟数 ↕</th>
+      <th onclick="psort(3)">市場シェア% ↕</th>
+      <th onclick="psort(4)">展示場総数 ↕</th>
+      <th>総合</th><th>単独</th>
+      <th onclick="psort(7)">支店数 ↕</th>
+      <th onclick="psort(8)">営業マン数 ↕</th>
+      <th onclick="psort(9)">PH（棟/人） ↕</th>
+      <th onclick="psort(10)">1展示場当たり棟数 ↕</th>
+    </tr></thead><tbody id="ptbody"></tbody></table>
+  </div>
+</div>
+
+<!-- TAB2 -->
+<div id="t2" class="tab-content">
+  <div class="note">⚠ 展示場一覧は2025年8月時点。24年度実績との差異あり。24年度展示場計：総合229 / 単独46 / 合計275。</div>
+  <div class="frow" style="margin-top:12px">
+    <input type="text" id="s2" placeholder="展示場名・都道府県で検索..." oninput="drawLocTable()">
+    <select id="a2" onchange="drawLocTable()"><option value="">全都道府県</option></select>
+    <select id="s2sort" onchange="drawLocTable()">
+      <option value="pref_asc">都道府県 昇順</option>
+      <option value="name_asc">展示場名 昇順</option>
+    </select>
+    <span id="cnt2" class="fcnt"></span>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="ctitle">都道府県別 展示場数ランキング</div>
+      <div class="tw mh500"><table><thead>
+        <tr><th>順位</th><th>都道府県</th><th>展示場数</th><th>棟数</th><th>1展示場当たり棟数</th></tr>
+      </thead><tbody id="rtbody"></tbody></table></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">展示場一覧（検索・絞り込み可）</div>
+      <div class="tw mh500"><table><thead>
+        <tr><th>都道府県</th><th>展示場名</th><th>エリア</th></tr>
+      </thead><tbody id="ltbody"></tbody></table></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB3 -->
+<div id="t3" class="tab-content">
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap">
+    <select id="mapAreaFilter" onchange="updateMapMarkers()">
+      <option value="">全エリア</option>
+      <option value="北海道">北海道</option>
+      <option value="東北">東北</option>
+      <option value="北関東">北関東</option>
+      <option value="首都圏">首都圏</option>
+      <option value="北信越">北信越</option>
+      <option value="東海">東海</option>
+      <option value="近畿">近畿</option>
+      <option value="中国">中国</option>
+      <option value="四国">四国</option>
+      <option value="九州・沖縄">九州・沖縄</option>
+    </select>
+  </div>
+  <div id="mapContainer"></div>
+  <div class="map-legend">
+    <span><span class="legend-dot" style="background:#0ea5e9"></span>北海道</span>
+    <span><span class="legend-dot" style="background:#3b82f6"></span>東北</span>
+    <span><span class="legend-dot" style="background:#10b981"></span>北関東</span>
+    <span><span class="legend-dot" style="background:#f59e0b"></span>首都圏</span>
+    <span><span class="legend-dot" style="background:#8b5cf6"></span>北信越</span>
+    <span><span class="legend-dot" style="background:#06b6d4"></span>東海</span>
+    <span><span class="legend-dot" style="background:#ef4444"></span>近畿</span>
+    <span><span class="legend-dot" style="background:#6366f1"></span>中国</span>
+    <span><span class="legend-dot" style="background:#ec4899"></span>四国</span>
+    <span><span class="legend-dot" style="background:#f97316"></span>九州・沖縄</span>
+    <span style="margin-left:8px;color:var(--muted)">※円の大きさ = 棟数規模</span>
+  </div>
+</div>
+
+<!-- TAB4 -->
+<div id="t4" class="tab-content">
+  <div class="grid2">
+    <div class="card"><div class="ctitle">販売棟数 TOP15（都道府県）</div><canvas id="cTop15"></canvas></div>
+    <div class="card"><div class="ctitle">営業PH ランキング（全都道府県）</div><canvas id="cPH"></canvas></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><div class="ctitle">エリア別 棟数構成比</div><canvas id="cArea"></canvas></div>
+    <div class="card"><div class="ctitle">市場シェア率 TOP20（都道府県）</div><canvas id="cShare"></canvas></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><div class="ctitle">1展示場当たり棟数（都道府県別）</div><canvas id="cPerLoc"></canvas></div>
+    <div class="card"><div class="ctitle">エリア別 展示場数</div><canvas id="cAreaLoc"></canvas></div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// ===== DATA =====
+// [都道府県, エリア, 棟数, シェア%, 展示場総数, 総合数, 単独数, 支店数, 営業マン数]
+// d[9]=PH, d[10]=1展示場当たり棟数 (computed below)
+const P=[
+  ["北海道","北海道",136,2.50,10,9,1,3,53],
+  ["青森県","東北",38,1.08,4,3,1,1,8],
+  ["岩手県","東北",41,1.08,4,2,2,1,9],
+  ["宮城県","東北",122,1.41,6,5,1,1,26],
+  ["秋田県","東北",45,1.80,3,2,1,1,10],
+  ["山形県","東北",64,1.08,3,3,0,1,14],
+  ["福島県","東北",149,2.52,7,6,1,1,32],
+  ["茨城県","北関東",127,1.16,10,8,1,2,32],
+  ["栃木県","北関東",130,1.83,10,8,2,2,33],
+  ["群馬県","北関東",150,1.92,10,8,2,2,38],
+  ["埼玉県","首都圏",377,1.57,21,16,1,4,87],
+  ["千葉県","首都圏",215,0.95,15,13,0,2,50],
+  ["東京都","首都圏",263,0.72,13,8,2,3,61],
+  ["神奈川県","首都圏",241,0.80,17,12,1,4,55],
+  ["山梨県","北信越",71,2.26,4,3,0,1,17],
+  ["長野県","北信越",61,0.73,6,5,0,1,15],
+  ["新潟県","北信越",60,0.91,5,4,0,1,15],
+  ["富山県","北信越",59,1.40,4,4,0,1,15],
+  ["石川県","北信越",85,1.80,4,3,1,1,21],
+  ["福井県","北信越",68,2.61,4,1,2,1,17],
+  ["静岡県","東海",198,1.55,12,9,1,2,34],
+  ["愛知県","東海",429,1.42,23,16,1,6,74],
+  ["三重県","東海",136,2.30,7,6,0,1,23],
+  ["岐阜県","東海",69,1.33,5,5,0,1,12],
+  ["滋賀県","近畿",145,2.56,7,6,0,1,30],
+  ["京都府","近畿",85,1.23,5,3,2,0,18],
+  ["大阪府","近畿",277,1.20,16,9,2,5,58],
+  ["兵庫県","近畿",429,2.93,20,9,6,5,89],
+  ["奈良県","近畿",126,3.16,8,5,1,2,26],
+  ["和歌山県","近畿",48,1.78,3,2,0,1,10],
+  ["鳥取県","中国",0,0.00,1,1,0,0,0],
+  ["島根県","中国",0,0.00,1,1,0,0,0],
+  ["岡山県","中国",114,1.89,6,3,2,1,27],
+  ["広島県","中国",167,2.03,11,6,3,2,40],
+  ["山口県","中国",142,3.64,9,1,6,2,34],
+  ["徳島県","四国",24,1.10,3,1,1,1,6],
+  ["香川県","四国",70,2.07,5,5,0,1,17],
+  ["愛媛県","四国",80,2.16,4,4,0,2,19],
+  ["高知県","四国",42,2.46,2,1,1,0,10],
+  ["福岡県","九州・沖縄",222,1.43,12,8,3,4,57],
+  ["佐賀県","九州・沖縄",44,1.49,2,2,0,0,11],
+  ["長崎県","九州・沖縄",42,1.30,3,1,1,1,11],
+  ["熊本県","九州・沖縄",75,1.03,5,5,0,1,19],
+  ["大分県","九州・沖縄",39,1.18,2,1,1,1,10],
+  ["宮崎県","九州・沖縄",9,0.24,1,1,0,1,2],
+  ["鹿児島県","九州・沖縄",35,0.73,3,3,0,1,9],
+  ["沖縄県","九州・沖縄",0,0.00,2,2,0,0,0],
+];
+P.forEach(d=>{
+  d[9]=d[8]>0?+(d[2]/d[8]).toFixed(2):null;
+  d[10]=d[4]>0?+(d[2]/d[4]).toFixed(1):null;
+});
+
+const LOC=[
+  {pref:"北海道",name:"アイメッセ旭川",area:"北海道"},
+  {pref:"北海道",name:"札幌豊平第二",area:"北海道"},
+  {pref:"北海道",name:"札幌北円山",area:"北海道"},
+  {pref:"北海道",name:"帯広",area:"北海道"},
+  {pref:"北海道",name:"札幌宮の沢",area:"北海道"},
+  {pref:"北海道",name:"旭川",area:"北海道"},
+  {pref:"北海道",name:"函館",area:"北海道"},
+  {pref:"北海道",name:"札幌豊平",area:"北海道"},
+  {pref:"北海道",name:"アイパーク苫小牧",area:"北海道"},
+  {pref:"北海道",name:"札幌北24条",area:"北海道"},
+  {pref:"北海道",name:"アイパーク北",area:"北海道"},
+  {pref:"北海道",name:"札幌森林公園",area:"北海道"},
+  {pref:"青森県",name:"アイメッセ弘前",area:"東北"},
+  {pref:"青森県",name:"アイパーク八戸",area:"東北"},
+  {pref:"青森県",name:"青森",area:"東北"},
+  {pref:"岩手県",name:"アイメッセ盛岡",area:"東北"},
+  {pref:"岩手県",name:"みらいえ盛岡",area:"東北"},
+  {pref:"岩手県",name:"アイメッセ北上",area:"東北"},
+  {pref:"岩手県",name:"一関",area:"東北"},
+  {pref:"宮城県",name:"アイギャラリー仙台",area:"東北"},
+  {pref:"宮城県",name:"仙台港エコノハ",area:"東北"},
+  {pref:"宮城県",name:"名取",area:"東北"},
+  {pref:"宮城県",name:"寺岡ボルク",area:"東北"},
+  {pref:"宮城県",name:"長町",area:"東北"},
+  {pref:"宮城県",name:"利府",area:"東北"},
+  {pref:"秋田県",name:"AKT",area:"東北"},
+  {pref:"秋田県",name:"さきがけ",area:"東北"},
+  {pref:"山形県",name:"アイパーク山形",area:"東北"},
+  {pref:"山形県",name:"山形",area:"東北"},
+  {pref:"山形県",name:"アイパーク天童",area:"東北"},
+  {pref:"福島県",name:"アイフィット郡山",area:"東北"},
+  {pref:"福島県",name:"TUFふくしま",area:"東北"},
+  {pref:"福島県",name:"郡山南",area:"東北"},
+  {pref:"福島県",name:"いわき",area:"東北"},
+  {pref:"福島県",name:"郡山北",area:"東北"},
+  {pref:"福島県",name:"南福島",area:"東北"},
+  {pref:"福島県",name:"郡山",area:"東北"},
+  {pref:"茨城県",name:"アイギャラリーつくば",area:"北関東"},
+  {pref:"茨城県",name:"守谷",area:"北関東"},
+  {pref:"茨城県",name:"日立",area:"北関東"},
+  {pref:"茨城県",name:"水戸",area:"北関東"},
+  {pref:"茨城県",name:"ひたちなか",area:"北関東"},
+  {pref:"茨城県",name:"鹿島",area:"北関東"},
+  {pref:"茨城県",name:"つくば",area:"北関東"},
+  {pref:"茨城県",name:"古河",area:"北関東"},
+  {pref:"茨城県",name:"土浦",area:"北関東"},
+  {pref:"栃木県",name:"宇都宮インターパーク",area:"北関東"},
+  {pref:"栃木県",name:"小山",area:"北関東"},
+  {pref:"栃木県",name:"那須塩原",area:"北関東"},
+  {pref:"栃木県",name:"宇都宮宮西",area:"北関東"},
+  {pref:"栃木県",name:"宇都宮ベルモール",area:"北関東"},
+  {pref:"栃木県",name:"アイフィット宇都宮",area:"北関東"},
+  {pref:"栃木県",name:"宇都宮宮",area:"北関東"},
+  {pref:"栃木県",name:"佐野CRT",area:"北関東"},
+  {pref:"栃木県",name:"足利",area:"北関東"},
+  {pref:"群馬県",name:"高崎総合",area:"北関東"},
+  {pref:"群馬県",name:"前橋みなみ",area:"北関東"},
+  {pref:"群馬県",name:"伊勢崎住宅公園",area:"北関東"},
+  {pref:"群馬県",name:"太田",area:"北関東"},
+  {pref:"群馬県",name:"吉岡",area:"北関東"},
+  {pref:"群馬県",name:"高崎ひがし",area:"北関東"},
+  {pref:"群馬県",name:"太田みなみ",area:"北関東"},
+  {pref:"群馬県",name:"高崎",area:"北関東"},
+  {pref:"群馬県",name:"伊勢崎",area:"北関東"},
+  {pref:"埼玉県",name:"浦和",area:"首都圏"},
+  {pref:"埼玉県",name:"本庄",area:"首都圏"},
+  {pref:"埼玉県",name:"三郷",area:"首都圏"},
+  {pref:"埼玉県",name:"新熊谷",area:"首都圏"},
+  {pref:"埼玉県",name:"さいたま新都心",area:"首都圏"},
+  {pref:"埼玉県",name:"アイパークさいたま",area:"首都圏"},
+  {pref:"埼玉県",name:"上尾",area:"首都圏"},
+  {pref:"埼玉県",name:"熊谷",area:"首都圏"},
+  {pref:"埼玉県",name:"川越新所沢",area:"首都圏"},
+  {pref:"埼玉県",name:"鶴ヶ島",area:"首都圏"},
+  {pref:"埼玉県",name:"大宮北",area:"首都圏"},
+  {pref:"埼玉県",name:"モラージュ菖蒲",area:"首都圏"},
+  {pref:"埼玉県",name:"春日部",area:"首都圏"},
+  {pref:"埼玉県",name:"川口",area:"首都圏"},
+  {pref:"埼玉県",name:"所沢",area:"首都圏"},
+  {pref:"埼玉県",name:"新郷",area:"首都圏"},
+  {pref:"埼玉県",name:"東松山",area:"首都圏"},
+  {pref:"埼玉県",name:"川越",area:"首都圏"},
+  {pref:"千葉県",name:"千葉北",area:"首都圏"},
+  {pref:"千葉県",name:"千葉ニュータウン",area:"首都圏"},
+  {pref:"千葉県",name:"幕張第二",area:"首都圏"},
+  {pref:"千葉県",name:"茂原",area:"首都圏"},
+  {pref:"千葉県",name:"木更津",area:"首都圏"},
+  {pref:"千葉県",name:"成田",area:"首都圏"},
+  {pref:"千葉県",name:"船橋",area:"首都圏"},
+  {pref:"千葉県",name:"松戸",area:"首都圏"},
+  {pref:"千葉県",name:"市原",area:"首都圏"},
+  {pref:"千葉県",name:"幕張",area:"首都圏"},
+  {pref:"千葉県",name:"青葉の森",area:"首都圏"},
+  {pref:"千葉県",name:"かしわ沼南",area:"首都圏"},
+  {pref:"千葉県",name:"柏の葉",area:"首都圏"},
+  {pref:"東京都",name:"立川",area:"首都圏"},
+  {pref:"東京都",name:"八王子",area:"首都圏"},
+  {pref:"東京都",name:"練馬",area:"首都圏"},
+  {pref:"東京都",name:"三鷹",area:"首都圏"},
+  {pref:"東京都",name:"アイパーク東京",area:"首都圏"},
+  {pref:"東京都",name:"小金井",area:"首都圏"},
+  {pref:"東京都",name:"小平",area:"首都圏"},
+  {pref:"東京都",name:"瀬田",area:"首都圏"},
+  {pref:"東京都",name:"西東京",area:"首都圏"},
+  {pref:"東京都",name:"武蔵野",area:"首都圏"},
+  {pref:"神奈川県",name:"相模原",area:"首都圏"},
+  {pref:"神奈川県",name:"つるみ",area:"首都圏"},
+  {pref:"神奈川県",name:"川崎中原",area:"首都圏"},
+  {pref:"神奈川県",name:"アイメッセみなとみらい",area:"首都圏"},
+  {pref:"神奈川県",name:"小田原",area:"首都圏"},
+  {pref:"神奈川県",name:"横須賀",area:"首都圏"},
+  {pref:"神奈川県",name:"湘南台",area:"首都圏"},
+  {pref:"神奈川県",name:"港北インター",area:"首都圏"},
+  {pref:"神奈川県",name:"秦野",area:"首都圏"},
+  {pref:"神奈川県",name:"藤沢",area:"首都圏"},
+  {pref:"神奈川県",name:"厚木",area:"首都圏"},
+  {pref:"神奈川県",name:"平塚",area:"首都圏"},
+  {pref:"神奈川県",name:"海老名",area:"首都圏"},
+  {pref:"新潟県",name:"アイギャラリー新潟",area:"北信越"},
+  {pref:"新潟県",name:"新潟南",area:"北信越"},
+  {pref:"新潟県",name:"新潟坂木",area:"北信越"},
+  {pref:"新潟県",name:"新潟西",area:"北信越"},
+  {pref:"新潟県",name:"長岡",area:"北信越"},
+  {pref:"富山県",name:"アイギャラリー富山",area:"北信越"},
+  {pref:"富山県",name:"富山",area:"北信越"},
+  {pref:"富山県",name:"アイパーク富山",area:"北信越"},
+  {pref:"富山県",name:"アイパーク高岡",area:"北信越"},
+  {pref:"石川県",name:"金沢市庁東",area:"北信越"},
+  {pref:"石川県",name:"野々市第二",area:"北信越"},
+  {pref:"石川県",name:"金沢市第一",area:"北信越"},
+  {pref:"石川県",name:"アイパーク金沢",area:"北信越"},
+  {pref:"福井県",name:"アイメッセ福井",area:"北信越"},
+  {pref:"福井県",name:"アイパーク敦賀",area:"北信越"},
+  {pref:"福井県",name:"家の森",area:"北信越"},
+  {pref:"山梨県",name:"昭和",area:"北信越"},
+  {pref:"山梨県",name:"富士吉田",area:"北信越"},
+  {pref:"山梨県",name:"甲府",area:"北信越"},
+  {pref:"長野県",name:"佐久平",area:"北信越"},
+  {pref:"長野県",name:"飯田",area:"北信越"},
+  {pref:"長野県",name:"伊那",area:"北信越"},
+  {pref:"長野県",name:"長野中央",area:"北信越"},
+  {pref:"長野県",name:"上田",area:"北信越"},
+  {pref:"長野県",name:"諏訪",area:"北信越"},
+  {pref:"岐阜県",name:"各務原HIRAYA",area:"東海"},
+  {pref:"岐阜県",name:"大垣",area:"東海"},
+  {pref:"岐阜県",name:"各務原",area:"東海"},
+  {pref:"岐阜県",name:"土岐",area:"東海"},
+  {pref:"岐阜県",name:"岐阜",area:"東海"},
+  {pref:"静岡県",name:"アイパーク静岡",area:"東海"},
+  {pref:"静岡県",name:"浜北",area:"東海"},
+  {pref:"静岡県",name:"清水",area:"東海"},
+  {pref:"静岡県",name:"袋井",area:"東海"},
+  {pref:"静岡県",name:"三島",area:"東海"},
+  {pref:"静岡県",name:"藤枝",area:"東海"},
+  {pref:"静岡県",name:"富士",area:"東海"},
+  {pref:"静岡県",name:"浜松西",area:"東海"},
+  {pref:"静岡県",name:"浜松",area:"東海"},
+  {pref:"静岡県",name:"静岡",area:"東海"},
+  {pref:"愛知県",name:"大府第二",area:"東海"},
+  {pref:"愛知県",name:"平田",area:"東海"},
+  {pref:"愛知県",name:"長久手",area:"東海"},
+  {pref:"愛知県",name:"岡崎西第二",area:"東海"},
+  {pref:"愛知県",name:"小牧",area:"東海"},
+  {pref:"愛知県",name:"鳴海",area:"東海"},
+  {pref:"愛知県",name:"西尾",area:"東海"},
+  {pref:"愛知県",name:"アイパーク愛知",area:"東海"},
+  {pref:"愛知県",name:"豊橋北",area:"東海"},
+  {pref:"愛知県",name:"一宮",area:"東海"},
+  {pref:"愛知県",name:"大府",area:"東海"},
+  {pref:"愛知県",name:"豊橋南",area:"東海"},
+  {pref:"愛知県",name:"蟹江",area:"東海"},
+  {pref:"愛知県",name:"豊田",area:"東海"},
+  {pref:"愛知県",name:"春日井",area:"東海"},
+  {pref:"愛知県",name:"日進",area:"東海"},
+  {pref:"愛知県",name:"岡崎西",area:"東海"},
+  {pref:"三重県",name:"津",area:"東海"},
+  {pref:"三重県",name:"鈴鹿",area:"東海"},
+  {pref:"三重県",name:"名四",area:"東海"},
+  {pref:"三重県",name:"四日市",area:"東海"},
+  {pref:"三重県",name:"伊勢明和",area:"東海"},
+  {pref:"三重県",name:"名張",area:"東海"},
+  {pref:"滋賀県",name:"長浜",area:"近畿"},
+  {pref:"滋賀県",name:"大津プリンス",area:"近畿"},
+  {pref:"滋賀県",name:"ハウスセレクション守山",area:"近畿"},
+  {pref:"滋賀県",name:"近江八幡",area:"近畿"},
+  {pref:"滋賀県",name:"彦根",area:"近畿"},
+  {pref:"滋賀県",name:"草柿",area:"近畿"},
+  {pref:"京都府",name:"四条第二",area:"近畿"},
+  {pref:"京都府",name:"四条第一",area:"近畿"},
+  {pref:"京都府",name:"福知山",area:"近畿"},
+  {pref:"京都府",name:"久御山",area:"近畿"},
+  {pref:"京都府",name:"伏見",area:"近畿"},
+  {pref:"大阪府",name:"堺美原",area:"近畿"},
+  {pref:"大阪府",name:"花博二",area:"近畿"},
+  {pref:"大阪府",name:"枚方",area:"近畿"},
+  {pref:"大阪府",name:"真面",area:"近畿"},
+  {pref:"大阪府",name:"アイメッセ松原",area:"近畿"},
+  {pref:"大阪府",name:"泉佐野",area:"近畿"},
+  {pref:"大阪府",name:"なんば",area:"近畿"},
+  {pref:"大阪府",name:"和泉中央",area:"近畿"},
+  {pref:"大阪府",name:"中百舌鳥",area:"近畿"},
+  {pref:"大阪府",name:"東大阪",area:"近畿"},
+  {pref:"大阪府",name:"花博",area:"近畿"},
+  {pref:"兵庫県",name:"アイパーク姫路",area:"近畿"},
+  {pref:"兵庫県",name:"神戸東",area:"近畿"},
+  {pref:"兵庫県",name:"アイパーク高砂",area:"近畿"},
+  {pref:"兵庫県",name:"明石",area:"近畿"},
+  {pref:"兵庫県",name:"伊丹・昆陽の里",area:"近畿"},
+  {pref:"兵庫県",name:"加古川明姫幹線",area:"近畿"},
+  {pref:"兵庫県",name:"加古川",area:"近畿"},
+  {pref:"兵庫県",name:"西宮",area:"近畿"},
+  {pref:"兵庫県",name:"姫路西",area:"近畿"},
+  {pref:"兵庫県",name:"加古川南",area:"近畿"},
+  {pref:"兵庫県",name:"アイパーク神戸北",area:"近畿"},
+  {pref:"兵庫県",name:"西神",area:"近畿"},
+  {pref:"兵庫県",name:"伊丹",area:"近畿"},
+  {pref:"兵庫県",name:"姫路書写",area:"近畿"},
+  {pref:"兵庫県",name:"加古川第二",area:"近畿"},
+  {pref:"兵庫県",name:"姫路",area:"近畿"},
+  {pref:"奈良県",name:"奈良第二",area:"近畿"},
+  {pref:"奈良県",name:"大和郡山",area:"近畿"},
+  {pref:"奈良県",name:"橿原第二",area:"近畿"},
+  {pref:"奈良県",name:"登美ヶ丘",area:"近畿"},
+  {pref:"奈良県",name:"奈良",area:"近畿"},
+  {pref:"奈良県",name:"橿原第一",area:"近畿"},
+  {pref:"和歌山県",name:"和歌山インター",area:"近畿"},
+  {pref:"和歌山県",name:"和歌山",area:"近畿"},
+  {pref:"鳥取県",name:"鳥取",area:"中国"},
+  {pref:"島根県",name:"アイパーク松江",area:"中国"},
+  {pref:"岡山県",name:"アイギャラリー岡山",area:"中国"},
+  {pref:"岡山県",name:"アイパーク倉敷",area:"中国"},
+  {pref:"岡山県",name:"岡山第二",area:"中国"},
+  {pref:"岡山県",name:"岡山RSK",area:"中国"},
+  {pref:"岡山県",name:"岡山南",area:"中国"},
+  {pref:"岡山県",name:"倉敷",area:"中国"},
+  {pref:"岡山県",name:"岡山",area:"中国"},
+  {pref:"広島県",name:"広島観音",area:"中国"},
+  {pref:"広島県",name:"広島アスタ",area:"中国"},
+  {pref:"広島県",name:"福山北",area:"中国"},
+  {pref:"広島県",name:"福山",area:"中国"},
+  {pref:"広島県",name:"アイパーク東広島",area:"中国"},
+  {pref:"広島県",name:"福山第二",area:"中国"},
+  {pref:"広島県",name:"尾道",area:"中国"},
+  {pref:"山口県",name:"山口サエラ第二",area:"中国"},
+  {pref:"山口県",name:"下松",area:"中国"},
+  {pref:"山口県",name:"周南",area:"中国"},
+  {pref:"山口県",name:"宇部",area:"中国"},
+  {pref:"山口県",name:"下関",area:"中国"},
+  {pref:"山口県",name:"山口サエラ",area:"中国"},
+  {pref:"山口県",name:"岩国",area:"中国"},
+  {pref:"徳島県",name:"徳島",area:"四国"},
+  {pref:"徳島県",name:"アイパーク徳島",area:"四国"},
+  {pref:"徳島県",name:"松茂",area:"四国"},
+  {pref:"香川県",name:"宇多津",area:"四国"},
+  {pref:"香川県",name:"丸亀第二",area:"四国"},
+  {pref:"香川県",name:"丸亀",area:"四国"},
+  {pref:"香川県",name:"高松第二",area:"四国"},
+  {pref:"香川県",name:"高松第一",area:"四国"},
+  {pref:"愛媛県",name:"松前",area:"四国"},
+  {pref:"愛媛県",name:"松山",area:"四国"},
+  {pref:"愛媛県",name:"新居浜",area:"四国"},
+  {pref:"愛媛県",name:"今治",area:"四国"},
+  {pref:"高知県",name:"アイパーク高知",area:"四国"},
+  {pref:"高知県",name:"高知",area:"四国"},
+  {pref:"福岡県",name:"hit久留米",area:"九州・沖縄"},
+  {pref:"福岡県",name:"RKB小倉南",area:"九州・沖縄"},
+  {pref:"福岡県",name:"TNC小倉",area:"九州・沖縄"},
+  {pref:"福岡県",name:"hit香椎宮前",area:"九州・沖縄"},
+  {pref:"福岡県",name:"hitマリナ通り",area:"九州・沖縄"},
+  {pref:"福岡県",name:"小倉北",area:"九州・沖縄"},
+  {pref:"福岡県",name:"hit大野城",area:"九州・沖縄"},
+  {pref:"福岡県",name:"アイパーク福岡",area:"九州・沖縄"},
+  {pref:"福岡県",name:"福岡南",area:"九州・沖縄"},
+  {pref:"福岡県",name:"TNC久留米",area:"九州・沖縄"},
+  {pref:"福岡県",name:"福津",area:"九州・沖縄"},
+  {pref:"佐賀県",name:"アイパーク佐賀",area:"九州・沖縄"},
+  {pref:"佐賀県",name:"鳥栖",area:"九州・沖縄"},
+  {pref:"長崎県",name:"アイパーク長崎",area:"九州・沖縄"},
+  {pref:"長崎県",name:"させぼ",area:"九州・沖縄"},
+  {pref:"熊本県",name:"KKT荒尾",area:"九州・沖縄"},
+  {pref:"熊本県",name:"御代志",area:"九州・沖縄"},
+  {pref:"熊本県",name:"熊本八代",area:"九州・沖縄"},
+  {pref:"熊本県",name:"KABはません",area:"九州・沖縄"},
+  {pref:"熊本県",name:"熊日",area:"九州・沖縄"},
+  {pref:"大分県",name:"アイパーク大分",area:"九州・沖縄"},
+  {pref:"大分県",name:"大分",area:"九州・沖縄"},
+  {pref:"長崎県",name:"長崎",area:"九州・沖縄"},
+  {pref:"宮崎県",name:"アイパーク宮崎",area:"九州・沖縄"},
+  {pref:"鹿児島県",name:"国分",area:"九州・沖縄"},
+  {pref:"鹿児島県",name:"鹿児島MBC",area:"九州・沖縄"},
+  {pref:"鹿児島県",name:"鹿児島",area:"九州・沖縄"},
+  {pref:"沖縄県",name:"アワセ第二",area:"九州・沖縄"},
+  {pref:"沖縄県",name:"アワセ第一",area:"九州・沖縄"},
+];
+
+const PCOORDS={
+  "北海道":[43.064,141.347],"青森県":[40.824,140.74],"岩手県":[39.703,141.153],
+  "宮城県":[38.269,140.872],"秋田県":[39.718,140.102],"山形県":[38.24,140.363],
+  "福島県":[37.75,140.468],"茨城県":[36.341,140.447],"栃木県":[36.565,139.883],
+  "群馬県":[36.391,139.06],"埼玉県":[35.858,139.649],"千葉県":[35.605,140.123],
+  "東京都":[35.69,139.692],"神奈川県":[35.448,139.642],"山梨県":[35.664,138.568],
+  "長野県":[36.651,138.181],"新潟県":[37.902,139.023],"富山県":[36.695,137.211],
+  "石川県":[36.594,136.626],"福井県":[36.065,136.222],"静岡県":[34.977,138.383],
+  "愛知県":[35.18,136.907],"三重県":[34.73,136.509],"岐阜県":[35.391,136.722],
+  "滋賀県":[35.004,135.869],"京都府":[35.021,135.756],"大阪府":[34.686,135.52],
+  "兵庫県":[34.691,135.183],"奈良県":[34.685,135.833],"和歌山県":[34.226,135.168],
+  "鳥取県":[35.504,134.238],"島根県":[35.472,133.051],"岡山県":[34.662,133.935],
+  "広島県":[34.397,132.459],"山口県":[34.186,131.471],"徳島県":[34.066,134.56],
+  "香川県":[34.34,134.043],"愛媛県":[33.842,132.766],"高知県":[33.559,133.531],
+  "福岡県":[33.607,130.418],"佐賀県":[33.249,130.299],"長崎県":[32.745,129.874],
+  "熊本県":[32.79,130.742],"大分県":[33.238,131.612],"宮崎県":[31.911,131.424],
+  "鹿児島県":[31.56,130.558],"沖縄県":[26.212,127.681]
+};
+
+const areaColors={
+  "北海道":"#0ea5e9","東北":"#3b82f6","北関東":"#10b981","首都圏":"#f59e0b",
+  "北信越":"#8b5cf6","東海":"#06b6d4","近畿":"#ef4444","中国":"#6366f1",
+  "四国":"#ec4899","九州・沖縄":"#f97316"
+};
+const areaTagCls={
+  "北海道":"tn","東北":"te","北関東":"tkg","首都圏":"tsh",
+  "北信越":"tni","東海":"tth","近畿":"tk","中国":"tch","四国":"tsk","九州・沖縄":"tkyu"
+};
+
+function areaTag(a){return`<span class="tag ${areaTagCls[a]||''}">${a}</span>`;}
+function phBadge(v){
+  if(v===null||v===undefined)return`<span class="ph-n">-</span>`;
+  if(v>=6)return`<span class="ph-h">${v.toFixed(2)}</span>`;
+  if(v>=4)return`<span class="ph-m">${v.toFixed(2)}</span>`;
+  return`<span class="ph-l">${v.toFixed(2)}</span>`;
+}
+
+function showTab(id,btn){
+  document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(e=>e.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='t2')initTab2();
+  if(id==='t3')initMap();
+  if(id==='t4')initCharts();
+}
+
+// ===== TAB1 =====
+let pSortCol=2,pSortDir=-1;
+function psort(c){if(pSortCol===c)pSortDir*=-1;else{pSortCol=c;pSortDir=-1;}drawPrefTable();}
+function drawPrefTable(){
+  const q=document.getElementById('s1').value.trim().toLowerCase();
+  const af=document.getElementById('a1').value;
+  let data=P.filter(d=>{
+    if(q&&!d[0].toLowerCase().includes(q))return false;
+    if(af&&d[1]!==af)return false;
+    return true;
+  });
+  data.sort((a,b)=>{
+    const va=a[pSortCol],vb=b[pSortCol];
+    if(va===null&&vb===null)return 0;if(va===null)return 1;if(vb===null)return -1;
+    return pSortDir*(va<vb?-1:va>vb?1:0);
+  });
+  document.getElementById('cnt1').textContent=`${data.length}件`;
+  const rows=data.map(d=>{
+    const ph=d[9],pbl=d[10];
+    return`<tr>
+      <td><strong>${d[0]}</strong></td>
+      <td>${areaTag(d[1])}</td>
+      <td class="num">${d[2].toLocaleString()}</td>
+      <td class="num">${d[3].toFixed(2)}%<span class="bar" style="width:${Math.min(d[3]*20,80)}px;margin-left:4px"></span></td>
+      <td class="num">${d[4]}</td>
+      <td class="num">${d[5]}</td>
+      <td class="num">${d[6]}</td>
+      <td class="num">${d[7]}</td>
+      <td class="num">${d[8]>0?d[8]:'-'}</td>
+      <td class="center">${phBadge(ph)}</td>
+      <td class="num">${pbl!==null?pbl.toFixed(1):'-'}</td>
+    </tr>`;
+  });
+  document.getElementById('ptbody').innerHTML=rows.join('');
+}
+drawPrefTable();
+
+// ===== TAB2 =====
+let tab2init=false;
+function initTab2(){
+  if(tab2init)return;tab2init=true;
+  const sel=document.getElementById('a2');
+  const prefs=[...new Set(LOC.map(l=>l.pref))].sort();
+  prefs.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;sel.appendChild(o);});
+  drawLocTable();
+  drawRankTable();
+}
+function drawLocTable(){
+  const q=document.getElementById('s2').value.trim().toLowerCase();
+  const pf=document.getElementById('a2').value;
+  const so=document.getElementById('s2sort').value;
+  let data=LOC.filter(l=>{
+    if(q&&!l.name.toLowerCase().includes(q)&&!l.pref.toLowerCase().includes(q))return false;
+    if(pf&&l.pref!==pf)return false;
+    return true;
+  });
+  if(so==='name_asc')data.sort((a,b)=>a.name.localeCompare(b.name,'ja'));
+  else data.sort((a,b)=>a.pref.localeCompare(b.pref,'ja')||a.name.localeCompare(b.name,'ja'));
+  document.getElementById('cnt2').textContent=`${data.length}件`;
+  document.getElementById('ltbody').innerHTML=data.map(l=>`<tr>
+    <td>${l.pref}</td>
+    <td>${l.name}</td>
+    <td>${areaTag(l.area)}</td>
+  </tr>`).join('');
+}
+function drawRankTable(){
+  const byPref={};
+  LOC.forEach(l=>{byPref[l.pref]=(byPref[l.pref]||0)+1;});
+  const rows=Object.entries(byPref).sort((a,b)=>b[1]-a[1]);
+  const pMap={};P.forEach(d=>pMap[d[0]]=d);
+  document.getElementById('rtbody').innerHTML=rows.map(([pref,cnt],i)=>{
+    const pd=pMap[pref];
+    const tons=pd?pd[2]:0;
+    const per=cnt>0&&tons>0?(tons/cnt).toFixed(1):'-';
+    const badge=i===0?`<span class="r1">1</span>`:i===1?`<span class="r2">2</span>`:i===2?`<span class="r3">3</span>`:`<span class="rn">${i+1}</span>`;
+    return`<tr><td class="center">${badge}</td><td>${pref}</td><td class="num">${cnt}</td><td class="num">${tons.toLocaleString()}</td><td class="num">${per}</td></tr>`;
+  }).join('');
+}
+
+// ===== TAB3: MAP =====
+let map=null,mapMarkers=[];
+function initMap(){
+  if(map)return;
+  map=L.map('mapContainer').setView([36.5,137.5],5);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'© OpenStreetMap contributors',maxZoom:18
+  }).addTo(map);
+  updateMapMarkers();
+}
+function updateMapMarkers(){
+  if(!map)return;
+  mapMarkers.forEach(m=>map.removeLayer(m));mapMarkers=[];
+  const af=document.getElementById('mapAreaFilter').value;
+  const maxT=Math.max(...P.map(d=>d[2]));
+  P.forEach(d=>{
+    if(af&&d[1]!==af)return;
+    const coord=PCOORDS[d[0]];if(!coord)return;
+    const r=Math.max(8,Math.sqrt(d[2]/maxT)*40);
+    const c=areaColors[d[1]]||'#888';
+    const m=L.circleMarker(coord,{
+      radius:r,fillColor:c,color:'#fff',weight:1.5,fillOpacity:0.75
+    }).bindPopup(`<b>${d[0]}</b><br>エリア: ${d[1]}<br>販売棟数: ${d[2].toLocaleString()}棟<br>展示場数: ${d[4]}<br>営業マン: ${d[8]>0?d[8]+'名':'-'}<br>PH: ${d[9]!==null?d[9]:'-'}`);
+    m.addTo(map);mapMarkers.push(m);
+  });
+}
+
+// ===== TAB4: CHARTS =====
+const chartInstances={};
+function mkChart(id,cfg){
+  if(chartInstances[id])chartInstances[id].destroy();
+  chartInstances[id]=new Chart(document.getElementById(id).getContext('2d'),cfg);
+}
+function initCharts(){
+  const sorted=[...P].filter(d=>d[2]>0).sort((a,b)=>b[2]-a[2]);
+  const top15=sorted.slice(0,15);
+  mkChart('cTop15',{type:'bar',data:{
+    labels:top15.map(d=>d[0]),
+    datasets:[{label:'販売棟数',data:top15.map(d=>d[2]),
+      backgroundColor:top15.map(d=>areaColors[d[1]]+'cc'),borderRadius:4}]
+  },options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+
+  const phData=[...P].filter(d=>d[9]!==null&&d[2]>0).sort((a,b)=>b[9]-a[9]).slice(0,15);
+  mkChart('cPH',{type:'bar',data:{
+    labels:phData.map(d=>d[0]),
+    datasets:[{label:'PH',data:phData.map(d=>d[9]),
+      backgroundColor:phData.map(d=>areaColors[d[1]]+'cc'),borderRadius:4}]
+  },options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+
+  const areas=Object.keys(areaColors);
+  const areaTons=areas.map(a=>P.filter(d=>d[1]===a).reduce((s,d)=>s+d[2],0));
+  mkChart('cArea',{type:'doughnut',data:{
+    labels:areas,
+    datasets:[{data:areaTons,backgroundColor:areas.map(a=>areaColors[a]+'cc'),borderWidth:1}]
+  },options:{plugins:{legend:{position:'right'}}}});
+
+  const shareData=[...P].filter(d=>d[3]>0&&d[2]>0).sort((a,b)=>b[3]-a[3]).slice(0,20);
+  mkChart('cShare',{type:'bar',data:{
+    labels:shareData.map(d=>d[0]),
+    datasets:[{label:'市場シェア%',data:shareData.map(d=>d[3]),
+      backgroundColor:shareData.map(d=>areaColors[d[1]]+'cc'),borderRadius:4}]
+  },options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+
+  const perData=[...P].filter(d=>d[10]!==null&&d[2]>0).sort((a,b)=>b[10]-a[10]).slice(0,20);
+  mkChart('cPerLoc',{type:'bar',data:{
+    labels:perData.map(d=>d[0]),
+    datasets:[{label:'1展示場当たり棟数',data:perData.map(d=>d[10]),
+      backgroundColor:perData.map(d=>areaColors[d[1]]+'cc'),borderRadius:4}]
+  },options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+
+  const areaLocs=areas.map(a=>P.filter(d=>d[1]===a).reduce((s,d)=>s+d[4],0));
+  mkChart('cAreaLoc',{type:'bar',data:{
+    labels:areas,
+    datasets:[{label:'展示場数',data:areaLocs,
+      backgroundColor:areas.map(a=>areaColors[a]+'cc'),borderRadius:4}]
+  },options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+}
+</script>
+</body>
+</html>
