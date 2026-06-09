@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PG社 リフォーム業界 法人顧客ダッシュボード 2025-2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{--pg:#1a6b3c;--pg-d:#0d3d20;--pg-l:#d4eddf;--pg-ll:#f0f9f4;--acc:#c8861a;--bg:#eef4f1;--card:#fff;--border:#b8d4c8;--text:#1a2a20;--muted:#5a7060;--red:#b71c1c;--shadow:0 2px 12px rgba(10,50,25,.09)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI','Yu Gothic UI','Hiragino Kaku Gothic Pro',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
+header{background:linear-gradient(135deg,var(--pg-d) 0%,var(--pg) 65%,#2a8a50 100%);color:#fff;padding:14px 28px;display:flex;align-items:center;gap:14px}
+.hico{width:42px;height:42px;background:rgba(255,255,255,.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px}
+header h1{font-size:17px;font-weight:700}header p{font-size:11px;opacity:.72;margin-top:2px}
+.hbadge{margin-left:auto;background:var(--acc);padding:5px 16px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap}
+.container{max-width:1900px;margin:0 auto;padding:14px}
+.legend-box{background:#fff;border:1px solid var(--border);border-left:4px solid var(--pg);border-radius:8px;padding:10px 16px;margin-bottom:12px;font-size:11px;line-height:2;box-shadow:var(--shadow)}
+.tabs{display:flex;gap:5px;border-bottom:3px solid var(--pg);flex-wrap:wrap;margin-bottom:0}
+.tab{padding:9px 15px;border:1.5px solid var(--border);border-bottom:none;border-radius:10px 10px 0 0;background:#deeadf;color:var(--muted);cursor:pointer;font-size:12px;font-weight:700;transition:background .15s}
+.tab.active{background:var(--pg);color:#fff;border-color:var(--pg)}
+.tab-page{display:none;padding-top:14px}.tab-page.active{display:block}
+.note{background:#fff8e1;border-left:3px solid var(--acc);padding:8px 12px;border-radius:4px;font-size:11px;color:#78350f;margin-bottom:12px;line-height:1.7}
+.note.info{background:#e8f4fd;border-left-color:#1a6b99;color:#0c3d5a}
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+.kpi{background:var(--card);border-radius:10px;padding:12px 14px;box-shadow:var(--shadow);border-top:3px solid var(--pg)}
+.kpi .lb{font-size:10px;color:var(--muted)}.kpi .vl{font-size:20px;font-weight:800;color:var(--pg);margin:3px 0 2px}.kpi .sb{font-size:10px;color:var(--muted)}
+.kpi.a{border-top-color:var(--acc)}.kpi.a .vl{color:var(--acc)}
+.kpi.r{border-top-color:var(--red)}.kpi.r .vl{color:var(--red)}
+.kpi.g{border-top-color:#1a6634}.kpi.g .vl{color:#1a6634}
+.card{background:var(--card);border-radius:10px;padding:14px;box-shadow:var(--shadow);margin-bottom:14px}
+.ctitle{font-size:12px;font-weight:700;color:var(--pg);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.ctitle::before{content:'';display:inline-block;width:3px;height:14px;background:var(--acc);border-radius:2px}
+.sec-hd{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--pg);margin:18px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--pg-l)}
+.g2{display:grid;grid-template-columns:3fr 2fr;gap:14px;margin-bottom:14px}
+.g2e{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.tw{overflow:auto;border-radius:8px;border:1px solid var(--border)}.mh500{max-height:520px}.mh420{max-height:440px}.mh300{max-height:320px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--pg);color:#fff;padding:7px 9px;text-align:left;font-weight:600;font-size:11px;white-space:nowrap;position:sticky;top:0;z-index:2}
+th.acc{background:var(--acc)}
+td{padding:5px 9px;border-bottom:1px solid var(--border);white-space:nowrap}td.num{text-align:right;font-variant-numeric:tabular-nums}td.c{text-align:center}
+tr:hover td{background:var(--pg-ll)}.row-gray td{background:#f8f9fa!important}
+.r1{background:#ffd700;color:#5a3e00}.r2{background:#c0c0c0;color:#333}.r3{background:#cd7f32;color:#fff}.rn{background:#e5e7eb;color:#6b7280}
+.rk{display:inline-block;width:22px;height:22px;border-radius:50%;font-size:10px;font-weight:700;text-align:center;line-height:22px}
+.up{color:#1a6634;font-weight:700}.dn{color:var(--red);font-weight:700}.fl{color:var(--muted)}
+.tag{display:inline-block;padding:1px 7px;border-radius:8px;font-size:10px;font-weight:700}
+.hm{background:#dbeafe;color:#1e40af}.rf{background:#dcfce7;color:#166534}.ko{background:#fef9c3;color:#854d0e}
+.bl{background:#f3e8ff;color:#6b21a8}.re{background:#fce7f3;color:#9d174d}.sp{background:#ffedd5;color:#9a3412}
+.ms{background:#e0e7ff;color:#3730a3}.bm{background:#f1f5f9;color:#475569}.ka{background:#fef3c7;color:#92400e}
+.badge-top{background:#dc2626;color:#fff;padding:1px 7px;border-radius:8px;font-size:9px;font-weight:700;margin-left:4px}
+.badge-attn{background:var(--acc);color:#fff;padding:1px 7px;border-radius:8px;font-size:9px;font-weight:700;margin-left:4px}
+.badge-est{background:#6b7280;color:#fff;padding:1px 5px;border-radius:6px;font-size:9px;font-weight:700;margin-left:2px}
+canvas{max-height:290px}
+.src{font-size:10px;color:var(--muted);margin-top:6px;line-height:1.6}
+@media(max-width:1300px){.kpi-row{grid-template-columns:repeat(3,1fr)}.g2,.g2e{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<div class="hico">🔨</div>
+<div>
+<h1>PG社 リフォーム業界 法人顧客ダッシュボード（戸籍名簿）2025-2026</h1>
+<p>出典：リフォーム産業新聞 各号ランキング集計 ― PGリフォームコンサル営業戦略・法人開拓用</p>
+</div>
+<span class="hbadge">📅 最終更新 2026/6/9</span>
+</header>
+
+<div class="container">
+<div class="legend-box">
+<b>■ 業種タグ凡例</b>
+<span class="tag hm">HM</span> ハウスメーカー
+<span class="tag rf">総合RF</span> 総合リフォーム店
+<span class="tag ko">小売</span> 家電量販・ホームセンター等
+<span class="tag bl">ビルダー</span> ビルダー・工務店
+<span class="tag re">不動産</span> 不動産・デベロッパー
+<span class="tag sp">専工</span> 専門工事店
+<span class="tag ms">大修繕</span> マンション大規模修繕
+<span class="tag bm">建材流通</span> 建材・設備流通
+<span class="tag ka">買取再販</span> 中古住宅買取再販　<br>
+<span class="badge-top">最優先</span> PGリフォームコンサル 最優先アプローチ先
+<span class="badge-attn">要注目</span> 高成長・積極展開中で攻めやすい企業
+<span class="badge-est">推定</span> 有料記事限定データのため推定・参考値を含む　<br>
+<b>出典：</b>リフォーム産業新聞 各号（2025〜2026年）。★印数値は有料記事からの検索結果サマリーを含む。正確な完全ランキングは同紙有料会員サービスで確認。
+</div>
+
+<div class="tabs">
+<button class="tab active" onclick="sel('t1',this)">🏆 住宅リフォーム総合売上</button>
+<button class="tab" onclick="sel('t2',this)">🏙️ マンションリフォーム</button>
+<button class="tab" onclick="sel('t3',this)">📊 業種別ランキング</button>
+<button class="tab" onclick="sel('t4',this)">🔑 買取再販</button>
+<button class="tab" onclick="sel('t5',this)">🏗️ マンション大規模修繕</button>
+<button class="tab" onclick="sel('t6',this)">🔩 建材・設備流通</button>
+<button class="tab" onclick="sel('t7',this)">💰 大型リフォーム受注</button>
+</div>
+
+<!-- ======== Tab 1: 住宅リフォーム売上高ランキング2025 ======== -->
+<div id="t1" class="tab-page active">
+<div class="note">【出典】リフォーム産業新聞 2025年9月29日号「住宅リフォーム売上高ランキング2025」。<b>積水ハウスGが11年連続1位（1,838億7,000万円、前年比+5%）。</b>ニッカホームGが+7%でトップ10中最高成長率。1〜4位は確認済み、5〜9位は有料記事限定のため非掲載。</div>
+<div class="kpi-row">
+<div class="kpi a"><div class="lb">市場規模（推計）</div><div class="vl">7兆<span style="font-size:13px">円台</span></div><div class="sb">リフォーム産業新聞推計</div></div>
+<div class="kpi a"><div class="lb">総合1位（11連覇）</div><div class="vl">1,838<span style="font-size:13px">億円</span></div><div class="sb">積水ハウスG (+5%)</div></div>
+<div class="kpi"><div class="lb">総合2位</div><div class="vl">1,786<span style="font-size:13px">億円</span></div><div class="sb">大和ハウスG (+3%)</div></div>
+<div class="kpi"><div class="lb">総合3位</div><div class="vl">1,180<span style="font-size:13px">億円</span></div><div class="sb">住友不動産G</div></div>
+<div class="kpi g"><div class="lb">トップ10内・最高成長率</div><div class="vl">+7%<span style="font-size:13px"> / 643億</span></div><div class="sb">ニッカホームG（最高伸び率）</div></div>
+</div>
+
+<div class="g2">
+<div class="card" style="margin-bottom:0">
+<div class="ctitle">住宅リフォーム売上高ランキング2025 ─ 確認済み企業一覧</div>
+<div class="tw mh500"><table>
+<thead><tr><th>順位</th><th>企業グループ名</th><th>本社</th><th>業種</th><th>売上高(億円)</th><th>前年比</th><th>2024年比較</th><th>PGコンサル アプローチ観点</th></tr></thead>
+<tbody>
+<tr>
+  <td class="c"><span class="rk r1">1</span></td>
+  <td><b>積水ハウスグループ</b> <span class="badge-top">最優先</span></td>
+  <td>大阪府大阪市北区</td>
+  <td><span class="tag hm">HM</span></td>
+  <td class="num"><b>1,838.7</b></td>
+  <td class="num up">+5%</td>
+  <td class="num">2024年▲105%比</td>
+  <td style="font-size:10px;color:var(--muted)">11年連続首位。戸建・マンション全般RF。積水ハウスリフォーム等複数法人</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk r2">2</span></td>
+  <td><b>大和ハウスグループ</b> <span class="badge-top">最優先</span></td>
+  <td>大阪府大阪市北区</td>
+  <td><span class="tag hm">HM</span></td>
+  <td class="num"><b>1,786.1</b></td>
+  <td class="num up">+3%</td>
+  <td class="num">1位との差52億</td>
+  <td style="font-size:10px;color:var(--muted)">ナサホーム・大和ハウスウッドRF統合し急拡大。グループ内RF法人複数</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk r3">3</span></td>
+  <td><b>住友不動産グループ</b> <span class="badge-top">最優先</span></td>
+  <td>東京都新宿区</td>
+  <td><span class="tag re">不動産</span></td>
+  <td class="num"><b>1,180.5</b></td>
+  <td class="num fl">—</td>
+  <td class="num">—</td>
+  <td style="font-size:10px;color:var(--muted)">新築そっくりさん。大型受注5連覇。マンションRF専門部門設置</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk rn">4</span></td>
+  <td><b>積水化学工業グループ</b></td>
+  <td>東京都港区</td>
+  <td><span class="tag hm">HM</span></td>
+  <td class="num"><b>1,072</b></td>
+  <td class="num up">+4%</td>
+  <td class="num">—</td>
+  <td style="font-size:10px;color:var(--muted)">セキスイハイム系。環境配慮型リフォームに強み</td>
+</tr>
+<tr class="row-gray">
+  <td class="c"><span class="rk rn" style="width:32px;font-size:9px">5〜9</span></td>
+  <td colspan="3" style="color:var(--muted);font-style:italic">（5〜9位は有料記事のため非掲載） <span class="badge-est">推定</span></td>
+  <td class="num">—</td>
+  <td class="num">—</td>
+  <td class="num">—</td>
+  <td style="font-size:10px;color:var(--muted)">★リフォーム産業新聞有料会員で閲覧可</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk rn">〜10</span></td>
+  <td><b>ニッカホームグループ</b> <span class="badge-attn">要注目</span></td>
+  <td>愛知県名古屋市</td>
+  <td><span class="tag rf">総合RF</span></td>
+  <td class="num"><b>643.1</b></td>
+  <td class="num up">+7%</td>
+  <td class="num">トップ10中最高成長</td>
+  <td style="font-size:10px;color:var(--muted)">全国178拠点。店舗拡大+単価アップで最高成長率</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk rn">参考</span></td>
+  <td><b>ヤマダホールディングス</b></td>
+  <td>群馬県高崎市</td>
+  <td><span class="tag ko">小売</span></td>
+  <td class="num"><b>920.1</b></td>
+  <td class="num up">+3%</td>
+  <td class="num">業種別小売1位</td>
+  <td style="font-size:10px;color:var(--muted)">業種別ランキングデータ。全国家電量販×住宅RF</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk rn">参考</span></td>
+  <td><b>飯田グループホールディングス</b></td>
+  <td>東京都武蔵野市</td>
+  <td><span class="tag bl">ビルダー</span></td>
+  <td class="num"><b>321</b></td>
+  <td class="num up">+17%</td>
+  <td class="num">業種別ビルダー1位</td>
+  <td style="font-size:10px;color:var(--muted)">業種別ランキングデータ。建売から修繕・RF戦略へ転換</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk rn">22位</span></td>
+  <td><b>生活堂</b></td>
+  <td>—</td>
+  <td><span class="tag rf">総合RF</span></td>
+  <td class="num">—</td>
+  <td class="num fl">—</td>
+  <td class="num">2025年9/29号掲載</td>
+  <td style="font-size:10px;color:var(--muted)">同紙22位確認。地域密着型総合リフォーム</td>
+</tr>
+</tbody>
+</table></div>
+<p class="src">出典：リフォーム産業新聞2025年9月29日号、各社プレスリリース（ニッカホームPRTIMES 2025年10月）、リフォームオンライン記事。★5〜9位は有料記事のため非掲載。</p>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div class="card" style="margin-bottom:0">
+<div class="ctitle">確認済みTOP4 + 参考 売上高比較（2025年）</div>
+<div style="position:relative;height:260px"><canvas id="c-reform-rank"></canvas></div>
+</div>
+<div class="card" style="margin-bottom:0">
+<div class="ctitle">確認済み企業 前年比成長率（2025年）</div>
+<div style="position:relative;height:200px"><canvas id="c-reform-growth"></canvas></div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ======== Tab 2: マンションリフォーム売上ランキング2025 ======== -->
+<div id="t2" class="tab-page">
+<div class="note">【出典】リフォーム産業新聞「マンションリフォーム売上ランキング2025」。<b>住友不動産Gが1位継続（254億円）。ニッカホームGとリノベるが100億超え達成。</b>2024年はトップ3が住不・ヤマダ・ニッカの順。2025年はリノベるが急成長でヤマダを抜き3位浮上。</div>
+<div class="kpi-row">
+<div class="kpi a"><div class="lb">マンションRF 1位</div><div class="vl">254<span style="font-size:13px">億円</span></div><div class="sb">住友不動産G（1位継続）</div></div>
+<div class="kpi g"><div class="lb">マンションRF 2位</div><div class="vl">106<span style="font-size:13px">億円</span></div><div class="sb">ニッカホームG（100億超え達成）</div></div>
+<div class="kpi"><div class="lb">マンションRF 3位</div><div class="vl">89.7<span style="font-size:13px">億円</span></div><div class="sb">リノベる（中古仲介×RF）</div></div>
+<div class="kpi a"><div class="lb">市場トレンド</div><div class="vl">中古+RF<span style="font-size:13px">↑</span></div><div class="sb">20-30代富裕層×ワンストップ拡大</div></div>
+<div class="kpi"><div class="lb">前年2位（参考）</div><div class="vl">ヤマダHD</div><div class="sb">2024年TOP3からランク変動</div></div>
+</div>
+
+<div class="g2e">
+<div class="card" style="margin-bottom:0">
+<div class="ctitle">マンションリフォーム売上ランキング2025（確認TOP3）</div>
+<div class="tw mh420"><table>
+<thead><tr><th>順位</th><th>企業グループ名</th><th>本社</th><th>業種</th><th>2025年 売上高(億円)</th><th>前年比</th><th>特徴・アプローチ観点</th></tr></thead>
+<tbody>
+<tr>
+  <td class="c"><span class="rk r1">1</span></td>
+  <td><b>住友不動産グループ</b> <span class="badge-top">最優先</span></td>
+  <td>東京都新宿区</td>
+  <td><span class="tag re">不動産</span></td>
+  <td class="num"><b>254</b></td>
+  <td class="num up">継続1位</td>
+  <td style="font-size:10px;color:var(--muted)">「マンション新築そっくりさん」専門部門設置。大型全面改装特化</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk r2">2</span></td>
+  <td><b>ニッカホームグループ</b> <span class="badge-attn">要注目</span></td>
+  <td>愛知県名古屋市</td>
+  <td><span class="tag rf">総合RF</span></td>
+  <td class="num"><b>106</b></td>
+  <td class="num up">100億超達成</td>
+  <td style="font-size:10px;color:var(--muted)">全国展開の総合リフォーム最大手。マンション専有部強化中</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk r3">3</span></td>
+  <td><b>リノベる株式会社</b> <span class="badge-attn">要注目</span></td>
+  <td>東京都港区</td>
+  <td><span class="tag re">不動産</span></td>
+  <td class="num"><b>89.7</b></td>
+  <td class="num up">急成長↑</td>
+  <td style="font-size:10px;color:var(--muted)">中古仲介×リノベWストップ。20-30代富裕層向け。単価上昇中</td>
+</tr>
+<tr class="row-gray">
+  <td class="c"><span class="rk rn">4〜</span></td>
+  <td colspan="4" style="color:var(--muted);font-style:italic">（4位以降は有料記事） <span class="badge-est">推定</span></td>
+  <td class="num">—</td>
+  <td style="font-size:10px;color:var(--muted)">★パナソニックホームズ、東急Re・デザイン等が候補</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk rn">参考2024</span></td>
+  <td><b>ヤマダホールディングス（2024年2位）</b></td>
+  <td>群馬県高崎市</td>
+  <td><span class="tag ko">小売</span></td>
+  <td class="num">—</td>
+  <td class="num fl">2024年2位→2025年順位変動</td>
+  <td style="font-size:10px;color:var(--muted)">家電×マンションRFで2024年2位。2025年はランク変動</td>
+</tr>
+</tbody>
+</table></div>
+<p class="src">出典：リフォーム産業新聞「マンションリフォーム売上ランキング2025」（2025年11月号）。2024年3位まで：住友不動産・ヤマダ・ニッカ。</p>
+</div>
+
+<div class="card" style="margin-bottom:0">
+<div class="ctitle">マンションリフォームTOP3 売上比較（2025年）</div>
+<div style="position:relative;height:280px"><canvas id="c-mansion"></canvas></div>
+<div class="note info" style="margin-top:10px;font-size:10px">
+<b>📌 PGコンサル着眼点</b><br>
+・住友不動産：「新築そっくりさん」が差別化軸。高単価×全面改装受注に注力<br>
+・ニッカホームG：全国178拠点。専有部の一般改装に幅広く対応<br>
+・リノベる：中古仲介スタートの20-30代富裕層需要獲得モデルが急拡大<br>
+→ <b>PGがアプローチすべき商材：大型・デザイン性高・省エネ提案</b>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ======== Tab 3: 業種別リフォーム売上ランキング2025 ======== -->
+<div id="t3" class="tab-page">
+<div class="note">【出典】リフォーム産業新聞「業種別リフォーム売上ランキング2025」（2025年11月号）。<b>8業種</b>（HM・総合RF・不動産デベ・専門工事・エネルギー・ビルダー・小売・賃貸）に分類。各業種1位を掲載。2〜5位は一部推定含む。</div>
+<div class="kpi-row">
+<div class="kpi hm" style="border-top-color:#1e40af"><div class="lb">HM業種1位</div><div class="vl" style="font-size:14px;color:#1e40af">積水ハウスG</div><div class="sb">1,838億円（+5%）</div></div>
+<div class="kpi rf" style="border-top-color:#166534"><div class="lb">総合RF業種1位</div><div class="vl" style="font-size:14px;color:#166534">ニッカホームG</div><div class="sb">643億円（+7%）</div></div>
+<div class="kpi ko" style="border-top-color:#854d0e"><div class="lb">小売業種1位</div><div class="vl" style="font-size:14px;color:#854d0e">ヤマダHD</div><div class="sb">920億円（+3%）</div></div>
+<div class="kpi bl" style="border-top-color:#6b21a8"><div class="lb">ビルダー業種1位</div><div class="vl" style="font-size:14px;color:#6b21a8">飯田グループHD</div><div class="sb">321億円（+17%）</div></div>
+<div class="kpi g"><div class="lb">最高成長業種</div><div class="vl">ビルダー</div><div class="sb">飯田グループ +17%</div></div>
+</div>
+
+<div class="g2e">
+<div class="card" style="margin-bottom:0">
+<div class="ctitle">業種別1位企業一覧（2025年）</div>
+<div class="tw mh420"><table>
+<thead><tr><th>業種</th><th>1位企業名</th><th>本社</th><th>売上高(億円)</th><th>前年比</th><th>アプローチ観点</th></tr></thead>
+<tbody>
+<tr>
+  <td><span class="tag hm">HM</span><br><small>ハウスメーカー</small></td>
+  <td><b>積水ハウスグループ</b> <span class="badge-top">最優先</span></td>
+  <td>大阪府大阪市</td>
+  <td class="num"><b>1,838.7</b></td>
+  <td class="num up">+5%</td>
+  <td style="font-size:10px;color:var(--muted)">圧倒的トップ。全国展開。RF部門独立</td>
+</tr>
+<tr>
+  <td><span class="tag rf">総合RF</span><br><small>総合リフォーム</small></td>
+  <td><b>ニッカホームグループ</b> <span class="badge-attn">要注目</span></td>
+  <td>愛知県名古屋市</td>
+  <td class="num"><b>643.1</b></td>
+  <td class="num up">+7%</td>
+  <td style="font-size:10px;color:var(--muted)">業種内1位。全国178拠点。高成長継続</td>
+</tr>
+<tr>
+  <td><span class="tag ko">小売</span><br><small>家電量販等</small></td>
+  <td><b>ヤマダホールディングス</b></td>
+  <td>群馬県高崎市</td>
+  <td class="num"><b>920.1</b></td>
+  <td class="num up">+3%</td>
+  <td style="font-size:10px;color:var(--muted)">家電量販系最大手。住宅RF×家電連携</td>
+</tr>
+<tr>
+  <td><span class="tag bl">ビルダー</span><br><small>ビルダー・工務店</small></td>
+  <td><b>飯田グループホールディングス</b> <span class="badge-attn">要注目</span></td>
+  <td>東京都武蔵野市</td>
+  <td class="num"><b>321</b></td>
+  <td class="num up">+17%</td>
+  <td style="font-size:10px;color:var(--muted)">建売分譲からRF戦略転換。業種内最高成長率</td>
+</tr>
+<tr class="row-gray">
+  <td><span class="tag re">不動産</span><br><small>不動産・デベ</small></td>
+  <td><b>（住友不動産G 推定）</b> <span class="badge-est">推定</span></td>
+  <td>東京都新宿区</td>
+  <td class="num">—</td>
+  <td class="num">—</td>
+  <td style="font-size:10px;color:var(--muted)">大型受注・マンションRFで圧倒的1位と推定</td>
+</tr>
+<tr class="row-gray">
+  <td><span class="tag sp">専工</span><br><small>専門工事店</small></td>
+  <td><b>（有料記事） <span class="badge-est">推定</span></b></td>
+  <td>—</td>
+  <td class="num">—</td>
+  <td class="num">—</td>
+  <td style="font-size:10px;color:var(--muted)">外壁・内装・設備等の専門工事系事業者</td>
+</tr>
+<tr class="row-gray">
+  <td><span class="tag" style="background:#ecfdf5;color:#065f46">エネ</span><br><small>エネルギー</small></td>
+  <td><b>（有料記事） <span class="badge-est">推定</span></b></td>
+  <td>—</td>
+  <td class="num">—</td>
+  <td class="num">—</td>
+  <td style="font-size:10px;color:var(--muted)">ガス・電力系。省エネ・太陽光・蓄電池RF</td>
+</tr>
+<tr class="row-gray">
+  <td><span class="tag" style="background:#f0fdf4;color:#14532d">賃貸</span><br><small>賃貸管理</small></td>
+  <td><b>（有料記事） <span class="badge-est">推定</span></b></td>
+  <td>—</td>
+  <td class="num">—</td>
+  <td class="num">—</td>
+  <td style="font-size:10px;color:var(--muted)">賃貸住宅管理・原状回復・入居者対応RF</td>
+</tr>
+</tbody>
+</table></div>
+<p class="src">出典：リフォーム産業新聞「業種別リフォーム売上ランキング2025」（2025年11月号）。エネルギー・専工・賃貸の1位は有料記事のため推定。</p>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div class="card" style="margin-bottom:0">
+<div class="ctitle">業種別1位企業 売上高比較（2025年 確認分）</div>
+<div style="position:relative;height:260px"><canvas id="c-gyoshu"></canvas></div>
+</div>
+<div class="card" style="margin-bottom:0">
+<div class="note info" style="font-size:10px;margin-bottom:0">
+<b>📌 PGコンサル 業種別攻略ポイント</b><br>
+<b>HM系（積水ハウス・大和・積水化学）：</b>グループRF法人へのコンサル提案。売上規模が大きく、全体戦略立案型の提案が刺さりやすい。<br>
+<b>総合RF系（ニッカホーム等）：</b>高成長中。フランチャイズ展開・新拠点開設支援の需要あり。<br>
+<b>小売系（ヤマダ等）：</b>家電量販との連携型。住宅RF売場強化・人材育成ニーズあり。<br>
+<b>ビルダー系（飯田G等）：</b>最高成長率+17%。RF事業強化中で新規参入企業へのコンサル需要高い。<br>
+<b>不動産系（住友不動産等）：</b>大型・マンション領域。高単価のコンサルに適する。
+</div>
+</div>
+</div>
+</div>
+
+<!-- 業種別 各社詳細 -->
+<div class="sec-hd"><span>📋</span>業種別ランキング 年次比較（確認分）</div>
+<div class="card">
+<div class="ctitle">業種別リフォーム売上ランキング 年次推移（各業種1位）</div>
+<div class="tw"><table>
+<thead><tr><th>業種</th><th>2025年1位企業</th><th>2025年 売上(億円)</th><th>2024年1位企業</th><th>変化</th></tr></thead>
+<tbody>
+<tr><td><span class="tag hm">HM</span></td><td><b>積水ハウスグループ</b></td><td class="num">1,838.7</td><td>積水ハウスグループ（連続）</td><td class="up">+5%</td></tr>
+<tr><td><span class="tag rf">総合RF</span></td><td><b>ニッカホームグループ</b></td><td class="num">643.1</td><td>ニッカホームグループ（連続）</td><td class="up">+7%</td></tr>
+<tr><td><span class="tag ko">小売</span></td><td><b>ヤマダホールディングス</b></td><td class="num">920.1</td><td>ヤマダホールディングス 886億（連続）</td><td class="up">+3.8%</td></tr>
+<tr><td><span class="tag bl">ビルダー</span></td><td><b>飯田グループHD</b></td><td class="num">321</td><td>飯田グループHD（連続）</td><td class="up">+17%</td></tr>
+</tbody>
+</table></div>
+<p class="src">2024年データ出典：リフォーム産業新聞「業種別リフォーム売上ランキング2024」。2024年小売1位は886億（ヤマダ）、ビルダー1位は飯田G。</p>
+</div>
+</div>
+
+<!-- ======== Tab 4: 買取再販年間販売戸数ランキング2025 ======== -->
+<div id="t4" class="tab-page">
+<div class="note">【出典】リフォーム産業新聞「買取再販年間販売戸数ランキング2025」。<b>カチタスが12年連続1位（5,597戸）。レジデンシャル不動産が+11%の高成長で2位キープ。</b>中古住宅の買取→リフォーム→販売（買取再販）事業者のランキング。</div>
+<div class="kpi-row">
+<div class="kpi a"><div class="lb">1位（12年連続）</div><div class="vl">5,597<span style="font-size:13px">戸</span></div><div class="sb">カチタス（前年比+1%）</div></div>
+<div class="kpi g"><div class="lb">2位（高成長）</div><div class="vl">2,106<span style="font-size:13px">戸</span></div><div class="sb">レジデンシャル不動産（+11%）</div></div>
+<div class="kpi"><div class="lb">3位</div><div class="vl">1,775<span style="font-size:13px">戸</span></div><div class="sb">リプライス（カチタスG）（+8%）</div></div>
+<div class="kpi a"><div class="lb">カチタス 売上高（別途）</div><div class="vl">1,295<span style="font-size:13px">億円</span></div><div class="sb">業界売上1位（参考）</div></div>
+<div class="kpi"><div class="lb">累計実績</div><div class="vl">8万棟<span style="font-size:13px">超</span></div><div class="sb">カチタス累計販売（全国最大）</div></div>
+</div>
+
+<div class="g2">
+<div class="card" style="margin-bottom:0">
+<div class="ctitle">買取再販年間販売戸数ランキング2025（確認企業）</div>
+<div class="tw mh420"><table>
+<thead><tr><th>順位</th><th>企業名</th><th>本社</th><th>業種</th><th>2025年 販売戸数</th><th>前年比</th><th>特徴・アプローチ観点</th></tr></thead>
+<tbody>
+<tr>
+  <td class="c"><span class="rk r1">1</span></td>
+  <td><b>株式会社カチタス</b> <span class="badge-top">最優先</span></td>
+  <td>群馬県桐生市</td>
+  <td><span class="tag ka">買取再販</span></td>
+  <td class="num"><b>5,597 戸</b></td>
+  <td class="num up">+1%</td>
+  <td style="font-size:10px;color:var(--muted)">12連覇。累計8万棟超。売上1,295億円。全国郊外主体</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk r2">2</span></td>
+  <td><b>レジデンシャル不動産株式会社</b> <span class="badge-attn">要注目</span></td>
+  <td>東京都足立区</td>
+  <td><span class="tag ka">買取再販</span></td>
+  <td class="num"><b>2,106 戸</b></td>
+  <td class="num up">+11%</td>
+  <td style="font-size:10px;color:var(--muted)">マンション買取再販専業1位。都市郊外エリア拡大中</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk r3">3</span></td>
+  <td><b>株式会社リプライス</b>（カチタスG）</td>
+  <td>愛知県名古屋市</td>
+  <td><span class="tag ka">買取再販</span></td>
+  <td class="num"><b>1,775 戸</b></td>
+  <td class="num up">+8%</td>
+  <td style="font-size:10px;color:var(--muted)">カチタスG傘下。累計1.5万戸超。住宅再生事業展開</td>
+</tr>
+<tr class="row-gray">
+  <td class="c"><span class="rk rn">4〜</span></td>
+  <td colspan="4" style="color:var(--muted);font-style:italic">（4位以降は有料記事） <span class="badge-est">推定</span></td>
+  <td class="num">—</td>
+  <td style="font-size:10px;color:var(--muted)">★エンリード不動産・オープンハウスG等が候補</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk rn">参考</span></td>
+  <td><b>エンリード不動産株式会社</b> <span class="badge-attn">要注目</span></td>
+  <td>—</td>
+  <td><span class="tag ka">買取再販</span></td>
+  <td class="num">—</td>
+  <td class="num up">売上伸び率 2位</td>
+  <td style="font-size:10px;color:var(--muted)">7部門ランクイン。売上高伸び率2位の急成長企業</td>
+</tr>
+</tbody>
+</table></div>
+<p class="src">出典：リフォーム産業新聞「買取再販年間販売戸数ランキング2025」、カチタスプレスリリース（2025年）。</p>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div class="card" style="margin-bottom:0">
+<div class="ctitle">販売戸数TOP3比較（2025年）</div>
+<div style="position:relative;height:250px"><canvas id="c-kaitori"></canvas></div>
+</div>
+<div class="card" style="margin-bottom:0">
+<div class="note info" style="font-size:10px;margin-bottom:0">
+<b>📌 PGコンサル 買取再販事業者向けポイント</b><br>
+・<b>カチタス：</b>全国規模。郊外中古戸建て専門。RF品質・コスト削減コンサルニーズ大<br>
+・<b>レジデンシャル：</b>マンション専業で急成長。リノベ品質・単価アップ提案に余地<br>
+・<b>リプライス：</b>カチタスGで中部〜全国展開。グループ戦略に沿ったRF提案が有効<br>
+・<b>エンリード：</b>伸び率2位の急成長。営業基盤強化ニーズあり<br>
+→ <b>中古RF品質向上・工期短縮・BIM/デジタル管理コンサルが刺さりやすい</b>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ======== Tab 5: マンション大規模修繕売上ランキング2026 ======== -->
+<div id="t5" class="tab-page">
+<div class="note">【出典】リフォーム産業新聞「マンション大規模修繕売上ランキング2026」（2026年1月号）。<b>大京穴吹建設が1位維持（497億円、+7%）。カシワバラ・コーポレーションが前回5位→3位に急上昇（+15%）。</b>建装工業は-5%の減少傾向。</div>
+<div class="kpi-row">
+<div class="kpi a"><div class="lb">大修繕 1位（1位維持）</div><div class="vl">497<span style="font-size:13px">億円</span></div><div class="sb">大京穴吹建設（+7%）</div></div>
+<div class="kpi"><div class="lb">大修繕 2位</div><div class="vl">402<span style="font-size:13px">億円</span></div><div class="sb">建装工業（-5% 減少傾向）</div></div>
+<div class="kpi g"><div class="lb">大修繕 3位（急上昇）</div><div class="vl">240<span style="font-size:13px">億円</span></div><div class="sb">カシワバラ・コーポレーション（+15%）</div></div>
+<div class="kpi a"><div class="lb">最高成長率（TOP3内）</div><div class="vl">+15%</div><div class="sb">カシワバラ（5位→3位急上昇）</div></div>
+<div class="kpi r"><div class="lb">2位の減収</div><div class="vl">-5%</div><div class="sb">建装工業（新規提案余地あり）</div></div>
+</div>
+
+<div class="g2">
+<div class="card" style="margin-bottom:0">
+<div class="ctitle">マンション大規模修繕売上ランキング2026（確認TOP3）</div>
+<div class="tw mh420"><table>
+<thead><tr><th>順位</th><th>企業名</th><th>本社</th><th>業種</th><th>2026年 売上高(億円)</th><th>前年比</th><th>前回順位</th><th>特徴・アプローチ観点</th></tr></thead>
+<tbody>
+<tr>
+  <td class="c"><span class="rk r1">1</span></td>
+  <td><b>大京穴吹建設株式会社</b> <span class="badge-top">最優先</span></td>
+  <td>香川県高松市</td>
+  <td><span class="tag ms">大修繕</span></td>
+  <td class="num"><b>497</b></td>
+  <td class="num up">+7%</td>
+  <td class="num c">前回1位</td>
+  <td style="font-size:10px;color:var(--muted)">外壁・屋上補修+設備機器劣化改修。耐震改修も。オープン設計プランで再提案強化</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk r2">2</span></td>
+  <td><b>建装工業株式会社</b></td>
+  <td>東京都港区</td>
+  <td><span class="tag ms">大修繕</span></td>
+  <td class="num"><b>402</b></td>
+  <td class="num dn">-5%</td>
+  <td class="num c">前回2位</td>
+  <td style="font-size:10px;color:var(--muted)">大手。売上減少傾向→新提案・差別化コンサル余地が大きい</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk r3">3</span></td>
+  <td><b>カシワバラ・コーポレーション</b> <span class="badge-attn">要注目</span></td>
+  <td>山口県岩国市</td>
+  <td><span class="tag ms">大修繕</span></td>
+  <td class="num"><b>240</b></td>
+  <td class="num up">+15%</td>
+  <td class="num c">前回5位</td>
+  <td style="font-size:10px;color:var(--muted)">急成長で3位浮上。地方展開強化中。全国への拡大戦略推進</td>
+</tr>
+<tr class="row-gray">
+  <td class="c"><span class="rk rn">4〜</span></td>
+  <td colspan="5" style="color:var(--muted);font-style:italic">（4位以降は有料記事） <span class="badge-est">推定</span></td>
+  <td class="num">—</td>
+  <td style="font-size:10px;color:var(--muted)">★長谷工リフォーム・三井住友建設等が候補</td>
+</tr>
+</tbody>
+</table></div>
+<p class="src">出典：リフォーム産業新聞「マンション大規模修繕売上ランキング2026」（2026年1月号）、日刊建設タイムズ2026年1月24日号。</p>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div class="card" style="margin-bottom:0">
+<div class="ctitle">大規模修繕TOP3 売上高比較（2026年）</div>
+<div style="position:relative;height:250px"><canvas id="c-daikibo"></canvas></div>
+</div>
+<div class="card" style="margin-bottom:0">
+<div class="note info" style="font-size:10px;margin-bottom:0">
+<b>📌 PGコンサル 大規模修繕事業者向けポイント</b><br>
+・<b>大京穴吹建設：</b>業界1位。設備機器劣化改修・耐震改修まで総合展開。再提案体制を強化中<br>
+・<b>建装工業：</b>-5%減少傾向。受注強化・営業力向上コンサルニーズが高い状態<br>
+・<b>カシワバラ：</b>急拡大中（5位→3位）。全国展開の管理体制構築・品質標準化コンサルに余地<br>
+→ <b>大規模修繕×PG：長期修繕計画策定支援・デジタル診断・省エネ改修提案</b>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ======== Tab 6: 建材・設備流通会社売上高ランキング2026 ======== -->
+<div id="t6" class="tab-page">
+<div class="note">【出典】リフォーム産業新聞「建材・設備流通会社売上高ランキング2026」。<b>渡辺パイプが1位（前年比+9%）。2025年に4,000億円突破して首位に立ち、2026年も堅持。</b>2021〜2024年1位だったJKホールディングスは2位に。★数値は検索結果サマリー参照のため正確値は有料記事要確認。</div>
+<div class="kpi-row">
+<div class="kpi a"><div class="lb">建材流通 1位</div><div class="vl">4,456<span style="font-size:13px">億円</span></div><div class="sb">渡辺パイプ（+9%）</div></div>
+<div class="kpi"><div class="lb">建材流通 2位</div><div class="vl">3,932<span style="font-size:13px">億円</span></div><div class="sb">JKホールディングス（+1%）</div></div>
+<div class="kpi"><div class="lb">建材流通 3位</div><div class="vl">2,670<span style="font-size:13px">億円</span></div><div class="sb">ユアサ商事（+6%）</div></div>
+<div class="kpi"><div class="lb">建材流通 4位</div><div class="vl">2,531<span style="font-size:13px">億円</span></div><div class="sb">住友林業（+7%）</div></div>
+<div class="kpi a"><div class="lb">建材流通 5位</div><div class="vl">2,430<span style="font-size:13px">億円</span></div><div class="sb">ナイス（+7%）</div></div>
+</div>
+
+<div class="g2e">
+<div class="card" style="margin-bottom:0">
+<div class="ctitle">建材・設備流通会社売上高ランキング2026（確認TOP5）</div>
+<div class="tw mh420"><table>
+<thead><tr><th>順位</th><th>企業名</th><th>本社</th><th>業種</th><th>2026年 売上高(億円)</th><th>前年比</th><th>特徴・アプローチ観点</th></tr></thead>
+<tbody>
+<tr>
+  <td class="c"><span class="rk r1">1</span></td>
+  <td><b>渡辺パイプ株式会社</b> <span class="badge-top">最優先</span></td>
+  <td>東京都千代田区</td>
+  <td><span class="tag bm">建材流通</span></td>
+  <td class="num"><b>4,456</b> <span class="badge-est">参考</span></td>
+  <td class="num up">+9%</td>
+  <td style="font-size:10px;color:var(--muted)">設備・管材系流通首位。2025年に4,000億突破</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk r2">2</span></td>
+  <td><b>JKホールディングス株式会社</b></td>
+  <td>—</td>
+  <td><span class="tag bm">建材流通</span></td>
+  <td class="num"><b>3,932</b> <span class="badge-est">参考</span></td>
+  <td class="num up">+1%</td>
+  <td style="font-size:10px;color:var(--muted)">2021〜2024年まで4年連続1位。総合建材商社</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk r3">3</span></td>
+  <td><b>ユアサ商事株式会社</b></td>
+  <td>東京都中央区</td>
+  <td><span class="tag bm">建材流通</span></td>
+  <td class="num"><b>2,670</b> <span class="badge-est">参考</span></td>
+  <td class="num up">+6%</td>
+  <td style="font-size:10px;color:var(--muted)">住設機器・建材商社。幅広い品揃えと全国網</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk rn">4</span></td>
+  <td><b>住友林業株式会社（流通）</b></td>
+  <td>東京都千代田区</td>
+  <td><span class="tag bm">建材流通</span></td>
+  <td class="num"><b>2,531</b> <span class="badge-est">参考</span></td>
+  <td class="num up">+7%</td>
+  <td style="font-size:10px;color:var(--muted)">木材・住宅資材の総合商社。HM系と連携強い</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk rn">5</span></td>
+  <td><b>ナイス株式会社</b></td>
+  <td>—</td>
+  <td><span class="tag bm">建材流通</span></td>
+  <td class="num"><b>2,430</b> <span class="badge-est">参考</span></td>
+  <td class="num up">+7%</td>
+  <td style="font-size:10px;color:var(--muted)">住宅建材専門商社。2023年3位実績あり</td>
+</tr>
+</tbody>
+</table></div>
+<p class="src">★本ランキングの数値はWebサーチ結果サマリーを参照。正確な数値はリフォーム産業新聞有料記事で確認推奨。出典：リフォーム産業新聞「建材・設備流通会社売上高ランキング2026」。</p>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div class="card" style="margin-bottom:0">
+<div class="ctitle">建材流通TOP5 売上高比較（2026年）</div>
+<div style="position:relative;height:260px"><canvas id="c-kenzai"></canvas></div>
+</div>
+</div>
+</div>
+
+<!-- 年次推移 -->
+<div class="card" style="margin-top:14px">
+<div class="ctitle">建材・設備流通 1位推移（年次比較）</div>
+<div class="tw"><table>
+<thead><tr><th>調査年</th><th>1位企業</th><th>2位企業</th><th>3位企業</th><th>特記事項</th></tr></thead>
+<tbody>
+<tr><td><b>2026</b></td><td><b>渡辺パイプ</b></td><td>JKホールディングス</td><td>ユアサ商事</td><td class="up">渡辺パイプ +9%増収で連続1位</td></tr>
+<tr><td>2025</td><td><b>渡辺パイプ</b></td><td>—</td><td>—</td><td class="up">4,000億円突破して初1位</td></tr>
+<tr><td>2024</td><td><b>JKホールディングス</b></td><td>渡辺パイプ</td><td>住友林業</td><td class="fl">JK 4年連続1位</td></tr>
+<tr><td>2023</td><td><b>JKホールディングス</b></td><td>渡辺パイプ</td><td>ナイス</td><td class="fl">JK 3年連続1位</td></tr>
+<tr><td>2022</td><td><b>JKホールディングス</b></td><td>渡辺パイプ</td><td>—</td><td class="fl">渡辺パイプが4位→2位に急上昇</td></tr>
+<tr><td>2021</td><td><b>JKホールディングス</b></td><td>伊藤忠テクノソリューションズ</td><td>SMB</td><td class="fl">JK 1位</td></tr>
+</tbody>
+</table></div>
+</div>
+</div>
+
+<!-- ======== Tab 7: 大型リフォーム受注数ランキング2025 ======== -->
+<div id="t7" class="tab-page">
+<div class="note">【出典】リフォーム産業新聞「大型リフォーム受注数ランキング2025」（2025年11月号）。<b>500万円以上のリフォームを「大型リフォーム」と定義。住友不動産ハウジング（新築そっくりさん）が5年連続1位（6,364件）。ミサワホームグループが2位に初ランクイン。</b></div>
+<div class="kpi-row">
+<div class="kpi a"><div class="lb">大型受注 1位（5連覇）</div><div class="vl">6,364<span style="font-size:13px">件</span></div><div class="sb">住友不動産ハウジング（新築そっくりさん）</div></div>
+<div class="kpi g"><div class="lb">大型受注 2位（初登場）</div><div class="vl">ミサワホームG</div><div class="sb">2位に初ランクイン</div></div>
+<div class="kpi"><div class="lb">大型受注 3位（推定）</div><div class="vl">住友林業ホームテック</div><div class="sb">★前年2位。2025年推定3位</div></div>
+<div class="kpi a"><div class="lb">大型定義</div><div class="vl">500万円<span style="font-size:13px">以上</span></div><div class="sb">高単価リフォーム件数ランキング</div></div>
+<div class="kpi"><div class="lb">前年（2024年）1位件数</div><div class="vl">6,279<span style="font-size:13px">件</span></div><div class="sb">住友不動産（前年比+1.3%）</div></div>
+</div>
+
+<div class="g2">
+<div class="card" style="margin-bottom:0">
+<div class="ctitle">大型リフォーム受注数ランキング2025（確認TOP3）</div>
+<div class="tw mh420"><table>
+<thead><tr><th>順位</th><th>企業名</th><th>本社</th><th>業種</th><th>2025年 受注件数</th><th>連覇・初回</th><th>特徴・アプローチ観点</th></tr></thead>
+<tbody>
+<tr>
+  <td class="c"><span class="rk r1">1</span></td>
+  <td><b>住友不動産ハウジング（新築そっくりさん）</b> <span class="badge-top">最優先</span></td>
+  <td>東京都新宿区</td>
+  <td><span class="tag re">不動産</span></td>
+  <td class="num"><b>6,364 件</b></td>
+  <td class="num up">5年連続1位</td>
+  <td style="font-size:10px;color:var(--muted)">大型RF特化ブランド。高単価×フルリノベ。国内最多件数</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk r2">2</span></td>
+  <td><b>ミサワホームグループ</b> <span class="badge-attn">要注目</span></td>
+  <td>東京都新宿区</td>
+  <td><span class="tag hm">HM</span></td>
+  <td class="num">—</td>
+  <td class="num up">初ランクイン</td>
+  <td style="font-size:10px;color:var(--muted)">HM系で大型RF急拡大。新規参入で高成長ポテンシャル</td>
+</tr>
+<tr>
+  <td class="c"><span class="rk r3">3</span></td>
+  <td><b>住友林業ホームテック</b> <span class="badge-est">推定</span></td>
+  <td>東京都千代田区</td>
+  <td><span class="tag hm">HM</span></td>
+  <td class="num">—</td>
+  <td class="num fl">前年2位（2025年推定3位）</td>
+  <td style="font-size:10px;color:var(--muted)">住友林業G。木造高付加価値RF。前年2位からランク変動</td>
+</tr>
+<tr class="row-gray">
+  <td class="c"><span class="rk rn">4〜</span></td>
+  <td colspan="4" style="color:var(--muted);font-style:italic">（4位以降は有料記事） <span class="badge-est">推定</span></td>
+  <td class="num">—</td>
+  <td style="font-size:10px;color:var(--muted)">★大和ハウスG・積水ハウスG等が候補</td>
+</tr>
+</tbody>
+</table></div>
+<p class="src">出典：リフォーム産業新聞「大型リフォーム受注数ランキング2025」（2025年11月号）、日刊建設タイムズ（日建タイムズ）2025年10月10日号。3位は前年データより推定。</p>
+
+<!-- 年次推移テーブル -->
+<div class="sec-hd" style="margin-top:14px"><span>📊</span>住友不動産ハウジング 大型受注件数 年次推移</div>
+<div class="tw"><table>
+<thead><tr><th>年</th><th>受注件数（件）</th><th>前年比</th><th>順位</th></tr></thead>
+<tbody>
+<tr><td><b>2025年</b></td><td class="num"><b>6,364</b></td><td class="num up">+1.4%</td><td class="c">1位（5連覇）</td></tr>
+<tr><td>2024年</td><td class="num">6,279</td><td class="num fl">—</td><td class="c">1位</td></tr>
+<tr><td>2023年</td><td class="num">7,099</td><td class="num up">記録的高水準</td><td class="c">1位</td></tr>
+<tr><td>2021年</td><td class="num">6,000超</td><td class="num fl">—</td><td class="c">1位</td></tr>
+</tbody>
+</table></div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:14px">
+<div class="card" style="margin-bottom:0">
+<div class="ctitle">住友不動産ハウジング 大型受注件数 年次推移</div>
+<div style="position:relative;height:280px"><canvas id="c-ogata"></canvas></div>
+</div>
+<div class="card" style="margin-bottom:0">
+<div class="note info" style="font-size:10px;margin-bottom:0">
+<b>📌 PGコンサル 大型リフォーム受注事業者向けポイント</b><br>
+・<b>住友不動産ハウジング：</b>5連覇の絶対王者。「新築そっくりさん」で大型RF市場を席巻。高付加価値提案手法・顧客開発体制のコンサルに余地<br>
+・<b>ミサワホームG：</b>初ランクイン。HM既存顧客へのRF横展開が急成長中。展開加速のための組織・体制構築ニーズ高い<br>
+・<b>住友林業ホームテック：</b>木造高付加価値RF特化。ZEH・省エネ改修との連携提案<br>
+→ <b>500万円超の大型RF領域：顧客体験設計・長期顧客化・DX化コンサルが有効</b>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+const CH={};
+function mkHBar(id,labels,data,colors,unit){
+  const ctx=document.getElementById(id);if(!ctx)return;
+  new Chart(ctx,{type:'bar',data:{labels,datasets:[{data,backgroundColor:colors,borderRadius:4}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw.toLocaleString()+(unit||'億円')}}},
+  scales:{x:{ticks:{font:{size:10}}},y:{ticks:{font:{size:10}}}}}});
+}
+function mkVBar(id,labels,data,colors,unit,minY){
+  const ctx=document.getElementById(id);if(!ctx)return;
+  new Chart(ctx,{type:'bar',data:{labels,datasets:[{data,backgroundColor:colors,borderRadius:4}]},
+  options:{responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw.toLocaleString()+(unit||'')}}},
+  scales:{y:{beginAtZero:!minY,min:minY||undefined,ticks:{font:{size:10}}},x:{ticks:{font:{size:10}}}}}});
+}
+function mkLineMulti(id,labels,sets){
+  const ctx=document.getElementById(id);if(!ctx)return;
+  new Chart(ctx,{type:'line',data:{labels,datasets:sets},
+  options:{responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10}}},
+  scales:{x:{ticks:{font:{size:10}}},y:{beginAtZero:true,ticks:{font:{size:10}}}}}});
+}
+
+// Tab1: 住宅リフォーム総合
+mkHBar('c-reform-rank',
+  ['積水ハウスG','大和ハウスG','ヤマダHD（参考）','住友不動産G','積水化学G','ニッカホームG','飯田G（参考）'],
+  [1838.7,1786.1,920.1,1180.5,1072,643.1,321],
+  ['#1a6b3c','#2a8a50','#854d0e','#3daa65','#56c47e','#f59e0b','#6b21a8']);
+// Tab1: Growth
+mkVBar('c-reform-growth',
+  ['積水ハウスG','大和ハウスG','積水化学G','ニッカホームG（最高）'],
+  [5,3,4,7],
+  ['#1a6b3c','#2a8a50','#56c47e','#f59e0b'],'%');
+
+// Tab2: マンションRF
+mkHBar('c-mansion',['住友不動産G','ニッカホームG','リノベる'],[254,106,89.7],['#1a6b3c','#f59e0b','#3daa65']);
+
+// Tab3: 業種別
+mkHBar('c-gyoshu',
+  ['積水ハウスG (HM)','ヤマダHD (小売)','ニッカホームG (総合RF)','飯田G (ビルダー)'],
+  [1838.7,920.1,643.1,321],
+  ['#1e40af','#854d0e','#166534','#6b21a8']);
+
+// Tab4: 買取再販
+mkHBar('c-kaitori',['カチタス','レジデンシャル不動産','リプライス'],[5597,2106,1775],['#1a6b3c','#f59e0b','#3daa65'],'戸');
+
+// Tab5: 大規模修繕
+mkHBar('c-daikibo',['大京穴吹建設','建装工業','カシワバラ・コーポレーション'],[497,402,240],['#1a6b3c','#6b7280','#f59e0b']);
+
+// Tab6: 建材流通
+mkHBar('c-kenzai',
+  ['渡辺パイプ','JKホールディングス','ユアサ商事','住友林業','ナイス'],
+  [4456,3932,2670,2531,2430],
+  ['#1a6b3c','#2a8a50','#3daa65','#56c47e','#f59e0b']);
+
+// Tab7: 大型受注
+mkVBar('c-ogata',['2021年','2023年','2024年','2025年'],[6000,7099,6279,6364],
+  ['#56c47e','#3daa65','#2a8a50','#1a6b3c'],'件',5500);
+
+// タブ切替
+function sel(id,btn){
+  document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
