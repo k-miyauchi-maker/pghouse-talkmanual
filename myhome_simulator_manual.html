@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>マイホームシミュレーター｜営業マニュアル｜ピュアグロースクラブ</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --navy:#16284d; --navy2:#1f3a6b; --blue:#2f6df0; --blue2:#1D5FA8;
+  --gr:#1f9d63; --rd:#c0392b; --or:#b97400;
+  --bg:#f6f7f9; --bg2:#eef0f4;
+  --wh:#1f2937; --mu:#6b7280; --mu2:#9CA3AF;
+  --bdr:rgba(22,40,77,0.18);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--wh);font-family:system-ui,-apple-system,'Hiragino Kaku Gothic ProN','Yu Gothic UI','Meiryo','Noto Sans JP',sans-serif;font-size:14px;line-height:1.7;}
+
+/* ── ナビ ── */
+.nav{background:linear-gradient(135deg,#16284d,#1f3a6b);color:#fff;position:sticky;top:0;z-index:300;box-shadow:0 2px 18px rgba(16,40,77,.25);}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:0;overflow-x:auto;height:60px;}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:13px;white-space:nowrap;flex-shrink:0;padding-right:18px;border-right:1px solid rgba(255,255,255,.18);margin-right:4px;}
+.brand-dot{width:10px;height:10px;border-radius:50%;background:#2f6df0;box-shadow:0 0 0 4px rgba(47,109,240,.3);}
+.nav-tab{padding:14px 14px;font-size:11px;font-weight:600;color:rgba(205,216,238,.85);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;font-family:'Noto Sans JP',sans-serif;flex-shrink:0;text-decoration:none;display:inline-flex;align-items:center;}
+.nav-tab:hover{color:#fff;}
+.nav-tab.on{color:#fff;border-bottom-color:#2f6df0;}
+
+/* ── ヒーロー ── */
+.hero{background:linear-gradient(135deg,#16284d,#1f3a6b);color:#fff;padding:48px 0 40px;position:relative;overflow:hidden;}
+.hero::before{content:"";position:absolute;right:-80px;top:-80px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(47,109,240,.4),transparent 65%);pointer-events:none;}
+.hero::after{content:"";position:absolute;left:-60px;bottom:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(31,157,99,.25),transparent 65%);pointer-events:none;}
+.hero-inner{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+.hero-badge{display:inline-block;background:rgba(47,109,240,.3);border:1px solid rgba(47,109,240,.5);border-radius:20px;padding:5px 14px;font-size:10px;font-weight:700;letter-spacing:.15em;color:#8db4ff;text-transform:uppercase;margin-bottom:14px;}
+.hero h1{font-size:clamp(22px,4vw,38px);font-weight:900;line-height:1.25;margin-bottom:12px;}
+.hero h1 .accent{color:#8db4ff;}
+.hero .lead{font-size:14px;color:#d7e0f3;max-width:700px;line-height:1.85;margin-bottom:8px;}
+.hero .note{font-size:11px;color:#9fb2d8;}
+.hero-stats{display:flex;gap:32px;margin-top:28px;flex-wrap:wrap;}
+.hero-stat{text-align:center;}
+.hero-stat .num{font-family:'DM Mono',monospace;font-size:26px;font-weight:700;color:#8db4ff;}
+.hero-stat .lbl{font-size:10px;color:#9fb2d8;margin-top:2px;}
+
+/* ── メインレイアウト ── */
+.main{max-width:1200px;margin:0 auto;padding:32px 24px 80px;}
+
+/* ── セクション ── */
+.section{margin-bottom:48px;}
+.sec-header{margin-bottom:24px;}
+.sec-badge{font-size:10px;font-weight:700;letter-spacing:.2em;color:#2f6df0;text-transform:uppercase;margin-bottom:8px;}
+.sec-title{font-size:clamp(18px,2.5vw,26px);font-weight:900;line-height:1.3;color:#16284d;}
+.sec-title .em{color:#2f6df0;}
+.sec-desc{font-size:13px;color:var(--mu);margin-top:8px;max-width:680px;line-height:1.85;}
+
+/* ── カード ── */
+.card{background:#fff;border:1px solid var(--bdr);border-radius:16px;padding:24px;margin-bottom:16px;box-shadow:0 2px 8px rgba(16,40,77,.07),0 8px 24px rgba(16,40,77,.04);}
+.card-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid rgba(22,40,77,.12);}
+.card-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.card-icon.blue{background:rgba(47,109,240,.1);}
+.card-icon.green{background:rgba(31,157,99,.1);}
+.card-icon.orange{background:rgba(185,116,0,.1);}
+.card-icon.red{background:rgba(192,57,43,.1);}
+.card-icon.navy{background:rgba(22,40,77,.1);}
+.card-title{font-size:14px;font-weight:800;color:#16284d;}
+.card-sub{font-size:11px;color:var(--mu);margin-top:1px;}
+
+/* ── タブ機能 ── */
+.tab-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:20px;}
+.tab-card{background:#fff;border:1.5px solid var(--bdr);border-radius:12px;padding:18px;transition:all .2s;cursor:default;}
+.tab-card:hover{border-color:#2f6df0;box-shadow:0 4px 16px rgba(47,109,240,.12);}
+.tab-card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.tab-num{width:28px;height:28px;border-radius:8px;background:var(--navy);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tab-name{font-size:13px;font-weight:800;color:#16284d;}
+.tab-desc{font-size:12px;color:var(--mu);line-height:1.7;}
+.tab-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px;}
+.tag{font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;background:rgba(47,109,240,.08);color:#2f6df0;border:1px solid rgba(47,109,240,.2);}
+.tag.green{background:rgba(31,157,99,.08);color:var(--gr);border-color:rgba(31,157,99,.2);}
+.tag.orange{background:rgba(185,116,0,.08);color:var(--or);border-color:rgba(185,116,0,.2);}
+
+/* ── ステップ ── */
+.steps{display:flex;flex-direction:column;gap:0;}
+.step{display:grid;grid-template-columns:56px 1fr;gap:0;position:relative;}
+.step:not(:last-child)::before{content:"";position:absolute;left:27px;top:52px;bottom:0;width:2px;background:rgba(47,109,240,.2);}
+.step-left{display:flex;flex-direction:column;align-items:center;padding-top:4px;}
+.step-num{width:36px;height:36px;border-radius:50%;background:var(--navy);color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 0 4px rgba(22,40,77,.1);}
+.step-num.blue{background:#2f6df0;box-shadow:0 0 0 4px rgba(47,109,240,.15);}
+.step-num.green{background:var(--gr);box-shadow:0 0 0 4px rgba(31,157,99,.15);}
+.step-body{padding:0 0 28px 16px;}
+.step-label{font-size:10px;font-weight:700;letter-spacing:.15em;color:#2f6df0;text-transform:uppercase;margin-bottom:4px;}
+.step-title{font-size:15px;font-weight:800;color:#16284d;margin-bottom:6px;}
+.step-text{font-size:13px;color:var(--mu);line-height:1.8;}
+.step-tip{background:rgba(47,109,240,.05);border-left:3px solid #2f6df0;border-radius:0 8px 8px 0;padding:10px 14px;margin-top:10px;font-size:12px;color:#16284d;line-height:1.7;}
+.step-tip strong{color:#2f6df0;}
+
+/* ── 操作ガイド ── */
+.op-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;}
+.op-card{background:#fff;border:1px solid var(--bdr);border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(16,40,77,.06);}
+.op-head{padding:12px 16px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;display:flex;align-items:center;gap:8px;}
+.op-head.c1{background:linear-gradient(135deg,#1D5FA8,#2f6df0);}
+.op-head.c2{background:linear-gradient(135deg,#1E7040,var(--gr));}
+.op-head.c3{background:linear-gradient(135deg,#9A6000,var(--or));}
+.op-head.c4{background:linear-gradient(135deg,#8B2020,var(--rd));}
+.op-head.c5{background:linear-gradient(135deg,#16284d,#1f3a6b);}
+.op-head.c6{background:linear-gradient(135deg,#5B3A8C,#7C4DC6);}
+.op-body{padding:16px;}
+.op-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;}
+.op-row:last-child{margin-bottom:0;}
+.op-bullet{width:20px;height:20px;border-radius:5px;background:rgba(47,109,240,.1);color:#2f6df0;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.op-text{font-size:12px;color:var(--wh);line-height:1.7;}
+.op-text b{color:#16284d;}
+
+/* ── シナリオ ── */
+.scenario{background:#fff;border:1.5px solid var(--bdr);border-radius:16px;padding:24px;margin-bottom:20px;box-shadow:0 2px 10px rgba(16,40,77,.06);}
+.sc-head{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px;}
+.sc-badge{flex-shrink:0;width:44px;height:44px;border-radius:12px;background:var(--navy);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.2;}
+.sc-meta{}
+.sc-type{font-size:10px;font-weight:700;letter-spacing:.15em;color:#2f6df0;text-transform:uppercase;margin-bottom:3px;}
+.sc-title{font-size:16px;font-weight:900;color:#16284d;}
+.sc-situation{background:rgba(22,40,77,.04);border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:var(--mu);line-height:1.8;}
+.sc-situation b{color:#16284d;}
+.sc-flow{display:flex;flex-direction:column;gap:8px;}
+.sc-step{display:flex;gap:10px;align-items:flex-start;}
+.sc-step-num{width:22px;height:22px;border-radius:50%;background:#2f6df0;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sc-step-text{font-size:13px;color:var(--wh);line-height:1.7;padding-top:2px;}
+.sc-step-text .tab-ref{display:inline-block;background:rgba(47,109,240,.1);color:#2f6df0;font-size:10px;font-weight:700;padding:1px 7px;border-radius:4px;margin:0 3px;}
+.sc-result{background:linear-gradient(135deg,rgba(31,157,99,.08),rgba(31,157,99,.03));border:1.5px solid rgba(31,157,99,.3);border-radius:10px;padding:12px 16px;margin-top:14px;}
+.sc-result-title{font-size:11px;font-weight:700;color:var(--gr);margin-bottom:5px;text-transform:uppercase;letter-spacing:.1em;}
+.sc-result-text{font-size:13px;color:var(--wh);line-height:1.75;}
+
+/* ── トーク例 ── */
+.talk-block{background:#fff;border:1px solid var(--bdr);border-radius:14px;margin-bottom:20px;overflow:hidden;box-shadow:0 2px 8px rgba(16,40,77,.06);}
+.talk-head{background:linear-gradient(135deg,#16284d,#1f3a6b);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:10px;}
+.talk-head-icon{font-size:20px;}
+.talk-head-meta{}
+.talk-head-type{font-size:9px;letter-spacing:.2em;color:#8db4ff;text-transform:uppercase;margin-bottom:2px;}
+.talk-head-title{font-size:14px;font-weight:800;}
+.talk-body{padding:20px;}
+.talk-scene{font-size:11px;color:var(--mu);background:var(--bg);border-radius:8px;padding:10px 14px;margin-bottom:16px;line-height:1.7;}
+.talk-scene b{color:#16284d;}
+.chat{display:flex;flex-direction:column;gap:12px;}
+.chat-msg{display:flex;gap:10px;align-items:flex-start;}
+.chat-msg.client{flex-direction:row;}
+.chat-msg.sales{flex-direction:row-reverse;}
+.chat-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-weight:700;font-size:12px;}
+.chat-avatar.client{background:#e5e7eb;color:#374151;}
+.chat-avatar.sales{background:var(--navy);color:#fff;}
+.chat-bubble{max-width:75%;border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.75;}
+.chat-msg.client .chat-bubble{background:#f3f4f6;color:#1f2937;border-radius:4px 12px 12px 12px;}
+.chat-msg.sales .chat-bubble{background:linear-gradient(135deg,#1D5FA8,#2f6df0);color:#fff;border-radius:12px 4px 12px 12px;}
+.chat-msg.sales .chat-bubble b{color:#8db4ff;}
+.chat-msg.sales .chat-bubble .tool-hint{display:inline-block;background:rgba(255,255,255,.2);border-radius:4px;padding:1px 8px;font-size:10px;font-weight:700;margin:0 2px;}
+.chat-note{font-size:11px;margin-top:8px;padding:8px 12px;background:rgba(47,109,240,.06);border-radius:8px;color:#2f6df0;font-weight:600;}
+
+/* ── コールアウト ── */
+.callout{border-radius:12px;padding:16px 20px;margin-bottom:16px;display:flex;gap:14px;align-items:flex-start;}
+.callout.blue{background:rgba(47,109,240,.07);border:1.5px solid rgba(47,109,240,.25);}
+.callout.green{background:rgba(31,157,99,.07);border:1.5px solid rgba(31,157,99,.25);}
+.callout.orange{background:rgba(185,116,0,.07);border:1.5px solid rgba(185,116,0,.25);}
+.callout.red{background:rgba(192,57,43,.07);border:1.5px solid rgba(192,57,43,.25);}
+.callout-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.callout-body{flex:1;}
+.callout-title{font-size:12px;font-weight:800;color:#16284d;margin-bottom:4px;}
+.callout.blue .callout-title{color:#1D5FA8;}
+.callout.green .callout-title{color:var(--gr);}
+.callout.orange .callout-title{color:var(--or);}
+.callout.red .callout-title{color:var(--rd);}
+.callout-text{font-size:12px;color:var(--mu);line-height:1.8;}
+
+/* ── テーブル ── */
+.tbl-wrap{overflow-x:auto;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;}
+th{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:var(--navy);padding:10px 12px;text-align:left;font-weight:700;}
+td{padding:10px 12px;font-size:13px;border-bottom:1px solid rgba(0,0,0,.06);vertical-align:top;line-height:1.6;}
+tr:nth-child(even) td{background:rgba(22,40,77,.025);}
+td b{color:#16284d;}
+td .blue{color:#2f6df0;font-weight:700;}
+td .green{color:var(--gr);font-weight:700;}
+
+/* ── KPI帯 ── */
+.kpi-strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:20px;}
+.kpi-card{background:#fff;border:1px solid var(--bdr);border-radius:12px;padding:16px;text-align:center;box-shadow:0 1px 4px rgba(16,40,77,.06);}
+.kpi-num{font-family:'DM Mono',monospace;font-size:28px;font-weight:700;color:#2f6df0;line-height:1;}
+.kpi-unit{font-size:11px;color:var(--mu);margin-top:4px;}
+
+/* ── 区切り ── */
+.divider{height:1px;background:var(--bdr);margin:32px 0;}
+
+/* ── 印刷 ── */
+.print-btn-bar{display:flex;justify-content:flex-end;margin-bottom:24px;}
+.print-btn{display:flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;border:1px solid rgba(47,109,240,.35);background:#fff;color:#2f6df0;font-family:'Noto Sans JP',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .16s;}
+.print-btn:hover{background:#2f6df0;color:#fff;}
+.print-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;}
+
+/* ── フッター ── */
+footer{max-width:1200px;margin:0 auto;padding:16px 24px 40px;font-size:11px;color:var(--mu);line-height:1.9;border-top:1px solid var(--bdr);}
+footer a{color:#2f6df0;text-decoration:none;}
+
+/* ── アンカー対応 ── */
+[id]{scroll-margin-top:72px;}
+
+/* ── チェックリスト ── */
+.checklist{list-style:none;padding:0;}
+.checklist li{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px;color:var(--wh);line-height:1.7;}
+.checklist li:last-child{border-bottom:none;}
+.checklist li::before{content:"✓";width:22px;height:22px;border-radius:50%;background:var(--gr);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+
+/* ── 強調ボックス ── */
+.highlight-box{background:linear-gradient(135deg,#16284d,#1f3a6b);color:#fff;border-radius:16px;padding:24px 28px;margin-bottom:20px;}
+.highlight-box h3{font-size:16px;font-weight:800;margin-bottom:10px;color:#8db4ff;}
+.highlight-box p{font-size:13px;color:#d7e0f3;line-height:1.8;}
+.highlight-box .big-num{font-family:'DM Mono',monospace;font-size:36px;font-weight:700;color:#8db4ff;}
+
+@media(max-width:768px){
+  .tab-cards{grid-template-columns:1fr;}
+  .op-grid{grid-template-columns:1fr;}
+  .chat-bubble{max-width:88%;}
+  .hero-stats{gap:20px;}
+}
+@media print{
+  .nav,.print-btn-bar{display:none!important;}
+  .hero{padding:20px 0;}
+  body{font-size:12px;}
+  .card,.scenario,.talk-block{break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+
+<!-- ナビゲーション -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="brand">
+      <div class="brand-dot"></div>
+      <span>ピュアグロースクラブ</span>
+    </div>
+    <a href="#overview" class="nav-tab on">ツール概要</a>
+    <a href="#operation" class="nav-tab">①操作説明</a>
+    <a href="#howto" class="nav-tab">②具体的使い方</a>
+    <a href="#scenario" class="nav-tab">③商談シナリオ</a>
+    <a href="#talk" class="nav-tab">④トップ営業マントーク例</a>
+  </div>
+</nav>
+
+<!-- ヒーロー -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">Sales Manual — ピュアグロースクラブ 会員企業 営業スタッフ向け</div>
+    <h1>🤖 AIミヤウチ社長の<br><span class="accent">マイホームシミュレーター</span><br>営業活用マニュアル</h1>
+    <p class="lead">住宅営業の商談で「数字の見える化」を武器にする。資金計画・FP・太陽光・ライフサイクル・投資の5つのシミュレーションで、お客様の不安を確信に変えるプロ営業ツールです。</p>
+    <p class="note">Powered by ピュアグロース株式会社｜ピュアグロースクラブ会員専用</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">6</div><div class="lbl">シミュレーション機能</div></div>
+      <div class="hero-stat"><div class="num">5</div><div class="lbl">商談シナリオ</div></div>
+      <div class="hero-stat"><div class="num">30+</div><div class="lbl">トークスクリプト例</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+<div class="print-btn-bar">
+  <button class="print-btn" onclick="window.print()">
+    <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+    印刷 / PDF保存
+  </button>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     ツール概要
+════════════════════════════════════════════════ -->
+<section class="section" id="overview">
+  <div class="sec-header">
+    <div class="sec-badge">Tool Overview</div>
+    <h2 class="sec-title">マイホームシミュレーターとは</h2>
+    <p class="sec-desc">ピュアグロースクラブが顧問先の会員企業向けに提供する、住宅商談専用の数値シミュレーションツールです。お客様の目の前でリアルタイムに数字を動かし、「感覚」ではなく「根拠」で背中を押します。</p>
+  </div>
+
+  <div class="highlight-box">
+    <h3>このツールが生み出す最大の価値</h3>
+    <p>お客様は「月々いくら払えるか？」「本当に大丈夫か？」という漠然とした不安を持っています。このシミュレーターは、その不安を<b style="color:#fff">具体的な数字と視覚的なグラフ</b>に変換し、「自分の場合はどうなるか」を実感させることができます。数字が見えた瞬間、商談は一段階深まります。</p>
+  </div>
+
+  <div class="tab-cards">
+    <div class="tab-card">
+      <div class="tab-card-head">
+        <div class="tab-num">1</div>
+        <div class="tab-name">📋 資金計画・返済比率</div>
+      </div>
+      <div class="tab-desc">土地・建物・諸経費・自己資金を入力。ローン期間・金利の比較、月々差額、年収倍率、返済負担率をリアルタイム表示。「年数比較」「金利比較」「月額逆算」の3モードで多角的に提示できます。</div>
+      <div class="tab-tags">
+        <span class="tag">月返済額</span>
+        <span class="tag">返済負担率</span>
+        <span class="tag">年収倍率</span>
+        <span class="tag">総返済額比較</span>
+      </div>
+    </div>
+    <div class="tab-card">
+      <div class="tab-card-head">
+        <div class="tab-num">2</div>
+        <div class="tab-name">👨‍👩‍👧 FPシミュレーション</div>
+      </div>
+      <div class="tab-desc">家族構成・年齢・年収・支出・教育費・老後資金を入力し、30年間のキャッシュフローを見える化。資金が黒字・赤字になる年を一目で確認できます。</div>
+      <div class="tab-tags">
+        <span class="tag">生涯キャッシュフロー</span>
+        <span class="tag">教育費</span>
+        <span class="tag green">老後資金</span>
+        <span class="tag">貯蓄推移</span>
+      </div>
+    </div>
+    <div class="tab-card">
+      <div class="tab-card-head">
+        <div class="tab-num">3</div>
+        <div class="tab-name">☀️ 太陽光・蓄電池</div>
+      </div>
+      <div class="tab-desc">設置容量・方位・電力会社・蓄電池の有無を設定。初期投資の回収年数と25年累積純便益を試算。「元が取れる」数字を見せることで太陽光・蓄電池のクロスセルに繋げます。</div>
+      <div class="tab-tags">
+        <span class="tag orange">回収年数</span>
+        <span class="tag orange">25年累積便益</span>
+        <span class="tag">CO₂削減</span>
+        <span class="tag">売電収入</span>
+      </div>
+    </div>
+    <div class="tab-card">
+      <div class="tab-card-head">
+        <div class="tab-num">4</div>
+        <div class="tab-name">🏡 ライフサイクルコスト</div>
+      </div>
+      <div class="tab-desc">住宅取得と賃貸継続を30年で比較。光熱費・修繕費・固定資産税・家賃などをすべて含めた「真のコスト」を可視化。「賃貸vs購入」の論点を数字で解決します。</div>
+      <div class="tab-tags">
+        <span class="tag green">購入vs賃貸</span>
+        <span class="tag">累積コスト</span>
+        <span class="tag">光熱費</span>
+        <span class="tag">修繕費</span>
+      </div>
+    </div>
+    <div class="tab-card">
+      <div class="tab-card-head">
+        <div class="tab-num">5</div>
+        <div class="tab-name">📈 投資シミュレーション</div>
+      </div>
+      <div class="tab-desc">長期ローンと短期ローンの月々差額をNISA・投資信託（S&P500・オルカン等）で運用した場合の資産推移を試算。「月々の差額が将来の資産になる」ことを視覚化します。</div>
+      <div class="tab-tags">
+        <span class="tag green">NISA非課税</span>
+        <span class="tag">S&P500</span>
+        <span class="tag">資産推移</span>
+        <span class="tag">3シナリオ</span>
+      </div>
+    </div>
+    <div class="tab-card">
+      <div class="tab-card-head">
+        <div class="tab-num">6</div>
+        <div class="tab-name">📄 資金計画書</div>
+      </div>
+      <div class="tab-desc">シミュレーション結果をもとに、お客様名・担当者・日付を入力して見積書・資金計画書を作成・印刷。商談後に手渡せる提案書として活用できます。</div>
+      <div class="tab-tags">
+        <span class="tag">見積書作成</span>
+        <span class="tag">PDF印刷</span>
+        <span class="tag">提案書</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout blue">
+    <div class="callout-icon">💡</div>
+    <div class="callout-body">
+      <div class="callout-title">活用の基本原則</div>
+      <div class="callout-text">タブは左から順番に使う必要はありません。お客様の「今の関心事」に合わせてタブを選び、その場でシミュレーションしてください。まず「資金計画」で借入可能額を確認し、「FP」で長期安定性を示し、「太陽光」でランニングコスト優位性を見せる——このような流れが商談の説得力を高めます。</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════
+     ①操作説明
+════════════════════════════════════════════════ -->
+<section class="section" id="operation">
+  <div class="sec-header">
+    <div class="sec-badge">① Operation Guide</div>
+    <h2 class="sec-title">操作説明 ─ 各タブの使い方</h2>
+    <p class="sec-desc">各タブの入力項目と操作手順を解説します。ブラウザで開くだけですぐに使えます（インストール不要）。</p>
+  </div>
+
+  <!-- 基本操作 -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon blue">🖥️</div>
+      <div>
+        <div class="card-title">基本操作とポイント</div>
+        <div class="card-sub">ツール全体に共通するUI操作</div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-left"><div class="step-num blue">1</div></div>
+        <div class="step-body">
+          <div class="step-label">ツールを開く</div>
+          <div class="step-title">HTMLファイルをブラウザで開く</div>
+          <div class="step-text">ダウンロードした HTMLファイルをダブルクリック、またはブラウザにドラッグ＆ドロップするだけで起動します。インターネット接続不要でオフライン動作します。</div>
+          <div class="step-tip"><strong>推奨ブラウザ：</strong>Chrome / Edge / Safari（最新版）。スマートフォンでも動作しますが、商談ではタブレット・PCがおすすめです。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num blue">2</div></div>
+        <div class="step-body">
+          <div class="step-label">タブ切り替え</div>
+          <div class="step-title">上部のナビゲーションでタブを切り替える</div>
+          <div class="step-text">「📋 資金計画」「👨‍👩‍👧 FPシミュレーション」「☀️ 太陽光・蓄電池」「🏡 ライフサイクルコスト」「📈 投資シミュレーション」「📄 資金計画書」の6タブが選択できます。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num blue">3</div></div>
+        <div class="step-body">
+          <div class="step-label">スライダー操作</div>
+          <div class="step-title">スライダーをドラッグして数値をリアルタイム変更</div>
+          <div class="step-text">すべての数値入力にスライダーが用意されています。ドラッグするだけで即座に計算結果が更新されます。お客様の目の前で動かして「自分の数字」を体感させましょう。</div>
+          <div class="step-tip"><strong>コツ：</strong>スライダーをクリックしてから、キーボードの「←」「→」で細かく調整できます。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num blue">4</div></div>
+        <div class="step-body">
+          <div class="step-label">印刷・PDF保存</div>
+          <div class="step-title">「印刷 / PDF保存」ボタンで商談後の資料を作成</div>
+          <div class="step-text">各タブ右上の「🖨️ 印刷 / PDF保存」ボタンをクリックするとブラウザの印刷画面が開きます。「PDFに保存」を選ぶとPDFファイルとして保存可能。商談後にお客様へ手渡せます。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 各タブ操作ガイド -->
+  <h3 style="font-size:16px;font-weight:800;color:#16284d;margin:24px 0 16px;">各タブの入力ガイド</h3>
+  <div class="op-grid">
+
+    <div class="op-card">
+      <div class="op-head c1">📋 タブ1 — 資金計画・返済比率</div>
+      <div class="op-body">
+        <div class="op-row"><div class="op-bullet">1</div><div class="op-text"><b>物件価格の内訳</b>：土地価格・建物価格・諸経費を入力。自動で総額・借入金額・自己資金比率が計算されます。</div></div>
+        <div class="op-row"><div class="op-bullet">2</div><div class="op-text"><b>ローン種別</b>：「単独ローン」か「ペアローン」を選択。ペアローンは本人・配偶者の年収を入力すると合算年収で計算します。</div></div>
+        <div class="op-row"><div class="op-bullet">3</div><div class="op-text"><b>比較モード選択</b>：「年数で比較」「金利で比較」「希望額から逆算」の3モードで用途に応じて切り替えます。</div></div>
+        <div class="op-row"><div class="op-bullet">4</div><div class="op-text"><b>健全性チェック</b>：返済負担率（適正≤25%）・自己資金比率（推奨10%+）・年収倍率（適正≤7倍）がリング表示されます。</div></div>
+        <div class="op-row"><div class="op-bullet">5</div><div class="op-text"><b>プランA vs B 比較</b>：月々差額・追加利息・余裕額が一覧表示されます。「月々差額を投資へ」の導線として活用できます。</div></div>
+      </div>
+    </div>
+
+    <div class="op-card">
+      <div class="op-head c5">👨‍👩‍👧 タブ2 — FPシミュレーション</div>
+      <div class="op-body">
+        <div class="op-row"><div class="op-bullet">1</div><div class="op-text"><b>家族構成</b>：「＋ 家族を追加」ボタンで家族メンバーを入力。各人の年齢を変更できます。子どもの人数が増えると教育費が自動加算されます。</div></div>
+        <div class="op-row"><div class="op-bullet">2</div><div class="op-text"><b>収入・キャリア</b>：本人年収・年収上昇率・配偶者年収・定年退職年齢・退職金を入力します。</div></div>
+        <div class="op-row"><div class="op-bullet">3</div><div class="op-text"><b>月間生活費</b>：基本生活費・生活費上昇率・教育費（子1人あたり総額）・ピーク年齢を設定します。</div></div>
+        <div class="op-row"><div class="op-bullet">4</div><div class="op-text"><b>老後・年金</b>：年金受給月額・老後月間生活費・現在の金融資産を入力します。</div></div>
+        <div class="op-row"><div class="op-bullet">5</div><div class="op-text"><b>グラフ確認</b>：年次キャッシュフロー・貯蓄推移・年収推移が表示されます。赤字年が一目でわかり、対策提案の根拠になります。</div></div>
+      </div>
+    </div>
+
+    <div class="op-card">
+      <div class="op-head c3">☀️ タブ3 — 太陽光・蓄電池</div>
+      <div class="op-body">
+        <div class="op-row"><div class="op-bullet">1</div><div class="op-text"><b>パネル設定</b>：設置容量（kW）・設置費用単価を入力。設置方位（南〜北）を選ぶと発電量係数が自動反映されます。</div></div>
+        <div class="op-row"><div class="op-bullet">2</div><div class="op-text"><b>電力会社選択</b>：地域の電力会社を選ぶと単価が自動設定されます。電気代上昇率・売電単価（FIT）・自家消費率も調整できます。</div></div>
+        <div class="op-row"><div class="op-bullet">3</div><div class="op-text"><b>蓄電池</b>：「設置する」を選ぶと容量・費用・寿命を入力。自家消費率を50〜80%に上げると便益が大幅に増加します。</div></div>
+        <div class="op-row"><div class="op-bullet">4</div><div class="op-text"><b>回収年数を確認</b>：「回収年数」が自動計算されます。蓄電池あり・なしの比較で「どちらがお得か」を即座に提示できます。</div></div>
+        <div class="op-row"><div class="op-bullet">5</div><div class="op-text"><b>年次テーブル</b>：25年間の年次詳細（発電量・電気代削減・売電収入・純便益・累積）が一覧で確認できます。</div></div>
+      </div>
+    </div>
+
+    <div class="op-card">
+      <div class="op-head c2">🏡 タブ4 — ライフサイクルコスト</div>
+      <div class="op-body">
+        <div class="op-row"><div class="op-bullet">1</div><div class="op-text"><b>家族構成選択</b>：単身・夫婦2人・3人家族・4人家族から選択。光熱費の基準値が変わります。</div></div>
+        <div class="op-row"><div class="op-bullet">2</div><div class="op-text"><b>光熱費・水道代</b>：電気代・ガス代・水道代の月額を入力します。太陽光を設置した場合の削減後数値を入れると、より正確な比較ができます。</div></div>
+        <div class="op-row"><div class="op-bullet">3</div><div class="op-text"><b>住宅ランニングコスト</b>：修繕積立・固定資産税・火災保険・管理費を入力します。</div></div>
+        <div class="op-row"><div class="op-bullet">4</div><div class="op-text"><b>賃貸コスト比較</b>：「お客様が今払っている家賃」または「同条件での想定賃料」を入力。賃貸費上昇率も設定できます。</div></div>
+        <div class="op-row"><div class="op-bullet">5</div><div class="op-text"><b>グラフで確認</b>：「住宅取得 vs 賃貸 累積コスト比較」グラフで、どの時点で損益分岐点を迎えるかを視覚的に示します。</div></div>
+      </div>
+    </div>
+
+    <div class="op-card">
+      <div class="op-head c2">📈 タブ5 — 投資シミュレーション</div>
+      <div class="op-body">
+        <div class="op-row"><div class="op-bullet">1</div><div class="op-text"><b>引継ぎ確認</b>：タブ1の資金計画から「月々差額」が自動で引き継がれます。「差額を投資に回す」を選択します。</div></div>
+        <div class="op-row"><div class="op-bullet">2</div><div class="op-text"><b>投資金額設定</b>：「差額を自動反映」または「手動で設定」を選択できます。</div></div>
+        <div class="op-row"><div class="op-bullet">3</div><div class="op-text"><b>投資先選択</b>：S&P500・オルカン・FANG+・日経225・カスタムから選択。各商品に楽観/通常/悲観の3シナリオが設定済みです。</div></div>
+        <div class="op-row"><div class="op-bullet">4</div><div class="op-text"><b>NISA設定</b>：NISA適用/課税口座を選択。NISA年間投資枠（12〜240万円）を設定すると、非課税効果が自動計算されます。</div></div>
+        <div class="op-row"><div class="op-bullet">5</div><div class="op-text"><b>3シナリオグラフ</b>：楽観・通常・悲観の資産推移グラフを重ねて表示。「最悪でもこのくらい」の安心感を提供できます。</div></div>
+      </div>
+    </div>
+
+    <div class="op-card">
+      <div class="op-head c5">📄 タブ6 — 資金計画書</div>
+      <div class="op-body">
+        <div class="op-row"><div class="op-bullet">1</div><div class="op-text"><b>お客様名入力</b>：見積書の宛名欄にお客様名を入力します。</div></div>
+        <div class="op-row"><div class="op-bullet">2</div><div class="op-text"><b>金額編集</b>：各費用項目の金額を直接クリックして修正できます。行の追加・削除も可能です。</div></div>
+        <div class="op-row"><div class="op-bullet">3</div><div class="op-text"><b>借入計画確認</b>：ローン概要（借入金額・金利・返済期間・月額）が自動表示されます。</div></div>
+        <div class="op-row"><div class="op-bullet">4</div><div class="op-text"><b>印刷・PDF化</b>：「印刷 / PDF保存」ボタンで資金計画書として出力。商談当日にその場でお客様に手渡しできます。</div></div>
+        <div class="op-row"><div class="op-bullet">5</div><div class="op-text"><b>備考欄</b>：特記事項・次回アポイント・条件確認事項をメモとして入力できます。</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout orange">
+    <div class="callout-icon">⚠️</div>
+    <div class="callout-body">
+      <div class="callout-title">免責事項（必ずお客様に説明すること）</div>
+      <div class="callout-text">このシミュレーターは概算試算ツールです。実際の融資審査・金利・税額は金融機関・税務署の判断によります。「参考数値として活用いただき、詳細はファイナンシャルプランナーや金融機関にご確認ください」と必ずお伝えください。</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════
+     ②具体的使い方
+════════════════════════════════════════════════ -->
+<section class="section" id="howto">
+  <div class="sec-header">
+    <div class="sec-badge">② How to Use</div>
+    <h2 class="sec-title">具体的使い方 ─ 場面別活用法</h2>
+    <p class="sec-desc">商談のフェーズごとに「どのタブを」「どう使うか」を具体的に解説します。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon blue">📋</div>
+      <div>
+        <div class="card-title">商談前の準備（5分）</div>
+        <div class="card-sub">事前に入力しておくと商談がスムーズに進みます</div>
+      </div>
+    </div>
+    <ul class="checklist">
+      <li>事前ヒアリング情報（年収・家族構成・希望予算・頭金）をメモしておく</li>
+      <li>物件候補の土地価格・建物価格・諸経費を確認しておく</li>
+      <li>お客様の居住エリアの電力会社を確認しておく（太陽光シミュレーション用）</li>
+      <li>比較用の賃貸相場（現家賃または周辺相場）を調べておく</li>
+      <li>ツールをブラウザで開いておき、商談开始と同時に動かせる状態にしておく</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon green">🎯</div>
+      <div>
+        <div class="card-title">場面別タブ活用マトリクス</div>
+        <div class="card-sub">お客様の状況・関心事に応じてタブを選択する</div>
+      </div>
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>お客様の状況・発言</th><th>最適なタブ</th><th>見せるべき数字・グラフ</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>「月々の支払いはいくらになりますか？」</td><td><span class="blue">📋 資金計画</span></td><td>プランA vs B の月々返済額・返済負担率</td></tr>
+          <tr><td>「うちの年収で借りられますか？」</td><td><span class="blue">📋 資金計画</span> → <b>逆算モード</b></td><td>月額から借入可能額・購入可能総額</td></tr>
+          <tr><td>「電気代が心配です」「光熱費を抑えたい」</td><td><span class="blue">☀️ 太陽光・蓄電池</span></td><td>電気代削減額・回収年数・25年純便益</td></tr>
+          <tr><td>「賃貸でいいかなとも思っています」</td><td><span class="blue">🏡 ライフサイクルコスト</span></td><td>30年の累積コスト比較グラフ・損益分岐点</td></tr>
+          <tr><td>「子供の教育費が心配で…」</td><td><span class="blue">👨‍👩‍👧 FPシミュレーション</span></td><td>教育費ピーク年・30年キャッシュフロー</td></tr>
+          <tr><td>「老後の資金も考えないといけない」</td><td><span class="blue">👨‍👩‍👧 FPシミュレーション</span></td><td>老後の貯蓄残高推移・年金+退職金の実力</td></tr>
+          <tr><td>「長いローンと短いローン、どちらがいい？」</td><td><span class="blue">📋 資金計画</span> → <b>差額投資</b></td><td>月々差額・差額をNISAに回した場合の試算</td></tr>
+          <tr><td>「今日の話をまとめて持ち帰りたい」</td><td><span class="blue">📄 資金計画書</span></td><td>PDF印刷・お客様名入りの資金計画書</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon navy">⚡</div>
+      <div>
+        <div class="card-title">「逆算モード」の効果的な使い方</div>
+        <div class="card-sub">「月々いくらまでなら払える？」から住宅予算を逆算する最強の入口</div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-left"><div class="step-num">1</div></div>
+        <div class="step-body">
+          <div class="step-title">タブ1「資金計画」→「希望額から逆算」を選択</div>
+          <div class="step-text">比較モード切り替えスイッチの「💡 希望額から逆算」ボタンをクリック。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num">2</div></div>
+        <div class="step-body">
+          <div class="step-title">「月々いくら払えますか？」をお客様に聞く</div>
+          <div class="step-text">「月々返済額」スライダーをお客様の希望額（例：10万円）に合わせます。ボーナス払いがある場合はボーナス額も設定します。</div>
+          <div class="step-tip"><strong>効果：</strong>「今の家賃より1万円高いだけですよ」という会話から、逆算で購入可能物件を絞り込めます。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num">3</div></div>
+        <div class="step-body">
+          <div class="step-title">「購入可能総額」を提示する</div>
+          <div class="step-text">「合計借入可能額」＋「自己資金」＝「購入可能総額」が自動計算されます。「〇〇万円まで検討できますね」と具体的な予算感を共有します。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon orange">📈</div>
+      <div>
+        <div class="card-title">「差額投資」連携の使い方（高付加価値提案）</div>
+        <div class="card-sub">月々差額をNISA投資に回すと老後資産が変わる——数字で示す未来設計</div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-left"><div class="step-num">1</div></div>
+        <div class="step-body">
+          <div class="step-title">タブ1でプランAとBの月々差額を確認</div>
+          <div class="step-text">例：35年ローン（18万円）と50年ローン（13万円）の差額「5万円/月」が表示されます。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num">2</div></div>
+        <div class="step-body">
+          <div class="step-title">タブ5「投資シミュレーション」へ移動</div>
+          <div class="step-text">差額が自動で引き継がれています。「差額を投資に回す」を選択します。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num">3</div></div>
+        <div class="step-body">
+          <div class="step-title">S&P500 × NISA × 35年でシミュレーション</div>
+          <div class="step-text">投資先に「S&P500」を選択し、「NISA適用」をオンにした状態で、3シナリオの資産推移グラフを表示します。</div>
+          <div class="step-tip"><strong>数字の例：</strong>月5万円 × 35年 × S&P500通常シナリオ（年率10%）× NISA → 期末資産が元本2,100万円に対して大幅増。「差額が老後の資産になります」という強烈な提案になります。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════
+     ③商談シナリオ
+════════════════════════════════════════════════ -->
+<section class="section" id="scenario">
+  <div class="sec-header">
+    <div class="sec-badge">③ Sales Scenario</div>
+    <h2 class="sec-title">商談シナリオ ─ 5つの典型パターン</h2>
+    <p class="sec-desc">お客様のタイプ・状況別に、シミュレーターをどう流れで使うかを示します。</p>
+  </div>
+
+  <!-- シナリオ1 -->
+  <div class="scenario">
+    <div class="sc-head">
+      <div class="sc-badge">SC<br>01</div>
+      <div class="sc-meta">
+        <div class="sc-type">Scenario 1 — 初回商談</div>
+        <div class="sc-title">「予算感がまだわからない」お客様への入口提案</div>
+      </div>
+    </div>
+    <div class="sc-situation">
+      <b>お客様像：</b>30代夫婦・共働き・子ども1人・年収合計800万円・頭金300万円・現在賃貸12万円/月。マイホームに興味はあるが、いくらの物件なら大丈夫かわからない。
+    </div>
+    <div class="sc-flow">
+      <div class="sc-step"><div class="sc-step-num">1</div><div class="sc-step-text"><span class="tab-ref">📋 資金計画</span>を開く。土地・建物合計3,500万円・諸経費350万円・頭金300万円を入力し、「ペアローン」に設定。年収800万円（本人500万+配偶者300万）を入力する。</div></div>
+      <div class="sc-step"><div class="sc-step-num">2</div><div class="sc-step-text">35年固定1.5%の月々返済額・返済負担率・年収倍率が表示される。「返済負担率は〇〇%で、適正25%以内に収まっています」と健全性チェックで安心感を与える。</div></div>
+      <div class="sc-step"><div class="sc-step-num">3</div><div class="sc-step-text">「希望額から逆算」モードに切り替え。「今の家賃12万円と同じで考えてみましょうか」と月々12万円で入力し、「購入可能総額〇〇万円」を提示する。</div></div>
+      <div class="sc-step"><div class="sc-step-num">4</div><div class="sc-step-text"><span class="tab-ref">🏡 ライフサイクルコスト</span>へ移動。現家賃12万円・光熱費・修繕費を入力し、30年の累積コスト比較グラフを表示。「賃貸だと〇〇万円・購入だと〇〇万円——購入の方が〇〇万円お得です」と伝える。</div></div>
+      <div class="sc-step"><div class="sc-step-num">5</div><div class="sc-step-text"><span class="tab-ref">📄 資金計画書</span>でお客様名を入力し、今日の試算をPDFに印刷。「今日のシミュレーション結果です。持ち帰ってご夫婦で確認してみてください」と手渡す。</div></div>
+    </div>
+    <div class="sc-result">
+      <div class="sc-result-title">期待される結果</div>
+      <div class="sc-result-text">「買えるかどうかわからなかった」が「〇〇万円なら大丈夫」に変わる。賃貸と比較して購入の優位性が明確になり、次回アポイントへの意欲が高まる。</div>
+    </div>
+  </div>
+
+  <!-- シナリオ2 -->
+  <div class="scenario">
+    <div class="sc-head">
+      <div class="sc-badge">SC<br>02</div>
+      <div class="sc-meta">
+        <div class="sc-type">Scenario 2 — 太陽光・蓄電池クロスセル</div>
+        <div class="sc-title">「電気代が気になる」お客様への太陽光提案</div>
+      </div>
+    </div>
+    <div class="sc-situation">
+      <b>お客様像：</b>40代夫婦・子ども2人・光熱費が月2万円かかっている。「太陽光発電って本当に元が取れるの？」と半信半疑。
+    </div>
+    <div class="sc-flow">
+      <div class="sc-step"><div class="sc-step-num">1</div><div class="sc-step-text"><span class="tab-ref">☀️ 太陽光・蓄電池</span>を開く。設置容量6kW・南東向き・東京電力を選択。</div></div>
+      <div class="sc-step"><div class="sc-step-num">2</div><div class="sc-step-text">まず「蓄電池なし」（自家消費率30%）でシミュレーション。初期費用・回収年数・25年純便益を表示する。「〇〇年で元が取れます」</div></div>
+      <div class="sc-step"><div class="sc-step-num">3</div><div class="sc-step-text">次に「蓄電池設置する」をオン・自家消費率を65%に上げる。回収年数と25年純便益がどう変わるかをライブで見せる。「蓄電池を追加するとこうなります」</div></div>
+      <div class="sc-step"><div class="sc-step-num">4</div><div class="sc-step-text">年次テーブルをスクロールし、「〇年目から黒字になります。これ以降は毎年〇万円の純便益が続きます」と具体的に説明する。</div></div>
+      <div class="sc-step"><div class="sc-step-num">5</div><div class="sc-step-text"><span class="tab-ref">🏡 ライフサイクルコスト</span>へ。光熱費に「太陽光設置後の削減後電気代」を入れ直すと、購入vs賃貸の差がさらに広がることを確認する。</div></div>
+    </div>
+    <div class="sc-result">
+      <div class="sc-result-title">期待される結果</div>
+      <div class="sc-result-text">「元が取れるか不安」→「〇〇年で元が取れて25年で〇〇万円の得」という具体的な数字で納得感を獲得。太陽光・蓄電池のオプション採用率向上につながる。</div>
+    </div>
+  </div>
+
+  <!-- シナリオ3 -->
+  <div class="scenario">
+    <div class="sc-head">
+      <div class="sc-badge">SC<br>03</div>
+      <div class="sc-meta">
+        <div class="sc-type">Scenario 3 — FP深掘り商談</div>
+        <div class="sc-title">「子どもが3人いて教育費と住宅ローンが心配」</div>
+      </div>
+    </div>
+    <div class="sc-situation">
+      <b>お客様像：</b>35歳夫婦・子ども3人（8歳・5歳・2歳）・世帯年収650万円。教育費の大波がどこに来るのか不安で購入を迷っている。
+    </div>
+    <div class="sc-flow">
+      <div class="sc-step"><div class="sc-step-num">1</div><div class="sc-step-text"><span class="tab-ref">👨‍👩‍👧 FPシミュレーション</span>を開く。家族5人分のメンバーを追加し、子ども3人の年齢を入力（8・5・2歳）。</div></div>
+      <div class="sc-step"><div class="sc-step-num">2</div><div class="sc-step-text">本人年収400万・配偶者250万・年収上昇率1.5%・定年65歳・退職金1,500万円を入力。基本生活費25万円/月・子ども1人あたり教育費1,500万円（公立想定）を設定する。</div></div>
+      <div class="sc-step"><div class="sc-step-num">3</div><div class="sc-step-text">年次キャッシュフローグラフを表示。「〇歳の時（子どもたちが大学受験の頃）が最大の支出ピークです」とグラフ上のヤマを指し示す。</div></div>
+      <div class="sc-step"><div class="sc-step-num">4</div><div class="sc-step-text">ピーク年の赤字額を確認。「この時期に備えて今から月〇万円を積み立てておくと対応できます」と具体策を提示。貯蓄残高グラフで「資産がマイナスにならないか」を確認する。</div></div>
+      <div class="sc-step"><div class="sc-step-num">5</div><div class="sc-step-text">教育費を私立想定（2,500万円/人）に変更してシミュレーションし直す。「公立か私立かによってこれだけ違います」と比較を見せ、教育方針について会話を深める。</div></div>
+    </div>
+    <div class="sc-result">
+      <div class="sc-result-title">期待される結果</div>
+      <div class="sc-result-text">漠然とした不安が「〇〇歳〜〇〇歳の間が最大ピーク」という具体的な課題に変わる。「この時期を乗り切るプランさえ作れば大丈夫」という方向性が見え、購入意思が高まる。</div>
+    </div>
+  </div>
+
+  <!-- シナリオ4 -->
+  <div class="scenario">
+    <div class="sc-head">
+      <div class="sc-badge">SC<br>04</div>
+      <div class="sc-meta">
+        <div class="sc-type">Scenario 4 — クロージング前</div>
+        <div class="sc-title">「もう少し考えたい」お客様への差額投資提案</div>
+      </div>
+    </div>
+    <div class="sc-situation">
+      <b>お客様像：</b>検討が進んでいるが「もう少し検討したい」という状態。35年ローンと50年ローンのどちらにするか迷っている。
+    </div>
+    <div class="sc-flow">
+      <div class="sc-step"><div class="sc-step-num">1</div><div class="sc-step-text"><span class="tab-ref">📋 資金計画</span>で35年と50年を比較表示。月々差額（例：5万円）を確認し、「この差額をどう使うかで、将来が大きく変わります」と話を展開する。</div></div>
+      <div class="sc-step"><div class="sc-step-num">2</div><div class="sc-step-text"><span class="tab-ref">📈 投資シミュレーション</span>へ。差額5万円が自動引継ぎされていることを確認し、「差額を投資に回す」を選択。</div></div>
+      <div class="sc-step"><div class="sc-step-num">3</div><div class="sc-step-text">S&P500・NISA適用で35年シミュレーション。楽観・通常・悲観の3グラフを表示。「悲観シナリオでも元本〇〇万円が〇〇万円になります」と最悪でも損しない安心感を伝える。</div></div>
+      <div class="sc-step"><div class="sc-step-num">4</div><div class="sc-step-text">総返済差額（50年の方が多く払う分）vs 投資資産の比較を見せる。「差額投資の方が〇〇万円お得という試算です」とインパクトを伝える。</div></div>
+      <div class="sc-step"><div class="sc-step-num">5</div><div class="sc-step-text"><span class="tab-ref">📄 資金計画書</span>で今日の試算をPDFに印刷して手渡す。「今日の資料です。ご夫婦で見ていただければ、来週ご決断いただけますか？」と次回クロージングのアポイントを取る。</div></div>
+    </div>
+    <div class="sc-result">
+      <div class="sc-result-title">期待される結果</div>
+      <div class="sc-result-text">「50年ローンにして月々を抑え、差額をNISAに回す」という資産形成も含めた合理的な購入プランに納得感が生まれ、検討から決断へのハードルが下がる。</div>
+    </div>
+  </div>
+
+  <!-- シナリオ5 -->
+  <div class="scenario">
+    <div class="sc-head">
+      <div class="sc-badge">SC<br>05</div>
+      <div class="sc-meta">
+        <div class="sc-type">Scenario 5 — 再検討客の掘り起こし</div>
+        <div class="sc-title">「以前相談したけど決まらなかった」お客様の再アプローチ</div>
+      </div>
+    </div>
+    <div class="sc-situation">
+      <b>お客様像：</b>1〜2年前に相談したが、金額面・タイミングで見送りになったお客様。再度アプローチする機会を得た。
+    </div>
+    <div class="sc-flow">
+      <div class="sc-step"><div class="sc-step-num">1</div><div class="sc-step-text">前回の検討内容（年収・家族構成・希望予算）を確認。変化している部分（年収増・子ども誕生・貯蓄増加など）を聞き取る。</div></div>
+      <div class="sc-step"><div class="sc-step-num">2</div><div class="sc-step-text"><span class="tab-ref">📋 資金計画</span>で前回と今回の状況を入れ直す。「〇〇さん、前回より年収が〇〇万円増えましたね。このシミュレーションで見てみましょう」と数字で変化を見せる。</div></div>
+      <div class="sc-step"><div class="sc-step-num">3</div><div class="sc-step-text"><span class="tab-ref">🏡 ライフサイクルコスト</span>で「前回の家賃と今の家賃」を比較。2年間の賃貸継続で払ってきた金額（例：12万×24ヶ月＝288万円）を念頭に置きながら、「この2年間分の家賃で何が変わったか」を問いかける。</div></div>
+      <div class="sc-step"><div class="sc-step-num">4</div><div class="sc-step-text"><span class="tab-ref">👨‍👩‍👧 FPシミュレーション</span>で子ども誕生・年齢増加を反映した最新のキャッシュフローを見せる。「お子さんが生まれた分、教育費の波がここに来ます。早めに決めた方が有利ですよ」と時間コストを伝える。</div></div>
+      <div class="sc-step"><div class="sc-step-num">5</div><div class="sc-step-text">今日の試算をPDFで手渡しし、「今度こそ、一緒に決めましょう。〇〇万円の予算なら、この物件が一番合っています」と具体的な物件提案と連動させる。</div></div>
+    </div>
+    <div class="sc-result">
+      <div class="sc-result-title">期待される結果</div>
+      <div class="sc-result-text">「以前より状況が良くなっている」「待ち続けた機会費用（賃貸払い続けた分）」を数字で実感してもらうことで、「今こそ決める」モチベーションが高まる。</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══════════════════════════════════════════════
+     ④トップ営業マントーク例
+════════════════════════════════════════════════ -->
+<section class="section" id="talk">
+  <div class="sec-header">
+    <div class="sec-badge">④ Top Sales Talk</div>
+    <h2 class="sec-title">トップ営業マントーク例</h2>
+    <p class="sec-desc">シミュレーターを使いながら、お客様の心を動かす「言葉の型」を習得してください。数字の提示と感情への橋渡しが成約を生みます。</p>
+  </div>
+
+  <!-- トーク1 -->
+  <div class="talk-block">
+    <div class="talk-head">
+      <div class="talk-head-icon">💬</div>
+      <div class="talk-head-meta">
+        <div class="talk-head-type">Talk Pattern 01 — 資金計画タブ</div>
+        <div class="talk-head-title">「数字を一緒に動かして不安を消す」トーク</div>
+      </div>
+    </div>
+    <div class="talk-body">
+      <div class="talk-scene"><b>シーン：</b>初回商談。お客様が「自分たちに買えるのか不安」という状態。資金計画タブを開いて入力しながら話す。</div>
+      <div class="chat">
+        <div class="chat-msg client">
+          <div class="chat-avatar client">客</div>
+          <div class="chat-bubble">月々いくらくらいになるんでしょうか。うちの収入で大丈夫かな、と思って…。</div>
+        </div>
+        <div class="chat-msg sales">
+          <div class="chat-avatar sales">営</div>
+          <div class="chat-bubble">今、一緒に計算してみましょう。〇〇さんの年収を入れますね。<span class="tool-hint">年収入力</span>…はい、これで試算できました。<br><br>月々の返済は<b>〇〇万円</b>。返済負担率は<b>〇〇%</b>で、金融機関が目安にする25%以内に収まっています。年収倍率も〇〇倍で、「適正7倍以内」です。数字で見ると、十分に現実的な範囲ですよ。</div>
+        </div>
+        <div class="chat-msg client">
+          <div class="chat-avatar client">客</div>
+          <div class="chat-bubble">あ、意外と大丈夫なんですね。でも、もし金利が上がったら…</div>
+        </div>
+        <div class="chat-msg sales">
+          <div class="chat-avatar sales">営</div>
+          <div class="chat-bubble">いいところに気づきました。「金利で比較」<span class="tool-hint">モード切替</span>にすると、金利が0.5%のとき、2%のとき、それぞれの月々がこう変わります。<br><br>変動金利で組んで万が一2%になっても、差額は月<b>〇〇円</b>です。この差額を毎月積み立てておけば、金利上昇にも備えられます。</div>
+        </div>
+        <div class="chat-msg client">
+          <div class="chat-avatar client">客</div>
+          <div class="chat-bubble">そう考えると、なんか見えてきた気がします。</div>
+        </div>
+        <div class="chat-msg sales">
+          <div class="chat-avatar sales">営</div>
+          <div class="chat-bubble">数字にするとクリアになりますよね。今日の試算を資金計画書にまとめて印刷します<span class="tool-hint">PDF印刷</span>。ご主人・奥様と一緒に見ていただけますか？</div>
+        </div>
+      </div>
+      <div class="chat-note">POINT：「不安」を「数字」に変換するのがこのツールの最大の使い方。健全性チェックの3指標（返済負担率・自己資金比率・年収倍率）を根拠として提示することで、感情的な不安ではなく数字的な安心感を与えます。</div>
+    </div>
+  </div>
+
+  <!-- トーク2 -->
+  <div class="talk-block">
+    <div class="talk-head">
+      <div class="talk-head-icon">☀️</div>
+      <div class="talk-head-meta">
+        <div class="talk-head-type">Talk Pattern 02 — 太陽光・蓄電池タブ</div>
+        <div class="talk-head-title">「電気代をゼロに近づける」太陽光提案トーク</div>
+      </div>
+    </div>
+    <div class="talk-body">
+      <div class="talk-scene"><b>シーン：</b>「光熱費が高いのが悩み」というお客様。太陽光・蓄電池タブでシミュレーション中。</div>
+      <div class="chat">
+        <div class="chat-msg client">
+          <div class="chat-avatar client">客</div>
+          <div class="chat-bubble">今、電気代が月2万円かかっているんです。将来もっと上がりそうで心配で。</div>
+        </div>
+        <div class="chat-msg sales">
+          <div class="chat-avatar sales">営</div>
+          <div class="chat-bubble">それは実は、太陽光が一番効く場面です。今の月2万円を、設置後にどこまで下げられるか試算してみましょう。<br><br>〇〇さんのお宅は南向きですよね？6kWパネルで計算すると…<span class="tool-hint">条件入力</span>。初期投資が<b>〇〇万円</b>で、<b>〇〇年で元が取れます</b>。</div>
+        </div>
+        <div class="chat-msg client">
+          <div class="chat-avatar client">客</div>
+          <div class="chat-bubble">〇〇年か…。蓄電池もつけると変わりますか？</div>
+        </div>
+        <div class="chat-msg sales">
+          <div class="chat-avatar sales">営</div>
+          <div class="chat-bubble">やってみましょう。蓄電池を追加して自家消費率を65%に上げます<span class="tool-hint">蓄電池ON</span>。見てください、25年の純便益が<b>〇〇万円増えました</b>。蓄電池の費用は〇〇万円ですが、トータルでは断然プラスです。<br><br>さらに電気代の上昇率を2%で試算すると、年々お得額が大きくなっていくのがわかります。</div>
+        </div>
+        <div class="chat-msg client">
+          <div class="chat-avatar client">客</div>
+          <div class="chat-bubble">思ったより早く元が取れるんですね。これは検討してみます。</div>
+        </div>
+        <div class="chat-msg sales">
+          <div class="chat-avatar sales">営</div>
+          <div class="chat-bubble">あと、CO₂削減効果も見えます<span class="tool-hint">CO₂欄確認</span>。年間〇〇kg削減。お子さんへの環境の贈り物にもなりますね。この年次テーブルを印刷して、ご覧になってみてください。</div>
+        </div>
+      </div>
+      <div class="chat-note">POINT：「元が取れる年数」を具体的に示すことで不信感を払拭。「蓄電池なし→あり」の変化をライブで見せることで、アップグレードの意思決定をその場で引き出せます。</div>
+    </div>
+  </div>
+
+  <!-- トーク3 -->
+  <div class="talk-block">
+    <div class="talk-head">
+      <div class="talk-head-icon">🏡</div>
+      <div class="talk-head-meta">
+        <div class="talk-head-type">Talk Pattern 03 — ライフサイクルコストタブ</div>
+        <div class="talk-head-title">「賃貸派」を説得する生涯コスト比較トーク</div>
+      </div>
+    </div>
+    <div class="talk-body">
+      <div class="talk-scene"><b>シーン：</b>「購入より賃貸の方が気軽でいいのでは？」とお客様が言い出した場面。</div>
+      <div class="chat">
+        <div class="chat-msg client">
+          <div class="chat-avatar client">客</div>
+          <div class="chat-bubble">でも、賃貸の方が身軽でいいかな、という気もするんですよね。</div>
+        </div>
+        <div class="chat-msg sales">
+          <div class="chat-avatar sales">営</div>
+          <div class="chat-bubble">すごく大事な視点です。では今の賃料と購入した場合の費用を、30年トータルで比べてみましょう。<span class="tool-hint">ライフサイクルタブ</span><br><br>今の家賃12万円・光熱費・管理費を入力すると…。賃貸継続で30年間の累積は<b>〇〇万円</b>です。</div>
+        </div>
+        <div class="chat-msg client">
+          <div class="chat-avatar client">客</div>
+          <div class="chat-bubble">〇〇万円！そんなに払うんですか。</div>
+        </div>
+        <div class="chat-msg sales">
+          <div class="chat-avatar sales">営</div>
+          <div class="chat-bubble">はい。一方で購入した場合はこのグラフです。ローン返済・修繕費・固定資産税・光熱費を全部含めると<b>〇〇万円</b>。差額は30年で<b>〇〇万円</b>です。<br><br>しかも購入の場合、30年後には資産として残ります。賃貸の場合、30年後には何も残りません。どちらが「気軽」かは人によりますが、数字の差はこれだけあります。</div>
+        </div>
+        <div class="chat-msg client">
+          <div class="chat-avatar client">客</div>
+          <div class="chat-bubble">そう言われると…。損益分岐点はいつになりますか？</div>
+        </div>
+        <div class="chat-msg sales">
+          <div class="chat-avatar sales">営</div>
+          <div class="chat-bubble">このグラフの2本の線が交差するのが〇〇年後です<span class="tool-hint">グラフ指示</span>。つまり〇〇年以上住む予定なら、購入の方が経済的に有利ということになります。〇〇さんのライフプランだと、いかがですか？</div>
+        </div>
+      </div>
+      <div class="chat-note">POINT：「賃貸vs購入」の議論は感情論になりがち。グラフで「30年後の差額」と「損益分岐点」を明示することで、感情ではなく数字で判断してもらえます。</div>
+    </div>
+  </div>
+
+  <!-- トーク4 -->
+  <div class="talk-block">
+    <div class="talk-head">
+      <div class="talk-head-icon">👨‍👩‍👧</div>
+      <div class="talk-head-meta">
+        <div class="talk-head-type">Talk Pattern 04 — FPシミュレーションタブ</div>
+        <div class="talk-head-title">「老後が心配」を安心に変えるFPトーク</div>
+      </div>
+    </div>
+    <div class="talk-body">
+      <div class="talk-scene"><b>シーン：</b>「住宅ローンを組んで、老後の資金も本当に大丈夫？」というお客様の不安に対して。</div>
+      <div class="chat">
+        <div class="chat-msg client">
+          <div class="chat-avatar client">客</div>
+          <div class="chat-bubble">ローンを払い続けて、老後の貯金なんてできるのかな…。</div>
+        </div>
+        <div class="chat-msg sales">
+          <div class="chat-avatar sales">営</div>
+          <div class="chat-bubble">一番気になるところですよね。FPシミュレーションで、老後まで含めて数字を見てみましょう。<span class="tool-hint">FPタブ</span><br><br>〇〇さんの家族情報を入れます。年収・定年退職年齢・退職金・年金受給額…。老後の生活費を月20万円で設定すると…。</div>
+        </div>
+        <div class="chat-msg client">
+          <div class="chat-avatar client">客</div>
+          <div class="chat-bubble">どうなりましたか？</div>
+        </div>
+        <div class="chat-msg sales">
+          <div class="chat-avatar sales">営</div>
+          <div class="chat-bubble">見てください、このグラフです<span class="tool-hint">貯蓄推移グラフ</span>。青い線が貯蓄残高です。子育てが終わる〇〇歳頃から再び上昇し始め、65歳時点で<b>〇〇万円</b>の貯蓄があります。退職金と年金を合わせると、老後の生活費は十分まかなえる試算です。<br><br>年収上昇率を0にして悲観的に見ても、この数字です。</div>
+        </div>
+        <div class="chat-msg client">
+          <div class="chat-avatar client">客</div>
+          <div class="chat-bubble">あ、意外とちゃんと残るんですね。ピークがどこか気になっていたんで…。</div>
+        </div>
+        <div class="chat-msg sales">
+          <div class="chat-avatar sales">営</div>
+          <div class="chat-bubble">一番気をつけるのは〇〇歳〜〇〇歳の教育費ピーク期です<span class="tool-hint">グラフ最低点</span>。ここで貯蓄がいくらまで下がるか確認して、「この期間の備え」だけ準備すれば安心です。具体的には月〇〇万円の積み立てが有効です。今の住宅ローンと合わせて、無理のない範囲でできますよ。</div>
+        </div>
+      </div>
+      <div class="chat-note">POINT：「老後が心配」という漠然とした不安に対し、「65歳時点の貯蓄残高」という具体的な数字で回答する。課題を「老後全体」ではなく「教育費ピーク期の〇年間」に絞ることで、対策が具体化します。</div>
+    </div>
+  </div>
+
+  <!-- トーク5 -->
+  <div class="talk-block">
+    <div class="talk-head">
+      <div class="talk-head-icon">📈</div>
+      <div class="talk-head-meta">
+        <div class="talk-head-type">Talk Pattern 05 — 投資シミュレーションタブ</div>
+        <div class="talk-head-title">「差額投資で老後資産を作る」資産形成トーク</div>
+      </div>
+    </div>
+    <div class="talk-body">
+      <div class="talk-scene"><b>シーン：</b>35年ローンと50年ローンで迷っているお客様。月々差額が5万円ある場合。</div>
+      <div class="chat">
+        <div class="chat-msg client">
+          <div class="chat-avatar client">客</div>
+          <div class="chat-bubble">35年ローンにした方が利息を節約できるってわかってるんですが、月々が少し苦しくて…。</div>
+        </div>
+        <div class="chat-msg sales">
+          <div class="chat-avatar sales">営</div>
+          <div class="chat-bubble">正直におっしゃってくれてありがとうございます。実は、50年ローンを選ぶことにも、ちゃんとした「戦略」があります。<br><br>プランAの35年とプランBの50年、月々の差額は<b>5万円</b>ですよね<span class="tool-hint">資金計画タブ確認</span>。この5万円を毎月NISAで積み立てたら、どうなるか見てみましょう。<span class="tool-hint">投資タブへ移動</span></div>
+        </div>
+        <div class="chat-msg client">
+          <div class="chat-avatar client">客</div>
+          <div class="chat-bubble">NISAですか。やってみたいとは思ってるんですが…。</div>
+        </div>
+        <div class="chat-msg sales">
+          <div class="chat-avatar sales">営</div>
+          <div class="chat-bubble">S&P500をNISA口座で35年積み立てると…<span class="tool-hint">投資シミュ入力</span>。通常シナリオで期末資産は<b>〇〇万円</b>です。元本の積立総額は〇〇万円ですから、差額の追加利息〇〇万円を差し引いても、<b>〇〇万円のプラス</b>になります。<br><br>悲観シナリオでも〇〇万円です。つまり、50年ローン × 差額NISA投資の組み合わせは、35年ローン一択より老後資産が大きくなる可能性があります。</div>
+        </div>
+        <div class="chat-msg client">
+          <div class="chat-avatar client">客</div>
+          <div class="chat-bubble">えっ、そうなんですか？ローンを長くした方が得になるケースがあるとは知らなかった…。</div>
+        </div>
+        <div class="chat-msg sales">
+          <div class="chat-avatar sales">営</div>
+          <div class="chat-bubble">はい。ただし「差額を確実に投資に回す」が前提です。使ってしまうと意味がなくなりますので、自動積み立ての設定が大事です。今日の試算を資金計画書にまとめます<span class="tool-hint">資金計画書PDF</span>。「月々の金額」と「将来の資産」が両方書いてある提案書になります。ご自宅でゆっくり見ていただけますか？</div>
+        </div>
+      </div>
+      <div class="chat-note">POINT：「50年ローンは損」という先入観を崩す最も強力なトーク。「差額投資でむしろ35年ローンより有利になりうる」という逆転の発想を数字で証明します。ただし「差額を必ず投資に回す」という前提条件を明確にすることが信頼性につながります。</div>
+    </div>
+  </div>
+
+  <!-- 最終アドバイス -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon green">🏆</div>
+      <div>
+        <div class="card-title">トップ営業マンの「3つの黄金ルール」</div>
+        <div class="card-sub">シミュレーターを使いこなすための心得</div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-left"><div class="step-num green">1</div></div>
+        <div class="step-body">
+          <div class="step-title">「お客様の数字」を入れる</div>
+          <div class="step-text">デフォルト値のまま見せない。必ずお客様の年収・家族構成・希望予算を入力して「あなたの場合はこうなります」を見せること。「自分事」にすることで商談が変わります。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num green">2</div></div>
+        <div class="step-body">
+          <div class="step-title">「動かして見せる」</div>
+          <div class="step-text">スライダーをお客様の目の前でドラッグして変化を見せる。「こうすると月々が変わります」「蓄電池を追加するとこうなります」とライブで操作することで、参加体験が生まれます。可能なら「スライダー動かしてみますか？」とお客様に操作してもらうのも効果的です。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num green">3</div></div>
+        <div class="step-body">
+          <div class="step-title">「必ず印刷して帰す」</div>
+          <div class="step-text">商談終了時に必ずPDFを印刷して手渡す。「今日の試算資料です」と渡すことで、お客様は自宅でも数字を確認でき、家族への説明ができます。次回商談時に「前回の数字と今回を比べると…」と使い回せるのも強みです。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout green">
+    <div class="callout-icon">🌟</div>
+    <div class="callout-body">
+      <div class="callout-title">ピュアグロースクラブからのメッセージ</div>
+      <div class="callout-text">マイホームシミュレーターは「数字の力で信頼を作る」ツールです。お客様が「この営業担当に任せれば大丈夫」と感じる瞬間は、必ず「具体的な数字」が見えたときです。このツールを商談の習慣に組み込み、一人でも多くのお客様のマイホームの夢を実現させてください。</div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /main -->
+
+<footer>
+  <p>© ピュアグロース株式会社｜ピュアグロースクラブ 会員企業営業スタッフ向けマニュアル　Ver.1.0</p>
+  <p>本マニュアルおよびシミュレーターは会員企業専用ツールです。無断転載・第三者への提供を禁じます。</p>
+  <p><a href="https://puregrowth.jp/" target="_blank">ピュアグロース株式会社</a></p>
+</footer>
+
+<script>
+// スムーズスクロール（ナビタブ）
+document.querySelectorAll('.nav-tab').forEach(function(tab){
+  tab.addEventListener('click', function(e){
+    document.querySelectorAll('.nav-tab').forEach(function(t){ t.classList.remove('on'); });
+    this.classList.add('on');
+  });
+});
+
+// スクロールに合わせてナビをハイライト
+var sections = ['overview','operation','howto','scenario','talk'];
+window.addEventListener('scroll', function(){
+  var scroll = window.scrollY + 80;
+  sections.forEach(function(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    if(el.offsetTop <= scroll && el.offsetTop + el.offsetHeight > scroll){
+      document.querySelectorAll('.nav-tab').forEach(function(t){ t.classList.remove('on'); });
+      var activeTab = document.querySelector('.nav-tab[href="#'+id+'"]');
+      if(activeTab) activeTab.classList.add('on');
+    }
+  });
+});
+</script>
+</body>
+</html>
