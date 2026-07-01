@@ -351,9 +351,10 @@ footer a{color:#2f6df0;text-decoration:none;}
         <div class="tab-num">6</div>
         <div class="tab-name">📄 資金計画書</div>
       </div>
-      <div class="tab-desc">シミュレーション結果をもとに、お客様名・担当者・日付を入力して見積書・資金計画書を作成・印刷。商談後に手渡せる提案書として活用できます。</div>
+      <div class="tab-desc">建物工事費・諸費用・土地費用・融資費用を5区分で詳細管理。「シミュレーターから反映」ボタンで資金計画データを自動転記。お客様名・建設地・担当者などを入力してその場でPDF出力できます。</div>
       <div class="tab-tags">
-        <span class="tag">見積書作成</span>
+        <span class="tag">費用5区分</span>
+        <span class="tag">自動転記</span>
         <span class="tag">PDF印刷</span>
         <span class="tag">提案書</span>
       </div>
@@ -435,11 +436,11 @@ footer a{color:#2f6df0;text-decoration:none;}
     <div class="op-card">
       <div class="op-head c1">📋 タブ1 — 資金計画・返済比率</div>
       <div class="op-body">
-        <div class="op-row"><div class="op-bullet">1</div><div class="op-text"><b>物件価格の内訳</b>：土地価格・建物価格・諸経費を入力。自動で総額・借入金額・自己資金比率が計算されます。</div></div>
+        <div class="op-row"><div class="op-bullet">1</div><div class="op-text"><b>物件価格の内訳</b>：土地価格・建物価格・諸経費を入力。コスト内訳の円グラフと明細バーがリアルタイムで更新されます。</div></div>
         <div class="op-row"><div class="op-bullet">2</div><div class="op-text"><b>ローン種別</b>：「単独ローン」か「ペアローン」を選択。ペアローンは本人・配偶者の年収を入力すると合算年収で計算します。</div></div>
         <div class="op-row"><div class="op-bullet">3</div><div class="op-text"><b>比較モード選択</b>：「年数で比較」「金利で比較」「希望額から逆算」の3モードで用途に応じて切り替えます。</div></div>
-        <div class="op-row"><div class="op-bullet">4</div><div class="op-text"><b>健全性チェック</b>：返済負担率（適正≤25%）・自己資金比率（推奨10%+）・年収倍率（適正≤7倍）がリング表示されます。</div></div>
-        <div class="op-row"><div class="op-bullet">5</div><div class="op-text"><b>プランA vs B 比較</b>：月々差額・追加利息・余裕額が一覧表示されます。「月々差額を投資へ」の導線として活用できます。</div></div>
+        <div class="op-row"><div class="op-bullet">4</div><div class="op-text"><b>健全性リングダッシュボード</b>：返済負担率（適正≤25%）・自己資金比率（推奨10%+）・年収倍率（適正≤7倍）がSVGリングで視覚的に表示されます。</div></div>
+        <div class="op-row"><div class="op-bullet">5</div><div class="op-text"><b>プランA vs B 直接入力比較</b>：プランカードの年数・金利欄に数値を直接入力して再計算できます。月々差額・追加利息・余裕額も即時反映されます。</div></div>
       </div>
     </div>
 
@@ -471,7 +472,7 @@ footer a{color:#2f6df0;text-decoration:none;}
         <div class="op-row"><div class="op-bullet">1</div><div class="op-text"><b>家族構成選択</b>：単身・夫婦2人・3人家族・4人家族から選択。光熱費の基準値が変わります。</div></div>
         <div class="op-row"><div class="op-bullet">2</div><div class="op-text"><b>光熱費・水道代</b>：電気代・ガス代・水道代の月額を入力します。太陽光を設置した場合の削減後数値を入れると、より正確な比較ができます。</div></div>
         <div class="op-row"><div class="op-bullet">3</div><div class="op-text"><b>住宅ランニングコスト</b>：修繕積立・固定資産税・火災保険・管理費を入力します。</div></div>
-        <div class="op-row"><div class="op-bullet">4</div><div class="op-text"><b>賃貸コスト比較</b>：「お客様が今払っている家賃」または「同条件での想定賃料」を入力。賃貸費上昇率も設定できます。</div></div>
+        <div class="op-row"><div class="op-bullet">4</div><div class="op-text"><b>賃貸コスト比較</b>：家賃に加え<b>共益費・管理費</b>と<b>更新費（2年ごと）</b>も個別入力可能。実態に近い賃貸コストが試算できます。賃料上昇率も設定できます。</div></div>
         <div class="op-row"><div class="op-bullet">5</div><div class="op-text"><b>グラフで確認</b>：「住宅取得 vs 賃貸 累積コスト比較」グラフで、どの時点で損益分岐点を迎えるかを視覚的に示します。</div></div>
       </div>
     </div>
@@ -490,11 +491,11 @@ footer a{color:#2f6df0;text-decoration:none;}
     <div class="op-card">
       <div class="op-head c5">📄 タブ6 — 資金計画書</div>
       <div class="op-body">
-        <div class="op-row"><div class="op-bullet">1</div><div class="op-text"><b>お客様名入力</b>：見積書の宛名欄にお客様名を入力します。</div></div>
-        <div class="op-row"><div class="op-bullet">2</div><div class="op-text"><b>金額編集</b>：各費用項目の金額を直接クリックして修正できます。行の追加・削除も可能です。</div></div>
-        <div class="op-row"><div class="op-bullet">3</div><div class="op-text"><b>借入計画確認</b>：ローン概要（借入金額・金利・返済期間・月額）が自動表示されます。</div></div>
-        <div class="op-row"><div class="op-bullet">4</div><div class="op-text"><b>印刷・PDF化</b>：「印刷 / PDF保存」ボタンで資金計画書として出力。商談当日にその場でお客様に手渡しできます。</div></div>
-        <div class="op-row"><div class="op-bullet">5</div><div class="op-text"><b>備考欄</b>：特記事項・次回アポイント・条件確認事項をメモとして入力できます。</div></div>
+        <div class="op-row"><div class="op-bullet">1</div><div class="op-text"><b>お客様情報入力</b>：お客様名・建設地・施工面積・提案日・プランNo・担当者名を入力。プロの提案書として仕上がります。</div></div>
+        <div class="op-row"><div class="op-bullet">2</div><div class="op-text"><b>費用内訳の詳細編集</b>：①建物請負工事費用 ②建物諸費用（CP特別値引き・消費税・請負契約金額） ③その他予備費用（地盤改良・補助金控除等） ④土地関係費用 ⑤融資関係費用の5区分で管理。各行は名称・金額を直接編集でき、行の追加・削除も可能です。</div></div>
+        <div class="op-row"><div class="op-bullet">3</div><div class="op-text"><b>「シミュレーターから反映」</b>：ボタン1つでタブ1の資金計画データ（借入額・金利・期間）を資金計画書に自動転記できます。</div></div>
+        <div class="op-row"><div class="op-bullet">4</div><div class="op-text"><b>借入計画・支払方法</b>：借入金額・返済期間・金利を入力すると月々返済額・年間返済額・総返済額が即時試算。自己資金と銀行融資の費用分担も表示されます。</div></div>
+        <div class="op-row"><div class="op-bullet">5</div><div class="op-text"><b>印刷・PDF化</b>：「印刷 / PDF保存」で資金計画書として出力。特記事項欄に備考を入力してお客様に手渡せます。</div></div>
       </div>
     </div>
   </div>
@@ -558,9 +559,43 @@ footer a{color:#2f6df0;text-decoration:none;}
           <tr><td>「子供の教育費が心配で…」</td><td><span class="blue">👨‍👩‍👧 FPシミュレーション</span></td><td>教育費ピーク年・30年キャッシュフロー</td></tr>
           <tr><td>「老後の資金も考えないといけない」</td><td><span class="blue">👨‍👩‍👧 FPシミュレーション</span></td><td>老後の貯蓄残高推移・年金+退職金の実力</td></tr>
           <tr><td>「長いローンと短いローン、どちらがいい？」</td><td><span class="blue">📋 資金計画</span> → <b>差額投資</b></td><td>月々差額・差額をNISAに回した場合の試算</td></tr>
-          <tr><td>「今日の話をまとめて持ち帰りたい」</td><td><span class="blue">📄 資金計画書</span></td><td>PDF印刷・お客様名入りの資金計画書</td></tr>
+          <tr><td>「今日の話をまとめて持ち帰りたい」</td><td><span class="blue">📄 資金計画書</span></td><td>「シミュレーターから反映」→ 費用内訳付き資金計画書をPDF印刷</td></tr>
         </tbody>
       </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon blue">✏️</div>
+      <div>
+        <div class="card-title">プランA vs B「直接入力」の使い方（v20新機能）</div>
+        <div class="card-sub">年数・金利をカードに直打ちして即比較——スライダー不要の素早い操作</div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-left"><div class="step-num blue">1</div></div>
+        <div class="step-body">
+          <div class="step-title">タブ1「資金計画」→ プランAカードの入力欄に数値を直接打ち込む</div>
+          <div class="step-text">プランAの「期間（年）」「金利（%）」フィールドをクリックして年数・金利を入力するとリアルタイムで月々返済額・総返済額・返済負担率が即時計算されます。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num blue">2</div></div>
+        <div class="step-body">
+          <div class="step-title">プランBも同様に入力してA vs Bを並べる</div>
+          <div class="step-text">例：プランA＝35年・1.5% vs プランB＝50年・1.5%。お客様の希望に合わせてその場でサクサク入れ替えられます。</div>
+          <div class="step-tip"><strong>活用シーン：</strong>「ちょっと30年と35年で比べてみましょう」と言いながらパパっと入力するだけで比較完了。スライダーより直感的で商談スピードが上がります。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num blue">3</div></div>
+        <div class="step-body">
+          <div class="step-title">差額バーで「月々余裕額」を確認して次のトークへ</div>
+          <div class="step-text">差額ハイライトに「月々差額」「追加利息」「月々余裕額」が自動表示。「この差額をNISAに回すと…」と投資シミュレーションへ自然につなげます。</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -593,6 +628,40 @@ footer a{color:#2f6df0;text-decoration:none;}
         <div class="step-body">
           <div class="step-title">「購入可能総額」を提示する</div>
           <div class="step-text">「合計借入可能額」＋「自己資金」＝「購入可能総額」が自動計算されます。「〇〇万円まで検討できますね」と具体的な予算感を共有します。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon green">📄</div>
+      <div>
+        <div class="card-title">資金計画書「シミュレーターから反映」の使い方（v20新機能）</div>
+        <div class="card-sub">タブ1のデータをワンクリックで資金計画書に転記——その場でプロの提案書を完成</div>
+      </div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-left"><div class="step-num green">1</div></div>
+        <div class="step-body">
+          <div class="step-title">タブ1でシミュレーションを完了させておく</div>
+          <div class="step-text">物件価格・借入金額・金利・返済期間を設定し、プランが確定したら「📄 資金計画書」タブへ移動します。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num green">2</div></div>
+        <div class="step-body">
+          <div class="step-title">「📥 シミュレーターから反映」をクリック</div>
+          <div class="step-text">ボタン1つで借入金額・金利・返済期間がそのまま資金計画書の借入計画欄に自動転記されます。手入力ミスがなくなります。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-left"><div class="step-num green">3</div></div>
+        <div class="step-body">
+          <div class="step-title">お客様情報・費用内訳を確認・編集して印刷</div>
+          <div class="step-text">お客様名・建設地・担当者名を入力。①建物工事費 ②建物諸費用 ③その他予備費用 ④土地関係費用 ⑤融資関係費用の各金額を確認・修正し、「🖨️ 印刷 / PDF保存」で完成。</div>
+          <div class="step-tip"><strong>効果：</strong>商談のその場でお客様名入り・費用内訳付きの本格的な資金計画書が完成します。「今日の資料です」と手渡すと信頼感が格段に上がります。</div>
         </div>
       </div>
     </div>
