@@ -133,12 +133,12 @@
     <input type="text" id="s1" placeholder="都道府県名で検索..." oninput="drawPrefTable()">
     <select id="a1" onchange="drawPrefTable()">
       <option value="">全エリア</option>
-      <option value="i-North">i-North 東北・北海道</option>
-      <option value="i-Mideast">i-Mideast 関東甲信越</option>
-      <option value="i-East">i-East 関東</option>
-      <option value="i-Midwest">i-Midwest 東海</option>
-      <option value="i-west">i-west 近畿・中四国・九州</option>
-      <option value="GC">GC グループ会社</option>
+      <option value="i-North">東北・北海道エリア</option>
+      <option value="i-Mideast">関東甲信越エリア</option>
+      <option value="i-East">関東エリア</option>
+      <option value="i-Midwest">東海エリア</option>
+      <option value="i-west">近畿・中四国・九州エリア</option>
+      <option value="GC">グループ会社</option>
     </select>
     <select id="r1" onchange="drawPrefTable()">
       <option value="">全順位</option>
@@ -189,7 +189,7 @@
   </div>
   <div class="grid2">
     <div class="card">
-      <div class="ctitle">全国 営業人数ランキング TOP50</div>
+      <div class="ctitle">全国 営業人数ランキング 上位50拠点</div>
       <div class="tw mh500"><table><thead>
         <tr><th>順位</th><th>展示場名</th><th>都道府県</th><th>営業人数</th><th>種別</th></tr>
       </thead><tbody id="rtbody"></tbody></table></div>
@@ -215,22 +215,22 @@
     <button id="mapBtnBoth" onclick="setMapMode('both',this)">📍 全表示</button>
     <select id="mapAreaFilter" onchange="updateMapMarkers()">
       <option value="">全エリア</option>
-      <option value="i-North">i-North 東北・北海道</option>
-      <option value="i-Mideast">i-Mideast 関東甲信越</option>
-      <option value="i-East">i-East 関東</option>
-      <option value="i-Midwest">i-Midwest 東海</option>
-      <option value="i-west">i-west 近畿・中四国・九州</option>
-      <option value="GC">GC</option>
+      <option value="i-North">東北・北海道エリア</option>
+      <option value="i-Mideast">関東甲信越エリア</option>
+      <option value="i-East">関東エリア</option>
+      <option value="i-Midwest">東海エリア</option>
+      <option value="i-west">近畿・中四国・九州エリア</option>
+      <option value="GC">グループ会社</option>
     </select>
   </div>
   <div id="mapContainer"></div>
   <div class="map-legend">
-    <span><span class="legend-dot" style="background:#3b82f6"></span>i-North 東北</span>
-    <span><span class="legend-dot" style="background:#10b981"></span>i-Mideast 関甲信越</span>
-    <span><span class="legend-dot" style="background:#f59e0b"></span>i-East 関東</span>
-    <span><span class="legend-dot" style="background:#8b5cf6"></span>i-Midwest 東海</span>
-    <span><span class="legend-dot" style="background:#ef4444"></span>i-west 近畿等</span>
-    <span><span class="legend-dot" style="background:#9ca3af"></span>GC</span>
+    <span><span class="legend-dot" style="background:#3b82f6"></span>東北・北海道</span>
+    <span><span class="legend-dot" style="background:#10b981"></span>関東甲信越</span>
+    <span><span class="legend-dot" style="background:#f59e0b"></span>関東</span>
+    <span><span class="legend-dot" style="background:#8b5cf6"></span>東海</span>
+    <span><span class="legend-dot" style="background:#ef4444"></span>近畿・中四国・九州</span>
+    <span><span class="legend-dot" style="background:#9ca3af"></span>グループ会社</span>
     <span><span class="legend-dot" style="background:#1a5fa8;border:2px solid #ff6b35"></span>HTC体験館</span>
     <span style="margin-left:8px;color:var(--muted)">※円の大きさ = 棟数規模</span>
   </div>
@@ -262,15 +262,15 @@
 <!-- TAB5: グラフ -->
 <div id="t5" class="tab-content">
   <div class="grid2">
-    <div class="card"><div class="ctitle">着工棟数 TOP15</div><canvas id="cTop15"></canvas></div>
+    <div class="card"><div class="ctitle">着工棟数 上位15都道府県</div><canvas id="cTop15"></canvas></div>
     <div class="card"><div class="ctitle">営業PH ランキング（15未満）</div><canvas id="cPH"></canvas></div>
   </div>
   <div class="grid2">
     <div class="card"><div class="ctitle">エリア別 棟数構成比</div><canvas id="cArea"></canvas></div>
-    <div class="card"><div class="ctitle">シェア率 TOP20</div><canvas id="cShare"></canvas></div>
+    <div class="card"><div class="ctitle">シェア率 上位20都道府県</div><canvas id="cShare"></canvas></div>
   </div>
   <div class="grid2">
-    <div class="card"><div class="ctitle">2014→2024 棟数成長率 TOP10</div><canvas id="cGrowth"></canvas></div>
+    <div class="card"><div class="ctitle">2014→2024 棟数成長率 上位10都道府県</div><canvas id="cGrowth"></canvas></div>
     <div class="card"><div class="ctitle">拠点別 営業人数 分布（全624拠点）</div><canvas id="cDist"></canvas></div>
   </div>
 </div>
@@ -334,7 +334,7 @@ const HTC=[{"name": "盛岡HTC", "pref": "岩手県", "area": "i-North", "addres
 
 const areaTag={"i-North":"tn","i-Mideast":"te","i-East":"te","i-Midwest":"tm","i-west":"tw2","GC":"tg"};
 const areaColors={"i-North":"#3b82f6","i-Mideast":"#10b981","i-East":"#f59e0b","i-Midwest":"#8b5cf6","i-west":"#ef4444","GC":"#9ca3af"};
-const areaLabel={"i-North":"i-North 東北","i-Mideast":"i-Mideast 関東甲信越","i-East":"i-East 関東","i-Midwest":"i-Midwest 東海","i-west":"i-west 近畿等","GC":"GC"};
+const areaLabel={"i-North":"東北・北海道","i-Mideast":"関東甲信越","i-East":"関東","i-Midwest":"東海","i-west":"近畿・中四国・九州","GC":"グループ会社"};
 const htcPrefs=new Set(HTC.map(h=>h.pref));
 
 function phBadge(v){
@@ -385,7 +385,7 @@ function drawPrefTable(){
     const htc=htcPrefs.has(d[0])?`<span class="htcb">HTC</span>`:'';
     return`<tr>
       <td><b>${d[0]}</b> ${htc}</td>
-      <td><span class="tag ${tc}">${d[1]}</span></td>
+      <td><span class="tag ${tc}">${areaLabel[d[1]]||d[1]}</span></td>
       <td class="num"><span style="min-width:38px;display:inline-block">${d[2].toLocaleString()}</span><span class="bar" style="width:${bw}px"></span></td>
       <td class="num">${d[3].toFixed(2)}%</td><td class="center">${rankBadge(d[4])}</td>
       <td class="num"><b>${d[5]}</b></td><td class="num">${d[6]||'-'}</td><td class="num">${d[7]||'-'}</td>
@@ -395,7 +395,7 @@ function drawPrefTable(){
       <td class="num" style="font-weight:700;color:var(--orange)">${d[14]!==null?d[14].toFixed(1):'-'}</td>
       <td class="num" style="font-weight:700;color:var(--green)">${d[15]!==null?d[15].toFixed(2):'-'}</td>
       <td class="num">${d[12]!==null?d[12].toLocaleString():'-'}</td>
-      <td class="num">${d[13]!==null?d[13].toFixed(2)+'x':'-'}</td>
+      <td class="num">${d[13]!==null?d[13].toFixed(2)+'倍':'-'}</td>
       <td class="center">${htcPrefs.has(d[0])?'✓':''}</td>
     </tr>`;
   }).join('');
@@ -508,7 +508,7 @@ function updateMapMarkers(){
       });
       const m=L.marker([h.lat,h.lng],{icon}).addTo(mapObj);
       m.bindPopup(`<b style="color:#1a5fa8;font-size:14px">🏠 ${h.name}</b><br>
-        <span style="color:#666">${h.pref} / ${h.area}</span><br><hr style="margin:6px 0">
+        <span style="color:#666">${h.pref} ／ ${areaLabel[h.area]||h.area}</span><br><hr style="margin:6px 0">
         📍 ${h.address}<br>
         <b>体験内容:</b><br>
         ${h.features.map(f=>`・${f}`).join('<br>')}
@@ -525,7 +525,7 @@ function buildHTCCards(){
   document.getElementById('htcCards').innerHTML=HTC.map(h=>`
     <div class="htc-card">
       <h3>🏠 ${h.name}</h3>
-      <div class="pref-tag">📍 ${h.pref} ／ <span class="tag ${areaTag[h.area]||'tg'}">${h.area}</span></div>
+      <div class="pref-tag">📍 ${h.pref} ／ <span class="tag ${areaTag[h.area]||'tg'}">${areaLabel[h.area]||h.area}</span></div>
       <div style="font-size:11px;color:var(--muted)">${h.address}</div>
       <div class="feat">${h.features.map(f=>`<span class="feat-tag">${f}</span>`).join('')}</div>
       <div class="addr">${h.note}</div>
@@ -535,7 +535,7 @@ function buildHTCTable(){
   if(document.getElementById('htcTbody').innerHTML!=='')return;
   document.getElementById('htcTbody').innerHTML=HTC.map(h=>`<tr>
     <td><b>${h.name}</b></td><td>${h.pref}</td>
-    <td><span class="tag ${areaTag[h.area]||'tg'}">${h.area}</span></td>
+    <td><span class="tag ${areaTag[h.area]||'tg'}">${areaLabel[h.area]||h.area}</span></td>
     <td>${h.features.join('・')}</td>
     <td style="color:var(--muted)">${h.note}</td>
   </tr>`).join('');
