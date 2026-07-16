@@ -210,7 +210,13 @@ tr.hl td:first-child{color:#2f6df0;font-weight:700;}
 /* 投資金額スライダー */
 .inv-amt-box{background:rgba(45,158,95,.04);border:1px solid rgba(45,158,95,.2);border-radius:9px;padding:14px;margin-bottom:12px;}
 
-.family-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+.family-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.fam-sub{font-size:8px;color:var(--mu2);margin-top:2px;line-height:1.4;}
+.util-sum{background:rgba(31,157,99,.07);border:1px solid rgba(31,157,99,.3);border-radius:8px;padding:9px 12px;display:flex;justify-content:space-between;align-items:baseline;font-size:10px;color:var(--mu);margin-top:4px;}
+.util-sum b{font-family:'DM Mono',monospace;font-size:15px;color:var(--gr);font-weight:500;}
+.util-sum .yr{font-size:9px;color:var(--mu2);}
+.style-note{font-size:9px;color:var(--mu);line-height:1.7;margin-top:8px;background:rgba(47,109,240,.05);border:1px solid rgba(47,109,240,.18);border-radius:7px;padding:8px 10px;}
+.style-note b{color:#1D5FA8;}
 .fam-card{border-radius:8px;border:1px solid rgba(0,0,0,.12);background:#FFFFFF;padding:10px;text-align:center;cursor:pointer;transition:all .15s;}
 .fam-card.on{border-color:#2f6df0;background:rgba(47,109,240,.1);}
 .fam-icon{font-size:22px;margin-bottom:3px;}
@@ -1195,7 +1201,7 @@ footer a{color:#2f6df0;text-decoration:none;}
 <div class="ph">
   <div class="ph-ey">Step 3 — ライフサイクルコスト</div>
   <h2>家族全体の<em>生涯住居費</em>を試算する</h2>
-  <p>家族構成・光熱費・住宅ランニングコストを入力し、「賃貸継続」または「他社物件（断熱性能・地域別）」と当社物件の総費用を30年で比較します。</p>
+  <p>家族構成（6パターン）×生活スタイル（6パターン）を選ぶと月間の電気・ガス・水道代が自動で割り振られます。住宅ランニングコストとあわせて「賃貸継続」または「他社物件（断熱性能・地域別）」と当社物件の生涯住宅費を比較します。</p>
   <p class="ph-support">・あなたのマイホーム計画を徹底サポート。ライフサイクルコスト、FP、投資計画までトータルライフをサポートします！</p>
 </div>
 <div class="l24life">
@@ -1205,15 +1211,28 @@ footer a{color:#2f6df0;text-decoration:none;}
     <div class="family-row" id="fam-row">
       <div class="fam-card on" data-fam="1"><div class="fam-icon">🧑</div><div class="fam-lbl">単身</div></div>
       <div class="fam-card" data-fam="2"><div class="fam-icon">👫</div><div class="fam-lbl">夫婦2人</div></div>
-      <div class="fam-card" data-fam="3"><div class="fam-icon">👨‍👩‍👦</div><div class="fam-lbl">3人家族</div></div>
-      <div class="fam-card" data-fam="4"><div class="fam-icon">👨‍👩‍👧‍👦</div><div class="fam-lbl">4人家族</div></div>
+      <div class="fam-card" data-fam="3"><div class="fam-icon">👨‍👩‍👦</div><div class="fam-lbl">3人家族<div class="fam-sub">子ども1人</div></div></div>
+      <div class="fam-card" data-fam="4"><div class="fam-icon">👨‍👩‍👧‍👦</div><div class="fam-lbl">4人家族<div class="fam-sub">子ども2人</div></div></div>
+      <div class="fam-card" data-fam="5"><div class="fam-icon">👨‍👩‍👧‍👧</div><div class="fam-lbl">5人家族<div class="fam-sub">子ども3人</div></div></div>
+      <div class="fam-card" data-fam="6"><div class="fam-icon">👴👨‍👩‍👧</div><div class="fam-lbl">二世帯・6人〜<div class="fam-sub">親世帯と同居</div></div></div>
     </div>
+    <div class="ph2" style="margin-top:4px;">🎛️ 生活スタイル</div>
+    <div class="family-row" id="style-row">
+      <div class="fam-card on" data-ls="std"><div class="fam-icon">🏠</div><div class="fam-lbl">標準<div class="fam-sub">平均的な在宅時間</div></div></div>
+      <div class="fam-card" data-ls="dinks"><div class="fam-icon">💼</div><div class="fam-lbl">共働き・日中不在<div class="fam-sub">光熱費 控えめ</div></div></div>
+      <div class="fam-card" data-ls="remote"><div class="fam-icon">💻</div><div class="fam-lbl">在宅ワーク中心<div class="fam-sub">日中の冷暖房 多め</div></div></div>
+      <div class="fam-card" data-ls="eco"><div class="fam-icon">🌱</div><div class="fam-lbl">節約重視<div class="fam-sub">こまめに節電・節水</div></div></div>
+      <div class="fam-card" data-ls="alldenka"><div class="fam-icon">⚡</div><div class="fam-lbl">オール電化<div class="fam-sub">ガス0円・電気集約</div></div></div>
+      <div class="fam-card" data-ls="comfort"><div class="fam-icon">🛁</div><div class="fam-lbl">ゆとり・快適重視<div class="fam-sub">冷暖房・お風呂ゆったり</div></div></div>
+    </div>
+    <div class="style-note" id="style-note">—</div>
   </div>
   <div class="panel">
-    <div class="ph2">💡 月間 光熱費・水道代</div>
-    <div class="sl"><div class="sl-hd">電気代（月）<b id="lbl-le">1.2万円</b></div><input type="range" id="lc-el" min="0.3" max="5" step="0.1" value="1.2"></div>
+    <div class="ph2">💡 月間 光熱費・水道代<span class="preset-upd">構成×スタイルで自動割り振り</span></div>
+    <div class="sl"><div class="sl-hd">電気代（月）<b id="lbl-le">1.2万円</b></div><input type="range" id="lc-el" min="0.3" max="6" step="0.1" value="1.2"></div>
     <div class="sl"><div class="sl-hd">ガス代（月）<b id="lbl-lg">0.8万円</b></div><input type="range" id="lc-gas" min="0" max="3" step="0.1" value="0.8"></div>
-    <div class="sl"><div class="sl-hd">水道代（月）<b id="lbl-lw">0.5万円</b></div><input type="range" id="lc-wat" min="0.1" max="2" step="0.1" value="0.5"></div>
+    <div class="sl"><div class="sl-hd">水道代（月）<b id="lbl-lw">0.5万円</b></div><input type="range" id="lc-wat" min="0.1" max="2.5" step="0.1" value="0.5"></div>
+    <div class="util-sum"><span>月間合計（電気＋ガス＋水道）</span><span><b id="lbl-util-sum">2.5万円</b> <span class="yr" id="lbl-util-yr">年間 30万円</span></span></div>
   </div>
   <div class="panel">
     <div class="ph2">🏠 住宅ランニングコスト</div>
@@ -1958,7 +1977,7 @@ const S={
   pvKw:6,pvUnit:25,dirF:0.93,
   util:31,er:2.0,fit:16,su:30,deg:0.5,
   use:400,mt:2,battOn:true,bc:9.5,bco:130,bli:15,
-  fam:1,el:1.2,gas:0.8,wat:0.5,
+  fam:1,lstyle:'std',el:1.2,gas:0.8,wat:0.5,
   rp:1.0,tx:15,ins:5,mg:0,rent:12,rr:0.5,lcommon:0,lrenew:0,lyrs:30,
   lifeMode:'rent',  // 'rent' | 'other'
   loPrice:2200, loMyGrade:6, loOtherGrade:4, loRegion:6, loRp:1.5,
@@ -2044,7 +2063,40 @@ function applyLoanPreset(which,val){
   var e=document.getElementById('upd-date');
   if(e)e.textContent=s;
 })();
-const famPresets={1:[1.2,0.6,0.4,8],2:[1.5,0.8,0.5,12],3:[2.0,1.0,0.7,14],4:[2.5,1.2,0.8,16]};
+// ═══ 家族構成 × 生活スタイル → 光熱費・水道代の自動割り振り ═══
+const FAM_BASE={ // 月額基準値（万円）: el=電気 gas=ガス wat=水道 rent=想定家賃
+  1:{n:'単身',el:1.2,gas:0.6,wat:0.4,rent:8},
+  2:{n:'夫婦2人',el:1.5,gas:0.8,wat:0.5,rent:12},
+  3:{n:'3人家族',el:2.0,gas:1.0,wat:0.7,rent:14},
+  4:{n:'4人家族',el:2.5,gas:1.2,wat:0.8,rent:16},
+  5:{n:'5人家族',el:2.9,gas:1.4,wat:1.0,rent:18},
+  6:{n:'二世帯・6人〜',el:3.4,gas:1.6,wat:1.2,rent:20},
+};
+const LIFESTYLES={ // 生活スタイル別の割り振り係数
+  std:{n:'標準',el:1.0,gas:1.0,wat:1.0,d:'総務省家計調査ベースの平均的な使い方'},
+  dinks:{n:'共働き・日中不在',el:0.85,gas:0.9,wat:0.9,d:'日中の冷暖房・給湯が少なく光熱費は控えめ'},
+  remote:{n:'在宅ワーク中心',el:1.25,gas:1.1,wat:1.05,d:'日中も冷暖房・PC稼働で電気代が増加'},
+  eco:{n:'節約重視',el:0.8,gas:0.85,wat:0.85,d:'こまめな節電・節水で全体を圧縮'},
+  alldenka:{n:'オール電化',el:1.35,gas:0,wat:1.0,d:'ガス契約なし。給湯・調理を電気に集約'},
+  comfort:{n:'ゆとり・快適重視',el:1.2,gas:1.15,wat:1.2,d:'冷暖房・毎日の湯船などゆとりある使い方'},
+};
+function applyFamStyle(){
+  const b=FAM_BASE[S.fam]||FAM_BASE[3];
+  const ls=LIFESTYLES[S.lstyle]||LIFESTYLES.std;
+  const r1=v=>Math.round(v*10)/10;
+  S.el=r1(b.el*ls.el);S.gas=r1(b.gas*ls.gas);S.wat=r1(b.wat*ls.wat);S.rent=b.rent;
+  const set=(id,lbl,v,u)=>{const s=document.getElementById(id);if(s)s.value=v;const l=document.getElementById(lbl);if(l)l.textContent=v+(u||'万円');};
+  set('lc-el','lbl-le',S.el);set('lc-gas','lbl-lg',S.gas);set('lc-wat','lbl-lw',S.wat);
+  set('lc-rent','lbl-lrent',S.rent);
+  const ne=document.getElementById('style-note');
+  if(ne)ne.innerHTML='適用中: <b>'+b.n+'</b> × <b>'+ls.n+'</b>｜'+ls.d+'<br>電気 '+S.el.toFixed(1)+'万・ガス '+S.gas.toFixed(1)+'万・水道 '+S.wat.toFixed(1)+'万（スライダーで微調整できます）';
+  updUtilSum();
+}
+function updUtilSum(){
+  const sum=S.el+S.gas+S.wat;
+  const e=document.getElementById('lbl-util-sum');if(e)e.textContent=sum.toFixed(1)+'万円';
+  const y=document.getElementById('lbl-util-yr');if(y)y.textContent='年間 '+Math.round(sum*12)+'万円';
+}
 const TAX=0.20315;
 
 // ═══ UTILS ═══
@@ -3286,9 +3338,9 @@ document.getElementById('batt-row').addEventListener('click',function(e){
 
 // LIFE
 const lls={
-  'lc-el':(v)=>{S.el=+v;document.getElementById('lbl-le').textContent=v+'万円';},
-  'lc-gas':(v)=>{S.gas=+v;document.getElementById('lbl-lg').textContent=v+'万円';},
-  'lc-wat':(v)=>{S.wat=+v;document.getElementById('lbl-lw').textContent=v+'万円';},
+  'lc-el':(v)=>{S.el=+v;document.getElementById('lbl-le').textContent=v+'万円';updUtilSum();},
+  'lc-gas':(v)=>{S.gas=+v;document.getElementById('lbl-lg').textContent=v+'万円';updUtilSum();},
+  'lc-wat':(v)=>{S.wat=+v;document.getElementById('lbl-lw').textContent=v+'万円';updUtilSum();},
   'lc-rp':(v)=>{S.rp=+v;document.getElementById('lbl-lrp').textContent=v+'万円';},
   'lc-tx':(v)=>{S.tx=+v;document.getElementById('lbl-ltx').textContent=v+'万円';},
   'lc-ins':(v)=>{S.ins=+v;document.getElementById('lbl-lins').textContent=v+'万円';},
@@ -3315,15 +3367,15 @@ Object.entries(lls).forEach(([id,fn])=>{const el=document.getElementById(id);if(
 })();
 document.getElementById('fam-row').addEventListener('click',function(e){
   const c=e.target.closest('[data-fam]');if(!c)return;
-  document.querySelectorAll('.fam-card').forEach(x=>x.classList.remove('on'));c.classList.add('on');
-  const fam=+c.dataset.fam;S.fam=fam;
-  const [el,gas,wat,rent]=famPresets[fam];
-  S.el=el;S.gas=gas;S.wat=wat;S.rent=rent;
-  document.getElementById('lc-el').value=el;document.getElementById('lbl-le').textContent=el+'万円';
-  document.getElementById('lc-gas').value=gas;document.getElementById('lbl-lg').textContent=gas+'万円';
-  document.getElementById('lc-wat').value=wat;document.getElementById('lbl-lw').textContent=wat+'万円';
-  document.getElementById('lc-rent').value=rent;document.getElementById('lbl-lrent').textContent=rent+'万円';
-  upLife();
+  document.querySelectorAll('#fam-row .fam-card').forEach(x=>x.classList.remove('on'));c.classList.add('on');
+  S.fam=+c.dataset.fam;
+  applyFamStyle();upLife();
+});
+document.getElementById('style-row').addEventListener('click',function(e){
+  const c=e.target.closest('[data-ls]');if(!c)return;
+  document.querySelectorAll('#style-row .fam-card').forEach(x=>x.classList.remove('on'));c.classList.add('on');
+  S.lstyle=c.dataset.ls;
+  applyFamStyle();upLife();
 });
 
 // INVEST
@@ -3416,6 +3468,7 @@ let rto;window.addEventListener('resize',()=>{clearTimeout(rto);rto=setTimeout((
 // INIT
 document.querySelector('[data-dir="SE"]').classList.add('on');
 buildLoanPresets();
+applyFamStyle();
 upPlan();upSolar();upLife();upInvest();estCalc();upRevSim();
 </script>
 </body>
