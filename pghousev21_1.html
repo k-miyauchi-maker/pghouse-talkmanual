@@ -711,18 +711,17 @@ footer a{color:#2f6df0;text-decoration:none;}
 .nav-miyauchi .tab-mi:hover{color:#fff;}
 .nav-miyauchi .tab-mi.on{color:#fff;border-bottom-color:#2f6df0;}
 
-/* ── 右上: データ更新バッジ ── */
-.upd-badge-mi{
-  margin-left:auto;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;
-  gap:2px;padding:6px 12px;border-radius:8px;
-  background:rgba(47,109,240,.18);border:1px solid rgba(141,180,255,.4);
-  white-space:nowrap;
+/* ── データ更新バッジ（印刷/PDFボタンの上に表示） ── */
+.print-side{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;}
+.upd-badge-pr{
+  display:flex;flex-direction:column;align-items:flex-end;gap:1px;
+  padding:5px 12px;border-radius:8px;white-space:nowrap;
+  background:rgba(47,109,240,.08);border:1px solid rgba(47,109,240,.3);
 }
-.upd-badge-mi .upd-main{font-size:10px;font-weight:700;color:#cdd8ee;letter-spacing:.04em;}
-.upd-badge-mi .upd-sub{font-size:9px;color:#8db4ff;font-family:'DM Mono',monospace;}
+.upd-badge-pr .upd-main-pr{font-size:9.5px;font-weight:700;color:#1D5FA8;letter-spacing:.04em;}
+.upd-badge-pr .upd-sub-pr{font-size:8.5px;color:#2f6df0;font-family:'DM Mono',monospace;}
 @media(max-width:760px){
-  .upd-badge-mi{padding:4px 8px;}
-  .upd-badge-mi .upd-main{font-size:9px;}
+  .upd-badge-pr .upd-main-pr{font-size:8.5px;}
 }
 
 /* ── ヒーローバナー ── */
@@ -778,10 +777,6 @@ footer a{color:#2f6df0;text-decoration:none;}
     <button class="tab-mi" data-tab="fp">👨‍👩‍👧 FPシミュレーション</button>
     <button class="tab-mi" data-tab="estimate">📄 資金計画書</button>
     <button class="tab-mi" data-tab="shinsa">✅ 事前審査</button>
-    <div class="upd-badge-mi" title="住宅ローン金利・投資信託利回りのデータは毎日13時に更新されます">
-      <span class="upd-main">🔄 金利・利回りデータ 毎日13時更新</span>
-      <span class="upd-sub">最終更新: <span id="upd-date">—</span></span>
-    </div>
   </div>
 </nav>
 
@@ -1289,7 +1284,15 @@ footer a{color:#2f6df0;text-decoration:none;}
     <div class="style-note" id="style-note">—</div>
   </div>
   <div class="panel">
-    <div class="ph2">💡 月間 光熱費・水道代<span class="preset-upd">構成×スタイルで自動割り振り</span></div>
+    <div class="ph2">💡 月間 光熱費・水道代<span class="preset-upd">構成×スタイル×断熱等級で自動割り振り</span></div>
+    <div class="sec" style="margin-top:0;">🏠 断熱等級（当社仕様と連動）</div>
+    <div class="tg-row" id="grade-row" style="margin-bottom:4px;">
+      <button class="tg" data-gr="4">等級4<br><span style="font-size:8px;font-weight:400;">省エネ基準</span></button>
+      <button class="tg" data-gr="5">等級5<br><span style="font-size:8px;font-weight:400;">ZEH基準</span></button>
+      <button class="tg on" data-gr="6">等級6<br><span style="font-size:8px;font-weight:400;">HEAT20 G2</span></button>
+      <button class="tg" data-gr="7">等級7<br><span style="font-size:8px;font-weight:400;">HEAT20 G3</span></button>
+    </div>
+    <div style="font-size:9px;color:var(--mu);margin-bottom:10px;line-height:1.7;" id="grade-note">—</div>
     <div class="sl"><div class="sl-hd">電気代（月）<b id="lbl-le">1.2万円</b></div><input type="range" id="lc-el" min="0.3" max="6" step="0.1" value="1.2"></div>
     <div class="sl"><div class="sl-hd">ガス代（月）<b id="lbl-lg">0.8万円</b></div><input type="range" id="lc-gas" min="0" max="3" step="0.1" value="0.8"></div>
     <div class="sl"><div class="sl-hd">水道代（月）<b id="lbl-lw">0.5万円</b></div><input type="range" id="lc-wat" min="0.1" max="2.5" step="0.1" value="0.5"></div>
@@ -2606,14 +2609,23 @@ function upCK(el,i){
   else{r.className='ck-result ck-ng';r.innerHTML='⚠️ '+n+'項目に該当しています。対策を打たずに事前審査を出すと審査に落ちてしまう可能性があります。<b>安易に提出せず、必ず担当者と一緒に対策を打ってから進めましょう。</b>過去・現在のローン履歴は必ず自己申告してください（銀行の審査ではローン履歴が全部わかります）。';}
 }
 
-// ═══ 更新バッジ: 直近の「毎日13時更新」時刻を表示 ═══
+// ═══ 更新バッジ: 各タブの印刷/PDFボタンの上に「毎日13時更新」＋最終更新日時を表示 ═══
 (function(){
   var now=new Date(),upd=new Date(now);
   upd.setHours(13,0,0,0);
   if(now<upd)upd.setDate(upd.getDate()-1);
   var s=upd.getFullYear()+'/'+(upd.getMonth()+1)+'/'+upd.getDate()+' 13:00';
-  var e=document.getElementById('upd-date');
-  if(e)e.textContent=s;
+  document.querySelectorAll('.print-btn-bar .print-btn').forEach(function(btn){
+    var wrap=document.createElement('div');
+    wrap.className='print-side';
+    btn.parentNode.insertBefore(wrap,btn);
+    var badge=document.createElement('div');
+    badge.className='upd-badge-pr';
+    badge.title='住宅ローン金利・投資信託利回りのデータは毎日13時に更新されます';
+    badge.innerHTML='<span class="upd-main-pr">🔄 金利・利回りデータ 毎日13時更新</span><span class="upd-sub-pr">最終更新: '+s+'</span>';
+    wrap.appendChild(badge);
+    wrap.appendChild(btn);
+  });
 })();
 // ═══ 家族構成 × 生活スタイル → 光熱費・水道代の自動割り振り ═══
 const FAM_BASE={ // 月額基準値（万円）: el=電気 gas=ガス wat=水道 rent=想定家賃
@@ -2636,12 +2648,20 @@ function applyFamStyle(){
   const b=FAM_BASE[S.fam]||FAM_BASE[3];
   const ls=LIFESTYLES[S.lstyle]||LIFESTYLES.std;
   const r1=v=>Math.round(v*10)/10;
-  S.el=r1(b.el*ls.el);S.gas=r1(b.gas*ls.gas);S.wat=r1(b.wat*ls.wat);S.rent=b.rent;
+  // 基準値（等級4・省エネ基準相当の一般的住宅を想定）
+  let el=b.el*ls.el, gas=b.gas*ls.gas, wat=b.wat*ls.wat;
+  // 断熱等級による冷暖房費の調整（等級4比・地域区分連動）
+  const adjMo=(hvacCost(S.loRegion,S.loMyGrade)-hvacCost(S.loRegion,4))/12; // 万円/月（高断熱ほどマイナス）
+  if(gas<=0){el+=adjMo;}         // オール電化: 全額を電気代に反映
+  else{el+=adjMo*0.7;gas+=adjMo*0.3;} // 電気7:ガス3で按分
+  S.el=Math.max(0.3,r1(el));S.gas=Math.max(0,r1(gas));S.wat=r1(wat);S.rent=b.rent;
   const set=(id,lbl,v,u)=>{const s=document.getElementById(id);if(s)s.value=v;const l=document.getElementById(lbl);if(l)l.textContent=v+(u||'万円');};
   set('lc-el','lbl-le',S.el);set('lc-gas','lbl-lg',S.gas);set('lc-wat','lbl-lw',S.wat);
   set('lc-rent','lbl-lrent',S.rent);
   const ne=document.getElementById('style-note');
-  if(ne)ne.innerHTML='適用中: <b>'+b.n+'</b> × <b>'+ls.n+'</b>｜'+ls.d+'<br>電気 '+S.el.toFixed(1)+'万・ガス '+S.gas.toFixed(1)+'万・水道 '+S.wat.toFixed(1)+'万（スライダーで微調整できます）';
+  if(ne)ne.innerHTML='適用中: <b>'+b.n+'</b> × <b>'+ls.n+'</b> × <b>断熱等級'+S.loMyGrade+'</b>｜'+ls.d+'<br>電気 '+S.el.toFixed(1)+'万・ガス '+S.gas.toFixed(1)+'万・水道 '+S.wat.toFixed(1)+'万（スライダーで微調整できます）';
+  const gn=document.getElementById('grade-note');
+  if(gn)gn.innerHTML='断熱等級'+S.loMyGrade+'×'+S.loRegion+'地域：等級4（省エネ基準）比で冷暖房費 <b style="color:'+(adjMo<0?'var(--gr)':'var(--mu)')+'">月'+(adjMo<=0?'▲'+Math.abs(adjMo).toFixed(2):'+'+adjMo.toFixed(2))+'万円</b>｜地域区分は「他社物件と比較」の建設地域と連動しています';
   updUtilSum();
 }
 function updUtilSum(){
@@ -3919,12 +3939,23 @@ Object.entries(lls).forEach(([id,fn])=>{const el=document.getElementById(id);if(
   var loPrice=document.getElementById('lo-price');
   if(loPrice)loPrice.addEventListener('input',function(){S.loPrice=+this.value||0;upLife();});
   var loMy=document.getElementById('lo-my-grade');
-  if(loMy)loMy.addEventListener('change',function(){S.loMyGrade=+this.value;upLife();});
+  if(loMy)loMy.addEventListener('change',function(){S.loMyGrade=+this.value;syncGradeRow();applyFamStyle();upLife();});
   var loOther=document.getElementById('lo-other-grade');
   if(loOther)loOther.addEventListener('change',function(){S.loOtherGrade=+this.value;upLife();});
   var loRegion=document.getElementById('lo-region');
-  if(loRegion)loRegion.addEventListener('change',function(){S.loRegion=+this.value;upLife();});
+  if(loRegion)loRegion.addEventListener('change',function(){S.loRegion=+this.value;applyFamStyle();upLife();});
 })();
+// 断熱等級ボタン（光熱費パネル）⇔ 当社断熱等級セレクト（他社比較パネル）を双方向連動
+function syncGradeRow(){
+  document.querySelectorAll('#grade-row .tg').forEach(function(b){b.classList.toggle('on',+b.dataset.gr===S.loMyGrade);});
+}
+document.getElementById('grade-row').addEventListener('click',function(e){
+  const c=e.target.closest('[data-gr]');if(!c)return;
+  S.loMyGrade=+c.dataset.gr;
+  syncGradeRow();
+  var sel=document.getElementById('lo-my-grade');if(sel)sel.value=S.loMyGrade;
+  applyFamStyle();upLife();
+});
 document.getElementById('fam-row').addEventListener('click',function(e){
   const c=e.target.closest('[data-fam]');if(!c)return;
   document.querySelectorAll('#fam-row .fam-card').forEach(x=>x.classList.remove('on'));c.classList.add('on');
