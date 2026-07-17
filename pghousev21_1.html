@@ -84,6 +84,59 @@ select option{background:#F0EEE9;color:#1A1A1A;}
 .preset-note b{color:#1D5FA8;font-family:'DM Mono',monospace;}
 .preset-upd{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:8px;background:rgba(47,109,240,.12);color:#2f6df0;font-size:8px;font-weight:700;letter-spacing:.05em;text-transform:none;}
 
+/* ─── 住宅ローン控除 ─── */
+.gz-abc{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;}
+@media(max-width:700px){.gz-abc{grid-template-columns:1fr;}}
+.gz-abc-box{background:#fff;border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(16,40,77,.06);}
+.gz-abc-box .tag{display:inline-block;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:1px 8px;margin-bottom:6px;}
+.gz-abc-box.a .tag{background:#2f6df0;} .gz-abc-box.b .tag{background:#b97400;} .gz-abc-box.c .tag{background:#6C3FA8;}
+.gz-abc-box h5{font-size:11px;font-weight:700;color:var(--navy);margin-bottom:3px;}
+.gz-abc-box p{font-size:9.5px;color:var(--mu);line-height:1.7;}
+.gz-abc-box .val{font-family:'DM Mono',monospace;font-size:15px;color:var(--wh);margin-top:5px;}
+.gz-badge{display:inline-block;font-size:8.5px;font-weight:700;border-radius:4px;padding:0 5px;margin-left:4px;vertical-align:1px;}
+.gz-badge.a{background:rgba(47,109,240,.12);color:#2f6df0;} .gz-badge.b{background:rgba(185,116,0,.12);color:#b97400;} .gz-badge.c{background:rgba(108,63,168,.12);color:#6C3FA8;}
+.gz-tbl td.min{font-weight:700;color:#1D5FA8;background:rgba(47,109,240,.07);}
+.gz-tbl tr.total td{background:var(--navy);color:#fff;font-weight:700;}
+.gz-na{background:rgba(192,57,43,.07);border:1.5px solid rgba(192,57,43,.35);color:#8b1a1a;border-radius:10px;padding:13px 16px;font-size:12px;line-height:1.8;font-weight:500;margin-bottom:14px;}
+.gz-note{font-size:9px;color:var(--mu);line-height:1.9;margin-top:10px;}
+.gz-check{display:flex;align-items:center;gap:7px;font-size:11px;margin-bottom:10px;cursor:pointer;}
+.gz-check input{accent-color:#2f6df0;}
+
+/* ─── 建てどき比較 ─── */
+.toki-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--bdr);border-radius:9px;overflow:hidden;margin-bottom:8px;background:#fff;box-shadow:0 1px 3px rgba(16,40,77,.05);}
+.toki-row>div{padding:10px 12px;}
+.toki-row .t-lbl{background:var(--bg2);font-size:10.5px;font-weight:700;color:var(--navy);display:flex;align-items:center;}
+.toki-row .t-now,.toki-row .t-fut{font-family:'DM Mono',monospace;font-size:15px;text-align:right;}
+.toki-row .t-now{color:#1f9d63;}
+.toki-row .t-fut{color:#c0392b;border-left:1px dashed var(--bdr2);}
+.toki-row .t-cap{font-size:8.5px;color:var(--mu);font-family:'Noto Sans JP',sans-serif;display:block;text-align:right;}
+.toki-total{background:linear-gradient(135deg,#16284d,#1f3a6b);color:#fff;border-radius:11px;padding:18px;text-align:center;margin-top:6px;}
+.toki-total b{font-family:'DM Mono',monospace;font-size:30px;color:#8db4ff;}
+.toki-total span{font-size:11px;opacity:.85;}
+.toki-head{display:grid;grid-template-columns:1fr 1fr 1fr;font-size:10px;font-weight:700;color:var(--mu);padding:0 12px 6px;}
+
+/* ─── 事前審査 ─── */
+.pm3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+@media(max-width:760px){.pm3{grid-template-columns:1fr;}}
+.pm-card{border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;background:#fff;box-shadow:0 1px 3px rgba(16,40,77,.05);}
+.pm-card h4{font-size:12px;font-weight:900;color:var(--navy);margin-bottom:4px;}
+.pm-card p{font-size:10px;color:var(--mu);line-height:1.8;}
+.ck-item{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--bdr2);border-radius:9px;padding:10px 12px;background:#fff;margin-bottom:7px;cursor:pointer;transition:all .12s;font-size:11.5px;line-height:1.6;}
+.ck-item:hover{border-color:#2f6df0;}
+.ck-item.on{background:#fdf0ee;border-color:var(--rd);}
+.ck-item input{margin-top:3px;accent-color:var(--rd);}
+.ck-risk{flex-shrink:0;border-radius:4px;padding:1px 7px;font-size:9px;font-weight:700;align-self:center;}
+.ck-r2{background:#f8d3cd;color:#b02516;}.ck-r1{background:#fbf3c9;color:#8a6d00;}
+.ck-result{border-radius:11px;padding:14px 16px;font-size:12px;font-weight:700;margin-top:10px;line-height:1.7;}
+.ck-ok{background:#e7f3e7;border:1.5px solid #2e7d32;color:#1e5722;}
+.ck-ng{background:#fdeceb;border:1.5px solid var(--rd);color:#8f2f1f;}
+.yak{display:flex;align-items:center;gap:10px;background:rgba(47,109,240,.05);border:1px solid rgba(47,109,240,.25);border-radius:9px;padding:11px 14px;margin-bottom:8px;font-size:12px;font-weight:700;color:var(--navy);}
+.yak .n{flex-shrink:0;width:24px;height:24px;border-radius:50%;background:#2f6df0;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:12px;}
+.case{background:#fff;border:1px solid var(--bdr2);border-left:3px solid #1f9d63;border-radius:7px;padding:10px 13px;margin-bottom:7px;font-size:11px;color:var(--mu);line-height:1.7;}
+.case b{color:#1f9d63;font-family:'DM Mono',monospace;}
+.shinsa-note{font-size:10px;color:var(--mu);line-height:1.9;margin-top:10px;background:rgba(0,0,0,.03);border-radius:8px;padding:10px 13px;}
+.shinsa-note b{color:var(--wh);}
+
 /* ─── 新: 年数/金利切り替えセレクタ ─── */
 .cmp-switch{display:flex;background:rgba(0,0,0,.05);border-radius:8px;padding:3px;margin-bottom:12px;gap:3px;}
 .cmp-sw-btn{flex:1;padding:6px 8px;border:none;border-radius:6px;background:transparent;font-size:10px;font-weight:700;color:var(--mu);cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .18s;}
@@ -717,11 +770,14 @@ footer a{color:#2f6df0;text-decoration:none;}
       <span style="color:#fff;font-size:14px;font-weight:800;letter-spacing:.04em;white-space:nowrap;">マイホームシミュレーター</span>
     </div>
     <button class="tab-mi on" data-tab="plan">📋 資金計画</button>
+    <button class="tab-mi" data-tab="genzei">🎁 ローン控除</button>
     <button class="tab-mi" data-tab="solar">☀️ 太陽光・蓄電池</button>
     <button class="tab-mi" data-tab="life">🏡 ライフサイクルコスト</button>
     <button class="tab-mi" data-tab="invest">📈 投資シミュレーション</button>
+    <button class="tab-mi" data-tab="toki">⏰ 建てどき比較</button>
     <button class="tab-mi" data-tab="fp">👨‍👩‍👧 FPシミュレーション</button>
     <button class="tab-mi" data-tab="estimate">📄 資金計画書</button>
+    <button class="tab-mi" data-tab="shinsa">✅ 事前審査</button>
     <div class="upd-badge-mi" title="住宅ローン金利・投資信託利回りのデータは毎日13時に更新されます">
       <span class="upd-main">🔄 金利・利回りデータ 毎日13時更新</span>
       <span class="upd-sub">最終更新: <span id="upd-date">—</span></span>
@@ -810,7 +866,7 @@ footer a{color:#2f6df0;text-decoration:none;}
       <div class="sec">固定金利（共通）</div>
       <div class="sl">
         <div class="sl-hd">金利（年率）<b id="lbl-rt">1.50%</b></div>
-        <input type="range" id="p-rate" min="0.1" max="4.0" step="0.05" value="1.5">
+        <input type="range" id="p-rate" min="0.1" max="4.0" step="0.01" value="1.5">
         <div class="sl-hints"><span>0.1% 変動</span><span>4.0% 固定</span></div>
       </div>
       <div class="sec">基準ローン期間（短い方）</div>
@@ -840,7 +896,7 @@ footer a{color:#2f6df0;text-decoration:none;}
       <div class="preset-note" id="note-A"></div>
       <div class="sl">
         <div class="sl-hd">金利A<b id="lbl-rateA">0.50%</b></div>
-        <input type="range" id="p-rateA" min="0.1" max="4.0" step="0.05" value="0.5">
+        <input type="range" id="p-rateA" min="0.1" max="4.0" step="0.01" value="0.5">
         <div class="sl-hints"><span>0.1% 超低金利</span><span>4.0% 固定</span></div>
       </div>
       <div class="sec">金利B（固定・安心プラン）</div>
@@ -848,7 +904,7 @@ footer a{color:#2f6df0;text-decoration:none;}
       <div class="preset-note" id="note-B"></div>
       <div class="sl">
         <div class="sl-hd">金利B<b id="lbl-rateB">2.00%</b></div>
-        <input type="range" id="p-rateB" min="0.1" max="4.0" step="0.05" value="2.0">
+        <input type="range" id="p-rateB" min="0.1" max="4.0" step="0.01" value="2.0">
         <div class="sl-hints"><span>0.1%</span><span>4.0%</span></div>
       </div>
     </div>
@@ -872,7 +928,7 @@ footer a{color:#2f6df0;text-decoration:none;}
       <div class="preset-note" id="note-rev"></div>
       <div class="sl">
         <div class="sl-hd">金利（年率）<b id="lbl-rev-rate">1.50%</b></div>
-        <input type="range" id="rev-rate" min="0.1" max="4.0" step="0.05" value="1.5">
+        <input type="range" id="rev-rate" min="0.1" max="4.0" step="0.01" value="1.5">
         <div class="sl-hints"><span>0.1% 変動</span><span>4.0% 固定</span></div>
       </div>
       <div class="sl">
@@ -1412,6 +1468,11 @@ footer a{color:#2f6df0;text-decoration:none;}
             <div class="sl-hints"><span>1万円</span><span>30万円</span></div>
           </div>
         </div>
+        <div class="sec" style="margin-top:10px;">🏠 性能差分の上乗せ（高断熱の光熱費削減分）</div>
+        <div class="tg-row" id="perf-choice" style="margin-bottom:4px;">
+          <button class="tg gr" data-perf="toggle">♨️ 断熱性能差の削減分も投資に回す</button>
+        </div>
+        <div style="font-size:9px;color:var(--mu);margin-bottom:6px;line-height:1.7;" id="perf-note">—</div>
         <div style="font-size:9px;color:var(--mu);margin-top:4px;">実際の投資金額：<b id="iv-actual-amt" style="font-family:'DM Mono',monospace;color:var(--gr)">—</b></div>
       </div>
 
@@ -1961,6 +2022,195 @@ footer a{color:#2f6df0;text-decoration:none;}
 </div><!-- /est-wrap -->
 </div>
 
+<!-- ══════════════ TAB: 住宅ローン控除 ══════════════ -->
+<div class="pg" id="tab-genzei">
+<div class="ph">
+  <div class="ph-ey">Tax Deduction — 令和8年度税制改正対応</div>
+  <h2>住宅ローン控除（減税）を<em>年別に試算</em>する</h2>
+  <p>住宅ローン控除は「A：年末残高×0.7%」「B：年間の最大控除額」「C：控除対象税額（所得税＋住民税）」の<b>3つのうち最も少ない金額</b>が各年の控除額になります。借入額・金利・期間は資金計画タブと自動連動。住宅の種別・入居年・子育て世帯等の条件で13年間（一部10年間）の控除額を試算します。</p>
+</div>
+<div class="l24">
+<div><!-- LEFT -->
+  <div class="panel">
+    <div class="ph2">🔧 借入条件</div>
+    <label class="gz-check"><input type="checkbox" id="gz-link" checked onchange="upGenzei()"> 資金計画タブと連動する</label>
+    <label style="font-size:10px;color:var(--mu)">借入額</label>
+    <div class="nf"><input type="number" id="gz-amt" value="4300" min="0" max="30000" step="100" oninput="upGenzei()"><span class="nf-unit">万円</span></div>
+    <label style="font-size:10px;color:var(--mu)">金利（年率）</label>
+    <div class="nf"><input type="number" id="gz-rate" value="1.50" min="0.1" max="10" step="0.01" oninput="upGenzei()"><span class="nf-unit">%</span></div>
+    <label style="font-size:10px;color:var(--mu)">返済期間</label>
+    <div class="nf"><input type="number" id="gz-yrs" value="35" min="10" max="50" oninput="upGenzei()"><span class="nf-unit">年</span></div>
+    <div style="font-size:9px;color:var(--mu);line-height:1.7;">元利均等返済・金利は全期間一定として年末残高を試算します。連動時は資金計画の基準プラン（金利A）を使用します。</div>
+  </div>
+  <div class="panel">
+    <div class="ph2">🏠 住宅・入居の条件</div>
+    <select id="gz-nc" onchange="upGenzei()">
+      <option value="new" selected>新築住宅・買取再販住宅</option>
+      <option value="used">中古住宅（既存住宅）</option>
+    </select>
+    <select id="gz-type" onchange="upGenzei()">
+      <option value="chouki" selected>長期優良住宅・低炭素住宅</option>
+      <option value="zeh">ZEH水準省エネ住宅</option>
+      <option value="shoene">省エネ基準適合住宅</option>
+      <option value="sonota">その他の住宅</option>
+    </select>
+    <select id="gz-year" onchange="upGenzei()">
+      <option value="2026" selected>2026年 入居</option>
+      <option value="2027">2027年 入居</option>
+      <option value="2028">2028年 入居</option>
+      <option value="2029">2029年 入居</option>
+      <option value="2030">2030年 入居</option>
+    </select>
+    <label class="gz-check" style="align-items:flex-start;line-height:1.6;"><input type="checkbox" id="gz-kosodate" checked onchange="upGenzei()" style="margin-top:2px;">
+      <span><b>子育て世帯・若者夫婦世帯</b><br><span style="font-size:9.5px;color:var(--mu)">19歳未満の子がいる世帯、または夫婦のどちらかが40歳未満の世帯（借入限度額が上乗せされます）</span></span></label>
+    <div style="font-size:9px;color:var(--mu);line-height:1.7;">長期優良住宅・ZEH水準に該当する場合、最も優遇された借入限度額（子育て世帯等なら最大5,000万円）を活用できます。</div>
+  </div>
+  <div class="panel">
+    <div class="ph2">💼 収入・扶養の条件</div>
+    <label class="gz-check"><input type="checkbox" id="gz-nenshu-link" checked onchange="upGenzei()"> 資金計画タブの年収と連動</label>
+    <label style="font-size:10px;color:var(--mu)">控除を受ける方の年収（額面）</label>
+    <div class="nf"><input type="number" id="gz-nenshu" value="700" min="100" max="5000" step="10" oninput="upGenzei()"><span class="nf-unit">万円</span></div>
+    <label style="font-size:10px;color:var(--mu)">扶養家族の人数</label>
+    <div class="nf"><input type="number" id="gz-fuyo" value="1" min="0" max="10" oninput="upGenzei()"><span class="nf-unit">人</span></div>
+    <div style="font-size:9px;color:var(--mu);line-height:1.7;">扶養家族＝控除対象となる配偶者・扶養親族（16歳以上）の人数。ペアローンの場合は本人年収のみで連動します。それぞれの年収・借入額で個別に試算してください。</div>
+  </div>
+</div>
+<div><!-- RIGHT -->
+  <div id="gz-na-msg" class="gz-na" style="display:none"></div>
+  <div class="kpis k3">
+    <div class="kpi"><div class="kpi-l"><span id="gz-period">13</span>年間の控除額 合計</div><div class="kpi-v c-bl" id="gz-total">—</div></div>
+    <div class="kpi"><div class="kpi-l">初年度の控除額</div><div class="kpi-v c-gr" id="gz-first">—</div></div>
+    <div class="kpi"><div class="kpi-l">年平均の控除額</div><div class="kpi-v c-mu" id="gz-avg">—</div></div>
+  </div>
+  <div class="gz-abc">
+    <div class="gz-abc-box a"><span class="tag">A</span><h5>年末残高 × 0.7%</h5><p>各年12月末時点の住宅ローン残高の0.7%。残高が減るにつれて少しずつ小さくなります。</p><div class="val" id="gz-a1">—</div></div>
+    <div class="gz-abc-box b"><span class="tag">B</span><h5>年間の最大控除額</h5><p>住宅の種別・入居年・子育て世帯等で決まる借入限度額 × 0.7%。<span id="gz-b-desc">—</span></p><div class="val" id="gz-b1">—</div></div>
+    <div class="gz-abc-box c"><span class="tag">C</span><h5>控除対象税額</h5><p>納めている所得税＋住民税（課税所得の5%・最大9.75万円）の合計。これを超えては戻りません。</p><div class="val" id="gz-c1">—</div></div>
+  </div>
+  <div class="ch-box">
+    <div class="ch-hd">
+      <div class="ch-t">📊 各年の控除額（A・B・Cの最小値）</div>
+      <div class="leg">
+        <div class="li"><div class="li-d" style="background:#2f6df0"></div>A が上限</div>
+        <div class="li"><div class="li-d" style="background:#b97400"></div>B が上限</div>
+        <div class="li"><div class="li-d" style="background:#6C3FA8"></div>C が上限</div>
+      </div>
+    </div>
+    <canvas id="gz-chart" height="220"></canvas>
+  </div>
+  <div class="tb-box">
+    <div class="tb-t">📋 年別の控除額 内訳（A・B・Cのうち最小額＝控除額）</div>
+    <table class="gz-tbl">
+      <thead><tr><th>控除年</th><th>年末残高</th><th>A 残高×0.7%</th><th>B 年間上限</th><th>C 税額上限</th><th>控除額</th></tr></thead>
+      <tbody id="gz-tbody"></tbody>
+    </table>
+  </div>
+  <div class="gz-note">※ 令和8年度（2026年度）税制改正（適用期限の2030年までの延長、子育て世帯・若者夫婦世帯の借入限度額上乗せ等）を反映した概算です。<br>
+  ※ 給与所得者を想定し、所得控除は基礎控除・扶養控除・社会保険料控除（年収の15%と仮定）のみ考慮。住民税は所得割10%・調整控除考慮の概算で、復興特別所得税・その他の控除は考慮していません。<br>
+  ※ 適用には合計所得2,000万円以下・返済期間10年以上・床面積等の要件があります。正確な金額は税務署・税理士等でご確認ください。</div>
+</div>
+</div>
+</div>
+
+<!-- ══════════════ TAB: 建てどき比較 ══════════════ -->
+<div class="pg" id="tab-toki">
+<div class="ph">
+  <div class="ph-ey">Timing Simulation</div>
+  <h2>マイホームは<em>今が建てどき？！</em></h2>
+  <p>「今建てる」場合と「◯年後に建てる」場合を比較します。建築費の上昇、金利変動リスク、その間の家賃支払い、補助金の有無をまとめて試算します。</p>
+</div>
+<div class="l24">
+<div><!-- LEFT -->
+  <div class="panel">
+    <div class="ph2">🔧 条件</div>
+    <label class="gz-check"><input type="checkbox" id="t-link" checked onchange="upToki()"> 資金計画タブと連動する</label>
+    <div class="sl"><div class="sl-hd">何年後と比べる？<b id="d-tn">5年後</b></div>
+      <input type="range" id="t-n" min="1" max="10" value="5" oninput="upToki()"><div class="sl-hints"><span>1年後</span><span>10年後</span></div></div>
+    <label style="font-size:10px;color:var(--mu)">建築費（建物＋諸経費）</label>
+    <div class="nf"><input type="number" id="t-build" value="2800" min="500" max="20000" step="50" oninput="upToki()"><span class="nf-unit">万円</span></div>
+    <label style="font-size:10px;color:var(--mu)">土地購入費</label>
+    <div class="nf"><input type="number" id="t-land" value="2000" min="0" max="20000" step="50" oninput="upToki()"><span class="nf-unit">万円</span></div>
+    <label style="font-size:10px;color:var(--mu)">今の自己資金</label>
+    <div class="nf"><input type="number" id="t-jiko" value="500" min="0" max="10000" step="50" oninput="upToki()"><span class="nf-unit">万円</span></div>
+    <label style="font-size:10px;color:var(--mu)">マイホーム貯金（月）</label>
+    <div class="nf"><input type="number" id="t-savemo" value="1.0" min="0" max="50" step="0.5" oninput="upToki()"><span class="nf-unit">万円/月</span></div>
+    <label style="font-size:10px;color:var(--mu)">今の家賃（月）</label>
+    <div class="nf"><input type="number" id="t-yachin" value="7.5" min="0" max="50" step="0.5" oninput="upToki()"><span class="nf-unit">万円/月</span></div>
+    <label style="font-size:10px;color:var(--mu)">賃貸更新費 × 回数</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <div class="nf"><input type="number" id="t-koshin" value="2" min="0" max="50" step="0.5" oninput="upToki()"><span class="nf-unit">万円</span></div>
+      <div class="nf"><input type="number" id="t-kcount" value="2" min="0" max="10" oninput="upToki()"><span class="nf-unit">回</span></div>
+    </div>
+    <div class="sl"><div class="sl-hd">建築費の上昇率（年）<b id="d-tinf">2.14%</b></div>
+      <input type="range" id="t-inf" min="0" max="5" step="0.01" value="2.14" oninput="upToki()"><div class="sl-hints"><span>0%</span><span>5%</span></div></div>
+    <div class="sl"><div class="sl-hd">金利：今<b id="d-tr">1.50%</b></div>
+      <input type="range" id="t-r" min="0.1" max="4" step="0.01" value="1.5" oninput="upToki()"><div class="sl-hints"><span>0.1%</span><span>4%</span></div></div>
+    <div class="sl"><div class="sl-hd">◯年後までの金利上昇幅<b id="d-trise">＋0.80%</b></div>
+      <input type="range" id="t-rise" min="0" max="2" step="0.01" value="0.8" oninput="upToki()"><div class="sl-hints"><span>0%</span><span>+2%</span></div></div>
+    <label style="font-size:10px;color:var(--mu)">今なら受けられる補助金等</label>
+    <div class="nf"><input type="number" id="t-hojo" value="100" min="0" max="1000" step="10" oninput="upToki()"><span class="nf-unit">万円</span></div>
+    <div style="font-size:9px;color:var(--mu);line-height:1.7;">建築費は戸建で2011年からの10年間に坪8.9〜20.8万円上昇（40坪換算で約356〜832万円）した実績があります。過去には2ヶ月間で金利が0.8%上昇した例も。補助金（子育て支援事業等）は予算の状況により受け取れない可能性があります。</div>
+  </div>
+</div>
+<div><!-- RIGHT -->
+  <div class="toki-head"><span></span><span style="text-align:right;color:#1f9d63">今 建てると</span><span style="text-align:right;color:#c0392b" id="t-futlbl">5年後 建てると</span></div>
+  <div class="toki-row"><div class="t-lbl">建築費</div><div class="t-now" id="tk-b1">—</div><div class="t-fut"><span id="tk-b2">—</span><span class="t-cap" id="tk-bcap"></span></div></div>
+  <div class="toki-row"><div class="t-lbl">自己資金</div><div class="t-now" id="tk-j1">—</div><div class="t-fut"><span id="tk-j2">—</span><span class="t-cap">貯金を続けた場合</span></div></div>
+  <div class="toki-row"><div class="t-lbl">借入金額</div><div class="t-now" id="tk-l1">—</div><div class="t-fut" id="tk-l2">—</div></div>
+  <div class="toki-row"><div class="t-lbl">総返済額（35年）</div><div class="t-now" id="tk-t1">—</div><div class="t-fut"><span id="tk-t2">—</span><span class="t-cap" id="tk-tcap"></span></div></div>
+  <div class="toki-row"><div class="t-lbl">行政による補助金</div><div class="t-now" id="tk-h1">—</div><div class="t-fut"><span id="tk-h2">—</span><span class="t-cap">終了リスクあり</span></div></div>
+  <div class="toki-row"><div class="t-lbl">それまでの家賃支払い</div><div class="t-now">0円</div><div class="t-fut"><span id="tk-y2">—</span><span class="t-cap">家賃＋更新費の累計</span></div></div>
+  <div class="toki-total">早めのスタートで、合計 <b id="tk-total">—</b> 万円 おトクになる試算です<br><span>（総返済額の差＋家賃累計＋補助金の合計・概算）</span></div>
+  <div style="font-size:9px;color:var(--mu);line-height:1.8;margin-top:10px;">計算条件：元利均等・ボーナス返済なし・繰上げ返済なし・返済期間35年。建築費は上昇率で複利計算、◯年後の金利＝今の金利＋上昇幅。土地価格は一定と仮定しています。</div>
+</div>
+</div>
+</div>
+
+<!-- ══════════════ TAB: 事前審査 ══════════════ -->
+<div class="pg" id="tab-shinsa">
+<div class="ph">
+  <div class="ph-ey">Pre-Approval Guide — 大切な資金計画</div>
+  <h2>住宅ローン <em>事前審査ガイド</em></h2>
+  <p>事前審査とは、本申込を行う前に、ローンが通るかどうかを事前にローン会社に見てもらうものです。「自分が払えると思っていても、借りることができない」場合があります。ただし、対策を打たずに安易に出すのはとても危険。まずはチェックリストで確認しましょう。</p>
+</div>
+<div class="panel">
+  <div class="ph2">✅ 事前審査を出しておく3つのメリット</div>
+  <div class="pm3">
+    <div class="pm-card"><h4>① 詳細な計画が立てられる</h4><p>総額が明確になれば、土地・建物・諸費用のバランスを踏まえた詳細な資金計画が立てられます。</p></div>
+    <div class="pm-card"><h4>② 土地の値下げ交渉が可能に</h4><p>土地の売り主に対して価格・仲介手数料等の交渉がしやすくなり、土地申込の優先順位も上がります。</p></div>
+    <div class="pm-card"><h4>③ 低金利で住宅ローンを確定</h4><p>提出時の低金利で住宅ローンを確定できます。金利上昇局面では特に大きなメリットです。</p></div>
+  </div>
+</div>
+<div class="panel">
+  <div class="ph2">⚠️ 事前審査前チェックリスト — 当てはまるものはありますか？</div>
+  <div id="ck-list"></div>
+  <div id="ck-result" class="ck-result ck-ok">現在チェックはありません。当てはまる項目があればタップしてください。</div>
+</div>
+<div class="panel">
+  <div class="ph2">❌ 事前審査に万が一落ちてしまった場合の3つのデメリット</div>
+  <div class="pm3">
+    <div class="pm-card"><h4>① 借入可能額を減額される</h4><p>審査に落ちた履歴が残り、借入可能額が減額されてしまう可能性があります。</p></div>
+    <div class="pm-card"><h4>② 最低半年は同じ銀行に申込不可</h4><p>最低半年間は同じ銀行に住宅ローンの申込ができなくなります。</p></div>
+    <div class="pm-card"><h4>③ 条件の悪い銀行・金利になる</h4><p>今すぐという場合には、条件の悪い銀行・金利を選ばざるを得なくなります。</p></div>
+  </div>
+  <div class="shinsa-note"><b>銀行の審査では、過去から現在のローン履歴が全部わかります。</b>消費者金融・各種ローン・クレジットカードをお持ちの方は審査が厳しくなりますが、通らないとは限りません。自己申告のある方は心証が良く、年収・勤続年数に対しベストな条件で借入できることも。<b>過去・現在のローン履歴は必ず自己申告してください。</b>知識を持って対策を打てば、通る審査はあります。安易に出さず、担当者と一緒に打ち合わせを行いながら進めましょう。</div>
+</div>
+<div class="panel">
+  <div class="ph2">🤝 マイホームを叶えるために — 家が完成するまでの3つの約束</div>
+  <div class="yak"><span class="n">1</span>新たにクレジットカードを作らない</div>
+  <div class="yak"><span class="n">2</span>ローンの支払いを遅らせない</div>
+  <div class="yak"><span class="n">3</span>新たにお金を借りない</div>
+  <div style="font-size:9px;color:var(--mu);line-height:1.7;margin-top:8px;">この3点を守らなければ、事前審査を通過してもかなり高い確率で住宅ローンを借り入れできません。必ず守ってくださいね。</div>
+</div>
+<div class="panel">
+  <div class="ph2">💪 対策を講じた事前審査の成功事例</div>
+  <div class="case"><b>CASE 1</b>｜他社3社で事前審査に全て落ちた → 当社に相談いただき、対策を打ち、ローンが通った。</div>
+  <div class="case"><b>CASE 2</b>｜車のローン・キャッシングで合計500万円の借入があったが、事前審査に成功。</div>
+  <div class="case"><b>CASE 3</b>｜他社申込では A銀行1,800万円・B銀行1,890万円・C銀行審査落ち → 当社にて申込み、D銀行3,200万円まで借入OK。</div>
+  <div class="case"><b>CASE 4</b>｜勤続年数1年ジャスト・年収250万円だったが、審査の結果2,430万円まで借入OK。</div>
+</div>
+</div>
+
 <footer>
   ※ 試算はすべて参考値です。太陽光発電量は全国平均日射量1,100kWh/kW・年に方位係数を適用した概算で、地域・屋根形状・気象条件により異なります。電力単価・FIT価格は参考値。ライフサイクルコストは物価変動・リフォーム費用・解体費用等を含みません。投資試算は過去実績に基づくもので将来の運用成果を保証しません。NISA非課税枠は現行制度を参考にした概算です。<br>
   Powered by <a href="https://puregrowth.jp" target="_blank">ピュアグロース株式会社</a> ｜ ピュアグロースクラブ
@@ -1982,7 +2232,7 @@ const S={
   lifeMode:'rent',  // 'rent' | 'other'
   loPrice:2200, loMyGrade:6, loOtherGrade:4, loRegion:6, loRp:1.5,
   invOn:true,fund:'sp500',
-  invAmtMode:'auto', invAmt:3,
+  invAmtMode:'auto', invAmt:3, invPerfOn:false,
   scenario:{bull:true,mid:true,bear:true},
   nisaOn:true,nisaLim:120,
 };
@@ -2052,6 +2302,238 @@ function applyLoanPreset(which,val){
   else if(which==='B'){S.rateB=p.r;setSl('p-rateB','lbl-rateB');upPlan();upInvest();}
   else if(which==='rev'){revS.rate=p.r;setSl('rev-rate','lbl-rev-rate');upRevSim();}
   var ne=document.getElementById('note-'+which);if(ne)ne.innerHTML=note;
+}
+
+// ═══ 住宅ローン控除シミュレーション（令和8年度税制改正対応） ═══
+// 借入限度額テーブル（万円）[通常, 子育て世帯等] 2026〜2030年入居
+const GZ_LIMIT={
+  new:{
+    chouki:{lim:[4500,5000],yrs:13,label:'長期優良住宅・低炭素住宅（新築）'},
+    zeh:{lim:[3500,4500],yrs:13,label:'ZEH水準省エネ住宅（新築）'},
+    shoene:{lim:[2000,3000],yrs:13,until:2027,label:'省エネ基準適合住宅（新築）',na:'省エネ基準適合住宅の新築は、2028年以降の入居分は原則として住宅ローン控除の対象外です（2027年末までに建築確認を受けたもの等は経過措置あり）。長期優良住宅・ZEH水準ならこの制限はありません。'},
+    sonota:{na:'「その他の住宅」の新築は、2024年以降の入居分は住宅ローン控除の対象外です（2023年までに建築確認を受けたもの等を除く）。長期優良住宅・ZEH水準なら控除を最大限活用できます。'},
+  },
+  used:{
+    chouki:{lim:[3500,4500],yrs:13,label:'長期優良住宅・低炭素住宅（中古）'},
+    zeh:{lim:[3500,4500],yrs:13,label:'ZEH水準省エネ住宅（中古）'},
+    shoene:{lim:[2000,3000],yrs:13,label:'省エネ基準適合住宅（中古）'},
+    sonota:{lim:[2000,2000],yrs:10,label:'その他の住宅（中古）'},
+  },
+};
+// 所得税・住民税の概算（給与所得者・2026年）
+function gzCalcTax(nenshu,fuyo){ // nenshu: 円
+  let kj;
+  if(nenshu<=1900000)kj=650000;
+  else if(nenshu<=3600000)kj=nenshu*0.30+80000;
+  else if(nenshu<=6600000)kj=nenshu*0.20+440000;
+  else if(nenshu<=8500000)kj=nenshu*0.10+1100000;
+  else kj=1950000;
+  const shotoku=Math.max(0,nenshu-kj);
+  const shakai=nenshu*0.15;
+  let kiso;
+  if(shotoku<=1320000)kiso=950000;
+  else if(shotoku<=3360000)kiso=880000;
+  else if(shotoku<=4890000)kiso=680000;
+  else if(shotoku<=6550000)kiso=630000;
+  else if(shotoku<=23500000)kiso=580000;
+  else kiso=0;
+  const kazeiS=Math.max(0,Math.floor((shotoku-shakai-kiso-fuyo*380000)/1000)*1000);
+  const kazeiJ=Math.max(0,Math.floor((shotoku-shakai-430000-fuyo*330000)/1000)*1000);
+  const BR=[[1950000,.05,0],[3300000,.10,97500],[6950000,.20,427500],[9000000,.23,636000],[18000000,.33,1536000],[40000000,.40,2796000],[Infinity,.45,4796000]];
+  let zei=0; for(const[u,r,d]of BR){if(kazeiS<=u){zei=kazeiS*r-d;break;}}
+  zei=Math.max(0,Math.floor(zei));
+  const jinteki=50000+fuyo*50000;
+  let chosei;
+  if(kazeiJ<=2000000)chosei=Math.min(jinteki,kazeiJ)*0.05;
+  else chosei=Math.max(jinteki-(kazeiJ-2000000),50000)*0.05;
+  const jumin=Math.max(0,Math.floor(kazeiJ*0.10-chosei));
+  const juminLimit=Math.min(jumin,Math.floor(kazeiS*0.05),97500);
+  return{shotokuzei:zei,juminLimit};
+}
+// 年末残高の推移（元利均等・円）
+function gzBalances(P,r,yrs,nYears){
+  const i=r/100/12,n=yrs*12;
+  const m=P<=0?0:(i===0?P/n:P*i*Math.pow(1+i,n)/(Math.pow(1+i,n)-1));
+  let bal=P;const out=[];
+  for(let k=1;k<=nYears*12;k++){
+    bal=Math.max(0,bal*(1+i)-m);
+    if(k%12===0)out.push(bal);
+  }
+  return out;
+}
+function upGenzei(){
+  const linkEl=document.getElementById('gz-link');if(!linkEl)return;
+  const gid=id=>document.getElementById(id);
+  const link=linkEl.checked;
+  const p=cmpParams();
+  if(link){
+    gid('gz-amt').value=brw();
+    gid('gz-rate').value=p.rA.toFixed(2);
+    gid('gz-yrs').value=p.yA;
+  }
+  ['gz-amt','gz-rate','gz-yrs'].forEach(id=>gid(id).disabled=link);
+  const nlink=gid('gz-nenshu-link').checked;
+  if(nlink)gid('gz-nenshu').value=S.inc1;
+  gid('gz-nenshu').disabled=nlink;
+
+  const P=(+gid('gz-amt').value||0)*10000;
+  const r=+gid('gz-rate').value||0, yrs=+gid('gz-yrs').value||35;
+  const nenshu=(+gid('gz-nenshu').value||0)*10000, fuyo=+gid('gz-fuyo').value||0;
+  const nc=gid('gz-nc').value, type=gid('gz-type').value, nyukyo=+gid('gz-year').value;
+  const kosodate=gid('gz-kosodate').checked;
+  const gfmt=v=>Math.round(v).toLocaleString();
+
+  const spec=GZ_LIMIT[nc][type];
+  const naMsg=gid('gz-na-msg');
+  let na=null;
+  if(!spec.lim)na=spec.na;
+  else if(spec.until&&nyukyo>spec.until)na=spec.na;
+  if(na){
+    naMsg.textContent='🚫 '+na; naMsg.style.display='block';
+    gid('gz-total').textContent='0円'; gid('gz-first').textContent='0円'; gid('gz-avg').textContent='0円';
+    gid('gz-a1').textContent='—'; gid('gz-b1').textContent='対象外'; gid('gz-c1').textContent='—'; gid('gz-b-desc').textContent='';
+    gid('gz-tbody').innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--mu);padding:14px;">この条件では住宅ローン控除の対象外です。住宅の種別・入居年をご確認ください。</td></tr>';
+    initCanvas('gz-chart',220);
+    return;
+  }
+  naMsg.style.display='none';
+
+  const limitMan=spec.lim[kosodate?1:0];
+  const period=spec.yrs;
+  const B=Math.floor(limitMan*10000*0.007);
+  gid('gz-period').textContent=period;
+  gid('gz-b-desc').textContent='今回の条件：'+spec.label+'／限度額 '+limitMan.toLocaleString()+'万円'+(kosodate?'（子育て世帯等の上乗せ適用）':'');
+
+  const tax=gzCalcTax(nenshu,fuyo);
+  const C=tax.shotokuzei+tax.juminLimit;
+  const bals=gzBalances(P,r,yrs,period);
+
+  const rows=[]; let total=0;
+  for(let y=0;y<period;y++){
+    const bal=bals[y];
+    const A=Math.floor(bal*0.007);
+    const kojo=Math.min(A,B,C);
+    const which=kojo===C&&C<=A&&C<=B?'c':(kojo===B&&B<=A?'b':'a');
+    total+=kojo;
+    rows.push({y:y+1,bal,A,B,C,kojo,which});
+  }
+
+  gid('gz-total').textContent='約'+Math.round(total/10000).toLocaleString()+'万円';
+  gid('gz-first').textContent=gfmt(rows[0].kojo)+'円';
+  gid('gz-avg').textContent=gfmt(total/period)+'円/年';
+  gid('gz-a1').textContent='初年度 '+gfmt(rows[0].A)+'円';
+  gid('gz-b1').textContent='年 '+gfmt(B)+'円';
+  gid('gz-c1').textContent='年 '+gfmt(C)+'円';
+
+  const badge={a:'<span class="gz-badge a">A</span>',b:'<span class="gz-badge b">B</span>',c:'<span class="gz-badge c">C</span>'};
+  gid('gz-tbody').innerHTML=rows.map(rr=>
+    '<tr><td>'+rr.y+'年目</td>'
+    +'<td>'+Math.round(rr.bal/10000).toLocaleString()+'万円</td>'
+    +'<td'+(rr.which==='a'?' class="min"':'')+'>'+gfmt(rr.A)+'</td>'
+    +'<td'+(rr.which==='b'?' class="min"':'')+'>'+gfmt(rr.B)+'</td>'
+    +'<td'+(rr.which==='c'?' class="min"':'')+'>'+gfmt(rr.C)+'</td>'
+    +'<td class="min">'+gfmt(rr.kojo)+'円'+badge[rr.which]+'</td></tr>').join('')
+    +'<tr class="total"><td>合計（'+period+'年間）</td><td></td><td></td><td></td><td></td><td class="min">'+gfmt(total)+'円</td></tr>';
+
+  drawGzChart(rows);
+}
+function drawGzChart(rows){
+  const r=initCanvas('gz-chart',220); if(!r)return;
+  const{ctx,W,H}=r;
+  const pad={t:14,r:10,b:26,l:58};
+  const cW=W-pad.l-pad.r, cH=H-pad.t-pad.b, n=rows.length;
+  const maxV=Math.max.apply(null,rows.map(x=>x.kojo))*1.15||1;
+  ctx.strokeStyle='rgba(0,0,0,.08)';ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){
+    const yy=pad.t+(cH/4)*i;
+    ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(pad.l+cW,yy);ctx.stroke();
+    const val=maxV-(maxV/4)*i;
+    ctx.fillStyle='rgba(107,114,128,.85)';ctx.font='9px DM Mono,monospace';ctx.textAlign='right';
+    ctx.fillText(Math.round(val/10000)+'万',pad.l-5,yy+3);
+  }
+  const colors={a:'#2f6df0',b:'#b97400',c:'#6C3FA8'};
+  const bw=Math.min(30,cW/n*0.62), gap2=(cW-bw*n)/(n+1);
+  rows.forEach((rr,i)=>{
+    const x=pad.l+gap2+(bw+gap2)*i;
+    const h=rr.kojo/maxV*cH;
+    ctx.fillStyle=colors[rr.which];
+    ctx.beginPath();
+    ctx.roundRect?ctx.roundRect(x,pad.t+cH-h,bw,h,[3,3,0,0]):ctx.rect(x,pad.t+cH-h,bw,h);
+    ctx.fill();
+    ctx.fillStyle='rgba(60,72,88,.75)';ctx.font='8px DM Mono,monospace';ctx.textAlign='center';
+    ctx.fillText((rr.kojo/10000).toFixed(1),x+bw/2,pad.t+cH-h-4);
+    ctx.fillStyle='rgba(107,114,128,.8)';ctx.font='8.5px sans-serif';
+    ctx.fillText(rr.y+'年',x+bw/2,H-pad.b+12);
+  });
+}
+
+// ═══ 建てどき比較 ═══
+function upToki(){
+  const tn=document.getElementById('t-n');if(!tn)return;
+  const gid=id=>document.getElementById(id);
+  const link=gid('t-link').checked;
+  if(link){
+    gid('t-build').value=S.bld+S.misc;
+    gid('t-land').value=S.land;
+    gid('t-jiko').value=S.eq;
+    gid('t-r').value=cmpParams().rA;
+  }
+  ['t-build','t-land','t-jiko'].forEach(id=>gid(id).disabled=link);
+  gid('t-r').disabled=link;
+  const N=+tn.value; gid('d-tn').textContent=N+'年後'; gid('t-futlbl').textContent=N+'年後 建てると';
+  const inf=+gid('t-inf').value; gid('d-tinf').textContent=inf.toFixed(2)+'%';
+  const r=+gid('t-r').value; gid('d-tr').textContent=r.toFixed(2)+'%';
+  const rise=+gid('t-rise').value; gid('d-trise').textContent='＋'+rise.toFixed(2)+'%';
+  const build=+gid('t-build').value||0, land=+gid('t-land').value||0, jiko=+gid('t-jiko').value||0; // 万円
+  const save=+gid('t-savemo').value||0, yachin=+gid('t-yachin').value||0; // 万円/月
+  const koshin=(+gid('t-koshin').value||0)*(+gid('t-kcount').value||0); // 万円
+  const hojo=+gid('t-hojo').value||0; // 万円
+
+  const build2=build*Math.pow(1+inf/100,N);
+  const jiko2=jiko+save*12*N;
+  const loan1=Math.max(0,build+land-jiko-hojo); // 万円
+  const loan2=Math.max(0,build2+land-jiko2);
+  const tot1=loan1>0?mo(loan1,r,35)*420/10000:0;      // 万円
+  const tot2=loan2>0?mo(loan2,r+rise,35)*420/10000:0; // 万円
+  const rent=yachin*12*N+koshin; // 万円
+
+  const fm=v=>Math.round(v).toLocaleString()+'万円';
+  gid('tk-b1').textContent=fm(build); gid('tk-b2').textContent=fm(build2);
+  gid('tk-bcap').textContent='年'+inf.toFixed(2)+'%上昇の場合';
+  gid('tk-j1').textContent=fm(jiko); gid('tk-j2').textContent=fm(jiko2);
+  gid('tk-l1').textContent=fm(loan1); gid('tk-l2').textContent=fm(loan2);
+  gid('tk-t1').textContent=fm(tot1); gid('tk-t2').textContent=fm(tot2);
+  gid('tk-tcap').textContent='金利 '+(r+rise).toFixed(2)+'% の場合';
+  gid('tk-h1').textContent=fm(hojo); gid('tk-h2').textContent='0円';
+  gid('tk-y2').textContent=fm(rent);
+  const otoku=(tot2-tot1)+rent; // 補助金はloan1に反映済みのため二重計上しない
+  gid('tk-total').textContent=Math.max(0,Math.round(otoku)).toLocaleString();
+}
+
+// ═══ 事前審査チェックリスト ═══
+const CKS=[
+ {t:'過去3年以内に狭心症・糖尿病・高血圧・基礎疾患・精神的な病等で通院または診察検査投薬治療等を受けた',r:2},
+ {t:'過去3年以内に、診療・検査・治療・投薬を受けたことがある',r:2},
+ {t:'1年以内に転職をしている',r:2},
+ {t:'自営業の方で年収や売上を抑えて申告している',r:2},
+ {t:'自動車ローンやクレジットカード等の支払いを延滞したことがある',r:2},
+ {t:'自動車ローンやカードローンの残高が残っている',r:1},
+ {t:'クレジット機能付きカードを2枚以上持っている',r:1},
+ {t:'ローンの希望額が年収の6倍以上になる',r:1},
+ {t:'親族からの資金援助を考えているが、具体的な話をしていない',r:1},
+ {t:'連帯保証人になっているが、順調に返済されている',r:1},
+ {t:'配偶者の方のパートの収入も合算したい',r:1}
+];
+function renderCK(){
+  const l=document.getElementById('ck-list'); if(!l)return;
+  l.innerHTML=CKS.map((c,i)=>'<label class="ck-item" id="ck-'+i+'"><input type="checkbox" onchange="upCK(this,'+i+')"><span style="flex:1;">'+c.t+'</span><span class="ck-risk ck-r'+c.r+'">危険度'+(c.r===2?'高':'中')+'</span></label>').join('');
+}
+function upCK(el,i){
+  document.getElementById('ck-'+i).classList.toggle('on',el.checked);
+  const n=[...document.querySelectorAll('#ck-list input')].filter(x=>x.checked).length;
+  const r=document.getElementById('ck-result');
+  if(n===0){r.className='ck-result ck-ok';r.textContent='現在チェックはありません。当てはまる項目があればタップしてください。';}
+  else{r.className='ck-result ck-ng';r.innerHTML='⚠️ '+n+'項目に該当しています。対策を打たずに事前審査を出すと審査に落ちてしまう可能性があります。<b>安易に提出せず、必ず担当者と一緒に対策を打ってから進めましょう。</b>過去・現在のローン履歴は必ず自己申告してください（銀行の審査ではローン履歴が全部わかります）。';}
 }
 
 // ═══ 更新バッジ: 直近の「毎日13時更新」時刻を表示 ═══
@@ -2637,14 +3119,19 @@ function drawLifeChart(ownRows,rentRows,diffRows){
 }
 
 // ═══ INVEST UPDATE ═══
+// 断熱性能差による月々の光熱費削減額（万円/月）— ライフサイクルコストタブの設定と連動
+function perfDiffMo(){
+  const d=hvacCost(S.loRegion,S.loOtherGrade)-hvacCost(S.loRegion,S.loMyGrade);
+  return Math.max(0,d/12);
+}
 function getActualAmt(){
   const p=cmpParams();
   const B=brw();
   const bmA=B>0?mo(B,p.rA,p.yA):0;
   const bmB=B>0?mo(B,p.rB,p.yB):0;
   const autoDiff=Math.abs(bmA-bmB); // 安いプランを選んだ時の月々差額（絶対値）
-  if(S.invAmtMode==='auto') return autoDiff/10000; // 万円単位
-  return S.invAmt;
+  const base=S.invAmtMode==='auto'?autoDiff/10000:S.invAmt; // 万円単位
+  return base+(S.invPerfOn?perfDiffMo():0);
 }
 function upInvest(){
   const p=cmpParams();
@@ -2664,7 +3151,10 @@ function upInvest(){
   // 実際の投資金額（万円）
   const amtMon=getActualAmt(); // 万円
   const amtYen=amtMon*10000;  // 円
-  document.getElementById('iv-actual-amt').textContent=amtMon.toFixed(1)+'万円/月';
+  const pdMo=perfDiffMo();
+  document.getElementById('iv-actual-amt').textContent=amtMon.toFixed(2)+'万円/月'+(S.invPerfOn&&pdMo>0?'（うち性能差分 +'+pdMo.toFixed(2)+'万円）':'');
+  const pn=document.getElementById('perf-note');
+  if(pn)pn.innerHTML='当社 断熱等級'+S.loMyGrade+' vs 他社 等級'+S.loOtherGrade+'・'+S.loRegion+'地域（ライフサイクルコストタブと連動）→ 冷暖房費の差 <b style="color:var(--gr)">月 +'+pdMo.toFixed(2)+'万円</b>'+(S.invPerfOn?' を投資額に上乗せ中':'（現在OFF）');
 
   // NISA枠
   const nisaLimMo=S.nisaLim/12; // 万円/月
@@ -3432,6 +3922,14 @@ document.querySelectorAll('.sc-btn').forEach(btn=>{
   });
 });
 
+// 性能差分の上乗せトグル
+document.getElementById('perf-choice').addEventListener('click',function(e){
+  const b=e.target.closest('[data-perf]');if(!b)return;
+  S.invPerfOn=!S.invPerfOn;
+  b.classList.toggle('on',S.invPerfOn);
+  upInvest();
+});
+
 // NISA
 document.getElementById('nisa-choice').addEventListener('click',function(e){
   const b=e.target.closest('[data-nisa]');if(!b)return;
@@ -3459,6 +3957,8 @@ document.querySelectorAll('.tab-mi').forEach(btn=>{
     if(this.dataset.tab==='plan')upPlan();
     if(this.dataset.tab==='estimate')estCalc();
     if(this.dataset.tab==='fp'){fpRenderMembers();upFP();}
+    if(this.dataset.tab==='genzei')upGenzei();
+    if(this.dataset.tab==='toki')upToki();
   });
 });
 
@@ -3469,7 +3969,8 @@ let rto;window.addEventListener('resize',()=>{clearTimeout(rto);rto=setTimeout((
 document.querySelector('[data-dir="SE"]').classList.add('on');
 buildLoanPresets();
 applyFamStyle();
-upPlan();upSolar();upLife();upInvest();estCalc();upRevSim();
+renderCK();
+upPlan();upSolar();upLife();upInvest();estCalc();upRevSim();upGenzei();upToki();
 </script>
 </body>
 </html>
