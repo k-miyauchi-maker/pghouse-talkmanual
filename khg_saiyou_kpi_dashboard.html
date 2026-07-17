@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KHG 27期 採用KPIダッシュボード</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --primary:#1a5fa8;--primary-light:#e8f0fb;--accent:#d94e30;
+    --bg:#f5f7fa;--card-bg:#fff;--border:#dde3ec;--text:#1a2332;
+    --muted:#6b7a99;--green:#2e7d52;--orange:#c06c00;--purple:#7c3aed;
+    --shadow:0 2px 8px rgba(0,0,0,.08);
+    --series-career:#2a78d6;--series-shinsotsu:#008300;--series-old:#c3c2b7;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI','Hiragino Sans','Yu Gothic',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
+  header{background:var(--primary);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:12px}
+  header h1{font-size:17px;font-weight:700}
+  header p{font-size:11px;opacity:.8;margin-top:2px}
+  .hbadge{background:rgba(255,255,255,.2);padding:4px 12px;border-radius:20px;font-size:11px;margin-left:auto}
+  .container{max-width:1400px;margin:0 auto;padding:14px}
+
+  .kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:14px}
+  .kpi{background:var(--card-bg);border-radius:8px;padding:12px 14px;box-shadow:var(--shadow);border-left:4px solid var(--primary)}
+  .kpi .lb{font-size:10px;color:var(--muted);letter-spacing:.4px}
+  .kpi .vl{font-size:22px;font-weight:700;color:var(--primary);margin-top:3px}
+  .kpi .vl small{font-size:12px;font-weight:600}
+  .kpi .sb{font-size:10px;color:var(--muted);margin-top:2px}
+  .kpi .old{color:var(--muted);text-decoration:line-through;font-size:12px;font-weight:600;margin-right:4px}
+  .kpi.a{border-left-color:var(--accent)}.kpi.a .vl{color:var(--accent)}
+  .kpi.g{border-left-color:var(--green)}.kpi.g .vl{color:var(--green)}
+  .kpi.o{border-left-color:var(--orange)}.kpi.o .vl{color:var(--orange)}
+  .kpi.p{border-left-color:var(--purple)}.kpi.p .vl{color:var(--purple)}
+
+  .card{background:var(--card-bg);border-radius:8px;padding:14px;box-shadow:var(--shadow);margin-bottom:14px}
+  .ctitle{font-size:13px;font-weight:700;color:var(--primary);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+  .ctitle::before{content:'';display:inline-block;width:3px;height:14px;background:var(--primary);border-radius:2px}
+  .grid-main{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;margin-bottom:0}
+
+  .tw{overflow-x:auto;border-radius:6px;border:1px solid var(--border)}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th{background:var(--primary);color:#fff;padding:7px 9px;text-align:left;font-weight:600;font-size:11px;white-space:nowrap}
+  td{padding:7px 9px;border-bottom:1px solid var(--border)}
+  tr:hover td{background:var(--primary-light)}
+  tr:last-child td{border-bottom:none}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  tr.total td{font-weight:700;background:var(--primary-light);border-top:2px solid var(--primary)}
+  .diff-up{color:#166534;font-weight:700}
+  .diff-down{color:#991b1b;font-weight:700}
+  .diff-flat{color:var(--muted)}
+
+  .tag{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600;white-space:nowrap}
+  .tc{background:#dbeafe;color:#1e40af}.ts{background:#dcfce7;color:#166534}
+
+  .note{background:#fff8e1;border-left:3px solid #f59e0b;padding:9px 13px;border-radius:4px;font-size:11.5px;color:#78350f;margin-bottom:10px;line-height:1.6}
+  .note b{display:block;margin-bottom:2px}
+  .note:last-child{margin-bottom:0}
+
+  .budget-row{display:flex;justify-content:space-between;align-items:baseline;padding:8px 2px;border-bottom:1px solid var(--border)}
+  .budget-row:last-of-type{border-bottom:none}
+  .budget-row .bl{font-size:12px}
+  .budget-row .bl span{display:block;font-size:10px;color:var(--muted);margin-top:1px}
+  .budget-row .bv{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums}
+  .budget-total{display:flex;justify-content:space-between;align-items:baseline;padding:10px 2px 2px;border-top:2px solid var(--primary);margin-top:4px}
+  .budget-total .bv{font-size:20px;font-weight:700;color:var(--primary)}
+  .budget-bar{display:flex;height:14px;border-radius:7px;overflow:hidden;margin:10px 0 6px;gap:2px}
+  .budget-bar div{height:100%}
+  .legend-inline{display:flex;gap:14px;font-size:11px;color:var(--muted);flex-wrap:wrap;margin-top:4px}
+  .legend-inline i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+
+  .naibu-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
+  .naibu-item{background:var(--primary-light);border-radius:6px;padding:8px 10px;text-align:center}
+  .naibu-item .n{font-size:18px;font-weight:700;color:var(--primary)}
+  .naibu-item .l{font-size:10px;color:var(--muted);margin-top:2px}
+
+  .chart-wrap{position:relative;height:540px}
+
+  @media(max-width:1100px){.kpi-row{grid-template-columns:repeat(3,1fr)}.grid-main{grid-template-columns:1fr}.naibu-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:640px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<header>
+  <div><h1>KHG 27期 採用KPIダッシュボード</h1><p>採用目標・職種別内訳・単価/予算（2026-07-17 会議決定反映）</p></div>
+  <span class="hbadge">改定日: 2026/07/17</span>
+</header>
+
+<div class="container">
+
+<div class="kpi-row">
+  <div class="kpi"><div class="lb">27期 総採用目標</div><div class="vl"><span class="old">82</span>79<small>名</small></div><div class="sb">キャリア61＋新卒18</div></div>
+  <div class="kpi"><div class="lb">採用目標（キャリア）</div><div class="vl">61<small>名</small></div><div class="sb">職種別内訳は下表参照</div></div>
+  <div class="kpi g"><div class="lb">採用目標（新卒）</div><div class="vl"><span class="old">20</span>18<small>名</small></div><div class="sb">20名→18名へ修正</div></div>
+  <div class="kpi o"><div class="lb">単価目標（キャリア）</div><div class="vl">100<small>万円</small></div><div class="sb">一部紹介会社経由は計算除外</div></div>
+  <div class="kpi o"><div class="lb">単価目標（新卒）</div><div class="vl">89<small>万円</small></div><div class="sb">1,600万円 ÷ 18名 ≒ 89万円</div></div>
+  <div class="kpi p"><div class="lb">採用予算規模</div><div class="vl">7,700<small>万円</small></div><div class="sb">新卒1,600万＋キャリア6,100万</div></div>
+</div>
+
+<div class="grid-main">
+  <div class="card">
+    <div class="ctitle">職種別 採用目標（当初 → 改定）</div>
+    <div class="chart-wrap"><canvas id="jobChart"></canvas></div>
+  </div>
+
+  <div>
+    <div class="card">
+      <div class="ctitle">本日議事・決定事項</div>
+      <div class="note"><b>キャリア単価 100万円</b>一部紹介会社経由の採用は単価計算から除外。良い人材がいれば目標を超過しても採用を継続する。</div>
+      <div class="note"><b>新卒 20名 → 18名</b>当初目標20名 × 80万円 = 1,600万円で既に各方面へ発注済のため、予算1,600万円を18名で按分し単価目標は約89万円となる。</div>
+      <div class="note"><b>管理職6名は内部昇進が濃厚</b>対応する職種の補充として、注文営業1・不動産営業1・施工管理2・設計2名を対応採用する。</div>
+      <div class="naibu-grid">
+        <div class="naibu-item"><div class="n">1</div><div class="l">注文営業</div></div>
+        <div class="naibu-item"><div class="n">1</div><div class="l">不動産営業</div></div>
+        <div class="naibu-item"><div class="n">2</div><div class="l">施工管理</div></div>
+        <div class="naibu-item"><div class="n">2</div><div class="l">設計</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ctitle">採用予算サマリー</div>
+      <div class="budget-bar">
+        <div style="width:79.2%;background:var(--series-career)"></div>
+        <div style="width:20.8%;background:var(--series-shinsotsu)"></div>
+      </div>
+      <div class="legend-inline">
+        <span><i style="background:var(--series-career)"></i>キャリア 6,100万円</span>
+        <span><i style="background:var(--series-shinsotsu)"></i>新卒 1,600万円</span>
+      </div>
+      <div class="budget-row">
+        <div class="bl">キャリア採用<span>61名 × 単価目標100万円（一部紹介会社経由は除外）</span></div>
+        <div class="bv">6,100万円</div>
+      </div>
+      <div class="budget-row">
+        <div class="bl">新卒採用<span>発注済予算1,600万円 ÷ 18名 ≒ 89万円/名</span></div>
+        <div class="bv">1,600万円</div>
+      </div>
+      <div class="budget-total">
+        <div class="bl"><b>合計</b></div>
+        <div class="bv">7,700万円</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="ctitle">職種別 採用目標一覧</div>
+  <div class="tw">
+    <table>
+      <thead>
+        <tr>
+          <th>職種</th>
+          <th class="num">当初目標<br>（キャリア）</th>
+          <th class="num">改定目標<br>（キャリア）</th>
+          <th class="num">増減</th>
+          <th class="num">新卒配分</th>
+          <th class="num">改定合計</th>
+          <th>備考</th>
+        </tr>
+      </thead>
+      <tbody id="jobTableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+</div>
+
+<script>
+const SURFACE = '#ffffff';
+const C_CAREER = '#2a78d6';   // series slot 1
+const C_SHIN   = '#008300';   // series slot 2
+const C_OLD    = '#c3c2b7';   // neutral: 当初目標
+const INK      = '#1a2332';
+const MUTED    = '#6b7a99';
+const GRID     = '#e1e0d9';
+
+const jobs = [
+  { name:'住宅営業（経験）',   old:30, career:10, shin:0,  note:'目標を大幅圧縮（30→10）' },
+  { name:'住宅営業（未経験）', old:6,  career:4,  shin:10, note:'新卒10名を配置' },
+  { name:'施工管理',           old:9,  career:10, shin:3,  note:'内部昇進対応+2名を含む／新卒3名' },
+  { name:'設計',               old:5,  career:9,  shin:2,  note:'内部昇進対応+2名を含む／新卒2名' },
+  { name:'不動産営業',         old:5,  career:9,  shin:3,  note:'内部昇進対応+1名を含む／新卒3名' },
+  { name:'営業その他',         old:5,  career:14, shin:0,  note:'大幅増（5→14）' },
+  { name:'総合職・管理',       old:2,  career:5,  shin:0,  note:'管理職6名は内部昇進濃厚→各職種で対応採用' },
+];
+
+// ---- テーブル ----
+const tbody = document.getElementById('jobTableBody');
+let tOld=0, tCareer=0, tShin=0;
+jobs.forEach(j => {
+  tOld+=j.old; tCareer+=j.career; tShin+=j.shin;
+  const d = j.career - j.old;
+  const dCls = d>0 ? 'diff-up' : d<0 ? 'diff-down' : 'diff-flat';
+  const dTxt = d>0 ? `+${d}` : `${d}`;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${j.name}</td>
+    <td class="num">${j.old}</td>
+    <td class="num"><b>${j.career}</b></td>
+    <td class="num ${dCls}">${dTxt}</td>
+    <td class="num">${j.shin>0 ? `<span class="tag ts">+${j.shin}</span>` : '—'}</td>
+    <td class="num"><b>${j.career + j.shin}</b></td>
+    <td style="font-size:11px;color:var(--muted)">${j.note}</td>`;
+  tbody.appendChild(tr);
+});
+const trTotal = document.createElement('tr');
+trTotal.className = 'total';
+trTotal.innerHTML = `
+  <td>合計</td>
+  <td class="num">${tOld}</td>
+  <td class="num">${tCareer}</td>
+  <td class="num ${tCareer-tOld<0?'diff-down':'diff-up'}">${tCareer-tOld>0?'+':''}${tCareer-tOld}</td>
+  <td class="num">+${tShin}</td>
+  <td class="num">${tCareer+tShin}</td>
+  <td style="font-size:11px;color:var(--muted)">総採用目標 82 → 79名</td>`;
+tbody.appendChild(trTotal);
+
+// ---- チャート（改定合計の降順） ----
+const sorted = [...jobs].sort((a,b) => (b.career+b.shin) - (a.career+a.shin));
+
+const endLabels = {
+  id: 'endLabels',
+  afterDatasetsDraw(chart) {
+    const {ctx} = chart;
+    ctx.save();
+    ctx.font = '700 11px "Segoe UI","Hiragino Sans",sans-serif';
+    ctx.textBaseline = 'middle';
+    // 当初バーの値
+    chart.getDatasetMeta(0).data.forEach((bar, i) => {
+      ctx.fillStyle = MUTED;
+      ctx.fillText(sorted[i].old, bar.x + 6, bar.y);
+    });
+    // 改定スタックの合計値（最上段データセットの端）
+    chart.getDatasetMeta(2).data.forEach((bar, i) => {
+      ctx.fillStyle = INK;
+      ctx.fillText(sorted[i].career + sorted[i].shin, bar.x + 6, bar.y);
+    });
+    ctx.restore();
+  }
+};
+
+new Chart(document.getElementById('jobChart'), {
+  type: 'bar',
+  data: {
+    labels: sorted.map(j => j.name),
+    datasets: [
+      {
+        label: '当初目標（キャリア）',
+        data: sorted.map(j => j.old),
+        backgroundColor: C_OLD,
+        stack: 'old',
+        borderRadius: 4, borderSkipped: 'start',
+        barPercentage: .85, categoryPercentage: .72,
+      },
+      {
+        label: '改定：キャリア',
+        data: sorted.map(j => j.career),
+        backgroundColor: C_CAREER,
+        stack: 'new',
+        borderColor: SURFACE, borderWidth: {top:0,bottom:0,left:0,right:2},
+        barPercentage: .85, categoryPercentage: .72,
+      },
+      {
+        label: '改定：新卒配分',
+        data: sorted.map(j => j.shin),
+        backgroundColor: C_SHIN,
+        stack: 'new',
+        borderRadius: 4, borderSkipped: 'start',
+        barPercentage: .85, categoryPercentage: .72,
+      },
+    ]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true, maintainAspectRatio: false,
+    layout: { padding: { right: 28 } },
+    scales: {
+      x: {
+        stacked: true, beginAtZero: true, suggestedMax: 32,
+        grid: { color: GRID, drawTicks: false },
+        border: { display: false },
+        ticks: { color: MUTED, font: { size: 11 } },
+        title: { display: true, text: '採用目標（名）', color: MUTED, font: { size: 11 } }
+      },
+      y: {
+        stacked: true,
+        grid: { display: false },
+        border: { color: '#c3c2b7' },
+        ticks: { color: INK, font: { size: 12 } }
+      }
+    },
+    plugins: {
+      legend: {
+        position: 'top', align: 'start',
+        labels: { boxWidth: 12, boxHeight: 12, borderRadius: 3, useBorderRadius: true, color: INK, font: { size: 11.5 } }
+      },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.x}名`,
+          footer: items => {
+            const j = sorted[items[0].dataIndex];
+            return items.some(it => it.dataset.stack === 'new')
+              ? `改定合計: ${j.career + j.shin}名（当初 ${j.old}名）` : '';
+          }
+        }
+      }
+    }
+  },
+  plugins: [endLabels]
+});
+</script>
+
+</body>
+</html>
