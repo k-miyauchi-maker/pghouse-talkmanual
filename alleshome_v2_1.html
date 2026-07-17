@@ -1,0 +1,2109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>アレスホーム 資金計画シミュレーター｜ALLES HOME</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --green:#111111; --green-d:#000000; --green-a:rgba(17,17,17,.06);
+  --amber:#555555; --amber-a:rgba(0,0,0,.06);
+  --bg:#f7f7f7; --bg2:#ececec; --card:#FFFFFF;
+  --ink:#111111; --mu:#666666; --mu2:#9a9a9a;
+  --bdr:rgba(0,0,0,.16); --bdr2:rgba(0,0,0,.08);
+  --rd:#B4432F; --bl:#3d3d3d;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--ink);font-family:'Noto Sans JP','Hiragino Kaku Gothic ProN','Yu Gothic UI',sans-serif;font-size:13px;line-height:1.65;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--green);border-radius:3px;}
+
+.nav{position:sticky;top:0;z-index:300;background:rgba(247,245,240,.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--bdr);}
+.nav-inner{max-width:1320px;margin:0 auto;padding:0 20px;display:flex;align-items:center;overflow-x:auto;}
+.nav-logo{font-family:'Zen Kaku Gothic New',sans-serif;font-size:12px;font-weight:900;letter-spacing:.12em;color:var(--green-d);padding:14px 18px 14px 0;border-right:1px solid var(--bdr2);margin-right:4px;white-space:nowrap;flex-shrink:0;}
+.nav-logo small{color:var(--mu);font-weight:500;letter-spacing:.05em;margin-left:6px;font-size:10px;}
+.tab{padding:16px 13px;font-size:11.5px;font-weight:700;color:var(--mu);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .18s;white-space:nowrap;flex-shrink:0;font-family:'Noto Sans JP',sans-serif;}
+.tab:hover{color:var(--ink);}
+.tab.on{color:var(--green);border-bottom-color:var(--green);}
+
+.pg{display:none;max-width:1320px;margin:0 auto;padding:24px 20px 100px;}
+.pg.on{display:block;}
+.ph{margin-bottom:20px;}
+.ph-ey{font-size:9px;letter-spacing:.28em;color:var(--amber);text-transform:uppercase;margin-bottom:6px;font-weight:700;}
+.ph h2{font-family:'Zen Kaku Gothic New',sans-serif;font-size:clamp(18px,2.4vw,27px);font-weight:900;line-height:1.25;}
+.ph h2 em{font-style:normal;color:var(--green);}
+.ph p{font-size:11px;color:var(--mu);margin-top:6px;max-width:700px;line-height:1.9;}
+
+.panel{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(18,61,46,.06),0 6px 16px rgba(18,61,46,.04);}
+.ph2{font-size:9.5px;font-weight:700;letter-spacing:.2em;color:var(--green-d);text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--bdr);display:flex;align-items:center;gap:6px;}
+
+.l2{display:grid;grid-template-columns:390px 1fr;gap:20px;align-items:start;}
+@media(max-width:940px){.l2{grid-template-columns:1fr;}}
+
+.sticky-sum{position:fixed;bottom:0;left:0;right:0;z-index:250;background:var(--green-d);color:#fff;padding:9px 16px;display:flex;gap:24px;justify-content:center;flex-wrap:wrap;box-shadow:0 -4px 16px rgba(0,0,0,.18);}
+.ss-item{text-align:center;}
+.ss-item .l{font-size:8.5px;letter-spacing:.18em;opacity:.65;text-transform:uppercase;}
+.ss-item .v{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;line-height:1.2;}
+.ss-item .v small{font-size:9px;opacity:.7;margin-left:2px;}
+
+/* 資金計画書 */
+.est-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;margin-bottom:6px;}
+.est-title{font-family:'Zen Kaku Gothic New',sans-serif;font-size:21px;font-weight:900;letter-spacing:.4em;color:var(--green-d);}
+.est-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:11px;}
+.est-meta input{background:#fff;border:1px solid var(--bdr2);border-radius:6px;padding:6px 9px;font-size:11px;font-family:'Noto Sans JP',sans-serif;color:var(--ink);outline:none;}
+.est-meta input:focus{border-color:var(--green);}
+.meta2{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:10.5px;color:var(--mu);margin-bottom:12px;}
+.meta2 input{background:#fff;border:1px solid var(--bdr2);border-radius:6px;padding:5px 8px;font-size:10.5px;outline:none;font-family:'Noto Sans JP',sans-serif;}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.btn{padding:8px 14px;border-radius:7px;border:1px solid var(--bdr);background:#fff;color:var(--ink);font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;font-family:'Noto Sans JP',sans-serif;}
+.btn:hover{border-color:var(--green);color:var(--green);}
+.btn.pri{background:var(--green);border-color:var(--green);color:#fff;}
+.btn.pri:hover{background:var(--green-d);color:#fff;}
+.btn.mini{padding:4px 10px;font-size:10px;}
+
+table.est{width:100%;border-collapse:collapse;}
+table.est th{font-size:9.5px;letter-spacing:.1em;color:#fff;background:var(--green);padding:6px 9px;text-align:left;font-weight:700;}
+table.est th.r{text-align:right;}
+table.est td{border-bottom:1px solid var(--bdr2);padding:4px 7px;font-size:11.5px;vertical-align:middle;}
+table.est tr.cat td{background:var(--green-d);color:#fff;font-weight:700;font-size:12px;letter-spacing:.08em;padding:8px 10px;}
+table.est tr.cat td b{font-family:'DM Mono',monospace;font-size:14px;float:right;}
+table.est tr.gcat td{background:var(--green-a);font-weight:700;color:var(--green-d);font-size:11px;padding:6px 10px;border-bottom:1px solid var(--bdr);}
+table.est td.no{width:24px;color:var(--mu2);font-family:'DM Mono',monospace;font-size:10px;text-align:right;}
+table.est td.desc{color:var(--mu);font-size:10px;line-height:1.45;}
+table.est td.amt{text-align:right;white-space:nowrap;width:135px;}
+table.est td.amt input{width:100px;background:transparent;border:none;border-bottom:1px dashed var(--bdr2);outline:none;text-align:right;font-family:'DM Mono',monospace;font-size:12px;color:var(--ink);padding:2px;}
+table.est td.amt input:focus{border-bottom-color:var(--green);}
+table.est td.amt input:disabled{color:var(--mu);border-bottom-style:dotted;}
+table.est td.amt input::placeholder{color:var(--mu);font-family:'Noto Sans JP',sans-serif;font-size:11px;}
+.sd-sel{background:#fff;border:1px solid var(--bdr2);border-radius:6px;font-family:'Noto Sans JP',sans-serif;font-size:10.5px;padding:3px 5px;outline:none;max-width:230px;}
+.sd-sel:focus{border-color:var(--green);}
+.est-sel{background:#fff;border:1px solid var(--bdr2);border-radius:5px;font-family:'Noto Sans JP',sans-serif;font-size:10px;padding:2px 4px;outline:none;}
+.est-sel:focus{border-color:var(--green);}
+.memo-inp{width:96%;margin-top:4px;background:#fff;border:1px solid var(--bdr2);border-radius:5px;font-family:'Noto Sans JP',sans-serif;font-size:10.5px;padding:4px 7px;outline:none;color:var(--ink);}
+.memo-inp:focus{border-color:var(--green);}
+/* FP目安ポップアップ */
+.fpg-modal{max-width:640px;}
+.fpg-sec{font-size:11px;font-weight:700;color:var(--green-d);letter-spacing:.06em;margin:14px 0 6px;}
+table.fpg{width:100%;border-collapse:collapse;margin-bottom:4px;}
+table.fpg th{font-size:9px;color:#fff;background:var(--green);padding:5px 8px;text-align:left;font-weight:700;}
+table.fpg td{border-bottom:1px solid var(--bdr2);padding:4px 8px;font-size:11px;}
+table.fpg td:last-child{font-family:'DM Mono',monospace;text-align:right;white-space:nowrap;}
+table.est td.amt .cval{font-family:'DM Mono',monospace;font-size:12px;color:var(--green-d);}
+table.est td.nm input{width:100%;background:transparent;border:none;outline:none;font-size:11.5px;font-family:'Noto Sans JP',sans-serif;color:var(--ink);}
+table.est tr.sub td{background:var(--bg2);font-weight:700;border-top:1.5px solid var(--green);}
+table.est tr.sub td.amt{font-family:'DM Mono',monospace;font-size:13px;color:var(--green-d);}
+table.est td select{width:100%;background:#fff;border:1px solid var(--bdr2);border-radius:5px;font-size:10.5px;padding:4px 6px;font-family:'Noto Sans JP',sans-serif;color:var(--ink);outline:none;}
+.incl{display:inline-block;font-size:9px;font-weight:700;color:var(--green);background:var(--green-a);border-radius:20px;padding:1px 8px;white-space:nowrap;}
+.info-chip{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:700;color:var(--amber);background:var(--amber-a);border:1px solid rgba(0,0,0,.25);border-radius:20px;padding:1px 7px;cursor:pointer;transition:all .15s;white-space:nowrap;user-select:none;}
+.info-chip:hover{background:var(--amber);color:#fff;}
+.mini-inp{width:52px;background:#fff;border:1px solid var(--bdr2);border-radius:4px;font-family:'DM Mono',monospace;font-size:10.5px;padding:2px 4px;text-align:right;outline:none;}
+.mini-inp:focus{border-color:var(--green);}
+.est-note-sm{font-size:9.5px;color:var(--mu);}
+
+/* 標準装備 */
+details.std{border:1px solid var(--bdr);border-radius:9px;background:var(--green-a);margin:8px 0 12px;}
+details.std summary{cursor:pointer;padding:9px 14px;font-size:11px;font-weight:700;color:var(--green-d);user-select:none;}
+.std-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:4px 14px;padding:2px 14px 12px;}
+.std-grid span{font-size:10.5px;color:var(--ink);}
+.std-grid span::before{content:'✓ ';color:var(--green);font-weight:700;}
+
+/* 入力共通 */
+.sl{margin-bottom:12px;}
+.sl-hd{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;color:var(--mu);margin-bottom:4px;}
+.sl-hd b{font-family:'DM Mono',monospace;font-size:12.5px;color:var(--green);font-weight:500;}
+input[type=range]{-webkit-appearance:none;width:100%;height:3px;background:rgba(17,17,17,.18);border-radius:2px;outline:none;cursor:pointer;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--green);cursor:pointer;box-shadow:0 0 0 3px rgba(17,17,17,.15);}
+.nf{display:flex;align-items:center;background:#fff;border:1px solid var(--bdr2);border-radius:7px;overflow:hidden;margin-bottom:10px;}
+.nf:focus-within{border-color:var(--green);}
+.nf input{background:transparent;border:none;outline:none;color:var(--ink);font-family:'DM Mono',monospace;font-size:13px;width:100%;padding:8px 9px;text-align:right;}
+.nf input::-webkit-inner-spin-button{-webkit-appearance:none;}
+.nf-lbl{font-size:10px;color:var(--mu);padding:0 8px 0 12px;white-space:nowrap;flex-shrink:0;}
+.nf-unit{font-size:10px;color:var(--mu);padding:0 10px 0 3px;white-space:nowrap;}
+select.big{width:100%;background:#fff;border:1px solid var(--bdr2);border-radius:7px;color:var(--ink);font-family:'Noto Sans JP',sans-serif;font-size:11px;padding:8px 11px;outline:none;margin-bottom:10px;}
+
+/* KPI */
+.kpis{display:grid;gap:10px;margin-bottom:14px;grid-template-columns:repeat(3,1fr);}
+@media(max-width:700px){.kpis{grid-template-columns:1fr 1fr;}}
+.kpi{background:#fff;border:1px solid var(--bdr);border-radius:10px;padding:13px 15px;}
+.kpi .l{font-size:9px;letter-spacing:.14em;color:var(--mu);text-transform:uppercase;margin-bottom:4px;}
+.kpi .v{font-family:'DM Mono',monospace;font-size:21px;font-weight:500;color:var(--green-d);line-height:1.15;}
+.kpi .v small{font-size:10px;color:var(--mu);margin-left:2px;}
+.kpi.hl{background:var(--green-d);border-color:var(--green-d);}
+.kpi.hl .l{color:rgba(255,255,255,.6);}
+.kpi.hl .v{color:#fff;}
+
+.cmpwrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:700px){.cmpwrap{grid-template-columns:1fr;}}
+.cmpbox{border-radius:10px;padding:14px 16px;border:1px solid;}
+.cmpbox.now{border-color:rgba(44,95,138,.4);background:rgba(44,95,138,.06);}
+.cmpbox.new{border-color:rgba(17,17,17,.45);background:var(--green-a);}
+.cmp-tag{font-size:9px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:8px;}
+.cmpbox.now .cmp-tag{color:var(--bl);}
+.cmpbox.new .cmp-tag{color:var(--green);}
+.cmp-num{font-family:'DM Mono',monospace;font-size:26px;font-weight:500;line-height:1;}
+.cmpbox.now .cmp-num{color:var(--bl);}
+.cmpbox.new .cmp-num{color:var(--green-d);}
+.cmp-sub{font-size:10px;color:var(--mu);margin-top:4px;}
+.diff-band{margin-top:12px;border-radius:10px;padding:13px 16px;text-align:center;font-weight:700;font-size:13px;}
+.diff-band.ok{background:var(--green-a);color:var(--green-d);border:1px solid rgba(17,17,17,.3);}
+.diff-band.ng{background:rgba(180,67,47,.08);color:var(--rd);border:1px solid rgba(180,67,47,.3);}
+.diff-band b{font-family:'DM Mono',monospace;font-size:19px;}
+
+.gauge{height:14px;border-radius:8px;background:linear-gradient(90deg,#3E8E63 0%,#3E8E63 55%,#555555 55%,#555555 80%,#B4432F 80%);position:relative;margin:14px 0 26px;}
+.gauge-pin{position:absolute;top:-7px;width:3px;height:28px;background:var(--ink);border-radius:2px;transition:left .3s;}
+.gauge-pin::after{content:attr(data-v);position:absolute;top:30px;left:50%;transform:translateX(-50%);font-family:'DM Mono',monospace;font-size:11px;font-weight:700;color:var(--ink);white-space:nowrap;}
+.rate-tbl{width:100%;border-collapse:collapse;margin-top:8px;}
+.rate-tbl th,.rate-tbl td{border:1px solid var(--bdr2);padding:5px 9px;font-size:10.5px;text-align:center;}
+.rate-tbl th{background:var(--green-a);color:var(--green-d);font-weight:700;}
+.rate-tbl tr.hit td{background:var(--amber-a);font-weight:700;}
+
+/* 建てどき */
+.toki-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+@media(max-width:700px){.toki-grid{grid-template-columns:1fr;}}
+.toki-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border:1px solid var(--bdr2);border-radius:9px;overflow:hidden;margin-bottom:8px;background:#fff;}
+.toki-row>div{padding:10px 12px;}
+.toki-row .t-lbl{background:var(--bg2);font-size:10.5px;font-weight:700;color:var(--green-d);display:flex;align-items:center;}
+.toki-row .t-now,.toki-row .t-fut{font-family:'DM Mono',monospace;font-size:15px;text-align:right;}
+.toki-row .t-now{color:var(--green-d);}
+.toki-row .t-fut{color:var(--bl);border-left:1px dashed var(--bdr2);}
+.toki-row .t-cap{font-size:8.5px;color:var(--mu);font-family:'Noto Sans JP',sans-serif;display:block;text-align:right;}
+.toki-total{background:var(--green-d);color:#fff;border-radius:11px;padding:18px;text-align:center;margin-top:6px;}
+.toki-total b{font-family:'DM Mono',monospace;font-size:30px;}
+.toki-total span{font-size:11px;opacity:.85;}
+
+/* モーダル */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(18,48,37,.55);z-index:500;backdrop-filter:blur(3px);}
+.modal-bg.on{display:flex;align-items:center;justify-content:center;padding:20px;}
+.modal{background:var(--bg);border-radius:14px;max-width:620px;width:100%;max-height:82vh;overflow-y:auto;padding:26px 28px;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.35);}
+.modal .cat{font-size:9px;letter-spacing:.22em;color:var(--amber);font-weight:700;text-transform:uppercase;}
+.modal h3{font-family:'Zen Kaku Gothic New',sans-serif;font-size:19px;font-weight:900;color:var(--green-d);margin:5px 0 12px;}
+.modal .desc{font-size:12.5px;line-height:1.9;color:var(--ink);margin-bottom:14px;}
+.modal .m-img{width:100%;max-height:300px;object-fit:contain;border:1px solid var(--bdr2);border-radius:10px;background:#fff;padding:8px;box-sizing:border-box;margin-bottom:14px;display:block;}
+.modal .point{background:var(--green-a);border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:12px 15px;font-size:12px;line-height:1.85;}
+.modal .point b{color:var(--green-d);display:block;font-size:10px;letter-spacing:.2em;margin-bottom:4px;}
+.modal .meyasu{margin-top:12px;font-size:11px;color:var(--mu);background:#fff;border:1px dashed var(--bdr);border-radius:8px;padding:10px 13px;line-height:1.8;}
+.modal-x{position:absolute;top:14px;right:16px;font-size:20px;color:var(--mu);cursor:pointer;background:none;border:none;line-height:1;}
+.modal-x:hover{color:var(--rd);}
+
+/* ローン控除タブ */
+.gz-abc{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;}
+@media(max-width:700px){.gz-abc{grid-template-columns:1fr;}}
+.gz-abc-box{background:#fff;border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;}
+.gz-abc-box .tag{display:inline-block;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;color:#fff;border-radius:5px;padding:1px 8px;margin-bottom:6px;}
+.gz-abc-box.a .tag{background:var(--green);} .gz-abc-box.b .tag{background:var(--amber);} .gz-abc-box.c .tag{background:var(--bl);}
+.gz-abc-box h5{font-size:11px;font-weight:700;color:var(--green-d);margin-bottom:3px;}
+.gz-abc-box p{font-size:9.5px;color:var(--mu);line-height:1.7;}
+.gz-abc-box .val{font-family:'DM Mono',monospace;font-size:15px;color:var(--ink);margin-top:5px;}
+table.gz-tbl{width:100%;border-collapse:collapse;}
+table.gz-tbl th{font-size:9px;letter-spacing:.06em;color:#fff;background:var(--green);padding:6px 7px;text-align:right;font-weight:700;white-space:nowrap;}
+table.gz-tbl th:first-child{text-align:left;}
+table.gz-tbl td{border-bottom:1px solid var(--bdr2);padding:4px 7px;font-size:10.5px;font-family:'DM Mono',monospace;text-align:right;white-space:nowrap;}
+table.gz-tbl td:first-child{font-family:'Noto Sans JP',sans-serif;text-align:left;color:var(--mu);}
+table.gz-tbl td.min{font-weight:700;color:var(--green-d);background:var(--green-a);}
+table.gz-tbl tr.total td{background:var(--green-d);color:#fff;font-weight:700;border-bottom:none;}
+table.gz-tbl tr.total td.min{background:var(--green-d);color:#fff;}
+.gz-badge{display:inline-block;font-size:8.5px;font-weight:700;border-radius:4px;padding:0 5px;margin-left:4px;vertical-align:1px;}
+.gz-badge.a{background:var(--green-a);color:var(--green);} .gz-badge.b{background:var(--amber-a);color:var(--amber);} .gz-badge.c{background:rgba(0,0,0,.07);color:var(--bl);}
+.gz-na{background:rgba(180,67,47,.07);border:1.5px solid rgba(180,67,47,.35);color:#8b1a1a;border-radius:10px;padding:13px 16px;font-size:12px;line-height:1.8;font-weight:500;margin-bottom:14px;}
+
+/* FPシミュレーション */
+.fp-member-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:10px;}
+.fp-member-row{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:8px;background:#fff;border:1px solid var(--bdr2);border-radius:8px;padding:7px 10px;}
+.fp-member-icon{font-size:18px;width:26px;text-align:center;}
+.fp-member-name{font-size:11px;font-weight:700;color:var(--green-d);}
+.fp-mem-age-input{width:52px;background:#fff;border:1px solid var(--bdr2);border-radius:5px;font-family:'DM Mono',monospace;font-size:11.5px;padding:3px 5px;text-align:right;outline:none;}
+.fp-mem-age-input:focus{border-color:var(--green);}
+.fp-mem-del{background:none;border:none;color:var(--rd);font-size:14px;cursor:pointer;padding:0 4px;line-height:1;}
+.fp-add-btn{width:100%;padding:8px;border:1px dashed var(--bdr);border-radius:8px;background:var(--green-a);color:var(--green-d);font-size:11px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .15s;}
+.fp-add-btn:hover{border-color:var(--green);background:rgba(17,17,17,.15);}
+.fp-sec{font-size:9px;font-weight:700;letter-spacing:.18em;color:var(--amber);text-transform:uppercase;margin:14px 0 8px;padding-top:10px;border-top:1px dashed var(--bdr2);}
+.sl-hints{display:flex;justify-content:space-between;font-size:8.5px;color:var(--mu2);margin-top:2px;}
+.fp-kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+@media(max-width:700px){.fp-kpi-row{grid-template-columns:1fr 1fr;}}
+.fp-kpi{background:#fff;border:1px solid var(--bdr);border-radius:10px;padding:13px 15px;}
+.fp-kpi-l{font-size:8.5px;letter-spacing:.12em;color:var(--mu);text-transform:uppercase;margin-bottom:4px;}
+.fp-kpi-v{font-family:'DM Mono',monospace;font-size:clamp(14px,1.6vw,20px);font-weight:500;line-height:1.2;}
+.fp-kpi-s{font-size:9px;color:var(--mu);margin-top:3px;}
+.c-gr{color:var(--green-d);} .c-rd{color:var(--rd);} .c-bl{color:var(--bl);} .c-am{color:var(--amber);}
+.fp-alert{border-radius:10px;padding:13px 17px;margin-bottom:14px;font-size:12px;line-height:1.8;font-weight:500;}
+.fp-alert.danger{background:rgba(180,67,47,.08);border:1.5px solid rgba(180,67,47,.4);color:#8b1a1a;}
+.fp-alert.warn{background:var(--amber-a);border:1.5px solid rgba(0,0,0,.45);color:#7a4a00;}
+.fp-alert.ok{background:var(--green-a);border:1.5px solid rgba(17,17,17,.4);color:var(--green-d);}
+.ch-box{background:#fff;border:1px solid var(--bdr);border-radius:12px;box-shadow:0 1px 3px rgba(18,61,46,.06);padding:16px 18px;margin-bottom:14px;}
+.ch-hd{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
+.ch-t{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--green-d);}
+.leg{display:flex;gap:12px;flex-wrap:wrap;}
+.li{display:flex;align-items:center;gap:5px;font-size:9.5px;color:var(--mu);}
+.li-d{width:9px;height:9px;border-radius:50%;}
+.tb-box{background:#fff;border:1px solid var(--bdr);border-radius:11px;box-shadow:0 1px 3px rgba(18,61,46,.06);padding:16px 18px;overflow-x:auto;margin-bottom:14px;}
+.tb-t{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--green-d);margin-bottom:10px;}
+table.fp-cf{width:100%;border-collapse:collapse;}
+table.fp-cf th{font-size:9px;letter-spacing:.08em;color:#fff;background:var(--green);padding:6px 8px;text-align:right;font-weight:700;white-space:nowrap;}
+table.fp-cf th:first-child{text-align:left;}
+table.fp-cf td{border-bottom:1px solid var(--bdr2);padding:4px 8px;font-size:10.5px;font-family:'DM Mono',monospace;text-align:right;white-space:nowrap;}
+table.fp-cf td:first-child{font-family:'Noto Sans JP',sans-serif;text-align:left;color:var(--mu);}
+table.fp-cf tr.hl td{background:rgba(180,67,47,.06);}
+table.fp-cf td.pos{color:var(--green-d);} table.fp-cf td.neg{color:var(--rd);}
+.pie-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+@media(max-width:700px){.pie-wrap{flex-direction:column;}}
+.pie-canvas-box{flex-shrink:0;}
+.pie-legend{flex:1;min-width:160px;}
+.pie-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:11px;}
+.pie-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.pie-lbl{flex:1;color:var(--mu);}
+.pie-val{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--ink);}
+.pie-pct{font-size:9px;color:var(--mu2);margin-left:4px;}
+
+.note{font-size:10px;color:var(--mu);line-height:1.8;margin-top:10px;}
+.hint-tbl{width:100%;border-collapse:collapse;margin-top:8px;}
+.hint-tbl th,.hint-tbl td{border:1px solid var(--bdr2);padding:5px 8px;font-size:10.5px;text-align:center;}
+.hint-tbl th{background:var(--green-a);color:var(--green-d);}
+.foot{max-width:1320px;margin:0 auto;padding:26px 20px 70px;font-size:9.5px;color:var(--mu2);line-height:1.9;border-top:1px solid var(--bdr2);}
+.foot b{color:var(--green-d);font-size:11px;letter-spacing:.1em;}
+
+@media print{
+  .nav,.sticky-sum,.btnrow,.no-print,.foot{display:none!important;}
+  body{background:#fff;font-size:10px;}
+  .pg{display:none!important;padding:0;}
+  #tab-plan{display:block!important;}
+  body.print-fp #tab-plan{display:none!important;}
+  body.print-fp #tab-fp{display:block!important;}
+  body.print-genzei #tab-plan{display:none!important;}
+  body.print-genzei #tab-genzei{display:block!important;}
+  .panel{box-shadow:none;border-color:#999;break-inside:avoid;padding:12px;}
+  .ch-box,.tb-box,.fp-kpi{box-shadow:none;border-color:#999;break-inside:avoid;}
+  .info-chip{display:none!important;}
+  table.est td.amt input,.est-meta input,table.est td.nm input,.meta2 input{border:none;}
+  .memo-inp{border:none;padding:2px 0;}
+  #kodawari-add-row{display:none!important;}
+  #fpg-bg{display:none!important;}
+  details.std{display:none;}
+}
+
+/* ══════════ アレスさんのツール（追加タブ） ══════════ */
+.pk-hero{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;}
+@media(max-width:760px){.pk-hero{grid-template-columns:1fr;}}
+.pk-price{font-family:'DM Mono','Zen Kaku Gothic New',monospace;font-size:clamp(34px,5vw,52px);font-weight:900;color:var(--green-d);line-height:1;}
+.pk-price small{font-size:14px;font-weight:700;color:var(--mu);}
+.pk-badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.pk-badge{background:var(--green-d);color:#fff;border-radius:5px;padding:4px 9px;font-size:10px;font-weight:700;letter-spacing:.05em;}
+.pk-badge.o{background:#fff;color:var(--green-d);border:1.5px solid var(--green-d);}
+.pk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:12px;}
+.pk-card{border:1.5px solid var(--bdr);border-radius:11px;padding:14px 15px;background:#fff;display:flex;flex-direction:column;gap:5px;transition:all .15s;}
+.pk-card:hover{border-color:var(--green);box-shadow:0 4px 14px rgba(0,0,0,.08);}
+.pk-card .t{font-family:'Zen Kaku Gothic New',sans-serif;font-size:17px;font-weight:900;}
+.pk-card .m2{font-size:10px;color:var(--mu);}
+.pk-card .pr{font-family:'DM Mono',monospace;font-size:21px;font-weight:700;color:var(--green-d);line-height:1.15;}
+.pk-card .pr small{font-size:10px;color:var(--mu);font-family:'Noto Sans JP',sans-serif;}
+.pk-card .tax{font-size:10px;color:var(--mu);}
+.pk-card button{margin-top:6px;}
+.merit-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px;}
+.merit{display:flex;gap:9px;align-items:flex-start;border:1px solid var(--bdr2);border-radius:9px;padding:9px 11px;background:#fff;font-size:11px;line-height:1.6;}
+.merit .n{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:var(--green-d);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;}
+.hosho-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
+.hosho{border:1px solid var(--bdr);border-radius:10px;padding:12px 13px;background:#fff;}
+.hosho h4{font-size:12px;font-weight:900;margin-bottom:4px;color:var(--green-d);}
+.hosho p{font-size:10.5px;color:var(--mu);line-height:1.65;}
+.hosho .big{font-family:'DM Mono',monospace;font-size:19px;font-weight:700;color:var(--rd);}
+/* 土地相場 */
+.tc-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+.tc-tools input[type=text]{background:#fff;border:1px solid var(--bdr);border-radius:8px;padding:8px 12px;font-size:12px;outline:none;font-family:'Noto Sans JP',sans-serif;min-width:200px;}
+.tc-tools input[type=text]:focus{border-color:var(--green);}
+.zf{padding:6px 11px;border-radius:99px;border:1px solid var(--bdr);background:#fff;font-size:10.5px;font-weight:700;color:var(--mu);cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .12s;}
+.zf.on{background:var(--green-d);border-color:var(--green-d);color:#fff;}
+table.tc{width:100%;border-collapse:collapse;}
+table.tc th{font-size:10px;letter-spacing:.08em;color:#fff;background:var(--green);padding:7px 9px;text-align:left;font-weight:700;cursor:pointer;user-select:none;white-space:nowrap;}
+table.tc td{border-bottom:1px solid var(--bdr2);padding:6px 9px;font-size:11.5px;vertical-align:middle;}
+table.tc tr.sel td{background:var(--green-a);}
+table.tc tr{cursor:pointer;}
+table.tc td.pr{font-family:'DM Mono',monospace;font-weight:700;font-size:13px;white-space:nowrap;}
+.stk{display:inline-block;border-radius:4px;padding:2px 7px;font-size:9.5px;font-weight:700;white-space:nowrap;}
+.stk0{background:#dbe9f8;color:#1f5a9e;}.stk1{background:#fbf3c9;color:#8a6d00;}.stk2{background:#fbdce6;color:#b0355e;}.stk3{background:#f8d3cd;color:#b02516;}
+.tc-calc{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;background:var(--green-a);border:1px solid var(--bdr);border-radius:11px;padding:13px 15px;margin-top:12px;}
+.tc-calc label{font-size:10px;font-weight:700;color:var(--mu);display:block;margin-bottom:3px;}
+.tc-calc input{background:#fff;border:1px solid var(--bdr);border-radius:7px;padding:7px 10px;font-size:13px;width:110px;outline:none;font-family:'DM Mono',monospace;}
+.tc-out{font-family:'DM Mono',monospace;font-size:22px;font-weight:700;color:var(--green-d);}
+/* 家づくりの流れ */
+.fl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;}
+.fl-step{border:1px solid var(--bdr);border-radius:10px;padding:11px 13px;background:#fff;position:relative;}
+.fl-step .no{position:absolute;top:-9px;left:11px;background:var(--green-d);color:#fff;border-radius:5px;padding:2px 8px;font-family:'DM Mono',monospace;font-size:10.5px;font-weight:700;}
+.fl-step h4{font-size:13px;font-weight:900;margin:5px 0 3px;}
+.fl-step p{font-size:10.5px;color:var(--mu);line-height:1.6;}
+.fl-step .dur{display:inline-block;margin-top:5px;background:var(--amber-a);border-radius:4px;padding:2px 7px;font-size:9.5px;font-weight:700;color:var(--ink);}
+/* 事前審査 */
+.ck-item{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--bdr2);border-radius:9px;padding:10px 12px;background:#fff;margin-bottom:7px;cursor:pointer;transition:all .12s;font-size:11.5px;line-height:1.6;}
+.ck-item:hover{border-color:var(--green);}
+.ck-item.on{background:#fdf0ee;border-color:var(--rd);}
+.ck-item input{margin-top:3px;accent-color:var(--rd);}
+.ck-risk{flex-shrink:0;border-radius:4px;padding:1px 7px;font-size:9px;font-weight:700;align-self:center;}
+.ck-r2{background:#f8d3cd;color:#b02516;}.ck-r1{background:#fbf3c9;color:#8a6d00;}
+.ck-result{border-radius:11px;padding:14px 16px;font-size:12px;font-weight:700;margin-top:10px;line-height:1.7;}
+.ck-ok{background:#e7f3e7;border:1.5px solid #2e7d32;color:#1e5722;}
+.ck-ng{background:#fdeceb;border:1.5px solid var(--rd);color:#8f2f1f;}
+.pm-card{border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;background:#fff;}
+.pm-card h4{font-size:12px;font-weight:900;color:var(--green-d);margin-bottom:4px;}
+.pm-card p{font-size:10.5px;color:var(--mu);line-height:1.65;}
+.pm3{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;}
+.yak{display:flex;gap:10px;align-items:center;background:#fff;border:1.5px solid var(--green-d);border-radius:10px;padding:11px 14px;font-size:13px;font-weight:900;margin-bottom:8px;}
+.yak .n{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--rd);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:13px;}
+.case{border-left:3px solid var(--green);background:#fff;border-radius:0 9px 9px 0;padding:10px 13px;margin-bottom:8px;font-size:11px;line-height:1.65;}
+.case b{color:var(--green-d);}
+
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="nav-inner">
+  <div class="nav-logo">ALLES HOME<small>資金計画シミュレーター</small></div>
+  <button class="tab on" data-t="plan">📋 資金計画書</button>
+  <button class="tab" data-t="loan">🏦 住宅ローン</button>
+  <button class="tab" data-t="genzei">🎁 ローン控除</button>
+  <button class="tab" data-t="cmp">⚖️ 今と新築後</button>
+  <button class="tab" data-t="toki">⏰ 建てどき比較</button>
+  <button class="tab" data-t="fp">👨‍👩‍👧 FPシミュレーション</button>
+  <button class="tab" data-t="pack">🏠 アレスα</button>
+  <button class="tab" data-t="tochi">🗺️ 土地相場</button>
+  <button class="tab" data-t="flow">📖 家づくりの流れ</button>
+  <button class="tab" data-t="shinsa">✅ 事前審査</button>
+</div></nav>
+
+<!-- ═══════════ 1. 資金計画書 ═══════════ -->
+<div class="pg on" id="tab-plan">
+  <div class="ph">
+    <div class="ph-ey">Funding Plan — A・B・C・D・E</div>
+    <h2>住まいづくりの<em>資金計画書</em></h2>
+    <p>① 建築本体工事費／② 土地購入費／③ 土地代金以外・本体工事以外にかかる費用／④ 諸経費 の順に積み上げ、新築予算総合計を見える化します。各項目の「解説」でその費用の意味とポイントが開きます。印紙税・仲介手数料・つなぎ融資利息・火災/地震保険料は条件を入れると自動計算されます。</p>
+  </div>
+
+  <div class="btnrow no-print">
+    <button class="btn" onclick="resetPlan()">🔄 初期値に戻す</button>
+    <button class="btn pri" onclick="window.print()">🖨️ 印刷 / PDF保存</button>
+  </div>
+
+  <div class="panel">
+    <div class="est-head">
+      <div class="est-title">資金計画書</div>
+      <div class="est-meta">
+        <input placeholder="お客様名" style="width:150px"><span>様邸</span>
+        <input type="date" style="width:130px">
+        <input placeholder="担当者名" style="width:110px"><span style="font-weight:900;letter-spacing:.05em;margin-left:8px;">アレスホーム　（株）アレス</span>
+      </div>
+    </div>
+    <div class="meta2">
+      建物名義（予定）① <input placeholder="お名前" style="width:110px"> ② <input placeholder="お名前" style="width:110px">
+
+    </div>
+
+    <table class="est" id="est-tbl"><tbody id="est-body"></tbody></table>
+
+    <div class="note">※ 金額はすべて概算・参考値です。敷地条件・仕様・地域・時期により変動します。地盤調査の結果、改良工事が必要と判断された場合はデータに基づき施工していただく可能性があります。<br>
+    ※1 住宅ローン減税：毎年の住宅ローン残高の0.7%を13年間、所得税から控除（住民税からも一部控除）。<br>
+    ※2 太陽光発電費用効果：売電単価1〜4年目24円・5〜10年目8.3円の平均単価、節電単価25円として算出（売電期間10年間）。<br>
+    ※ 上水道加入金・下水道負担金は市町村（同じ市でも地区）により大きく異なります（例：メーター口径20mmで8.8万〜24.6万円等）。担当者が地区の一覧表から正確な金額をお調べします。</div>
+  </div>
+
+  <div class="l2">
+    <div class="panel">
+      <div class="ph2">💰 支払方法（自己資金と借入）</div>
+      <div class="nf"><span class="nf-lbl">自己資金（頭金）</span><input type="text" inputmode="numeric" data-money id="jiko" value="3,000,000"><span class="nf-unit">円</span></div>
+      <div class="nf"><span class="nf-lbl">ご両親等からの資金援助（贈与）</span><input type="text" inputmode="numeric" data-money id="enjo" value="0"><span class="nf-unit">円</span></div>
+      <div class="note">住宅取得資金の贈与には非課税の特例枠があります。詳しくは担当者にご確認ください。</div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="l">新築予算総合計（①+②+③+④）</div><div class="v" id="k-total">—</div></div>
+      <div class="kpi"><div class="l">自己資金＋贈与</div><div class="v" id="k-jiko">—</div></div>
+      <div class="kpi hl"><div class="l">借入金額 → ローンタブへ連動</div><div class="v" id="k-loan">—</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 2. 住宅ローン ═══════════ -->
+<div class="pg" id="tab-loan">
+  <div class="ph">
+    <div class="ph-ey">Housing Loan</div>
+    <h2>住宅ローン <em>シミュレーション</em></h2>
+    <p>資金計画書の借入金額と自動連動。ボーナス払い併用、月々の希望額からの「借入可能額」逆算、住宅ローン減税の概算まで確認できます。フラット35S・長期優良住宅等の適用可否は担当者にご確認ください。</p>
+  </div>
+  <div class="l2">
+    <div>
+      <div class="panel">
+        <div class="ph2">🔧 借入条件</div>
+        <label style="display:flex;align-items:center;gap:7px;font-size:11px;margin-bottom:10px;cursor:pointer;">
+          <input type="checkbox" id="loan-link" checked onchange="upAll()"> 資金計画書と連動する
+        </label>
+        <div class="nf"><span class="nf-lbl">借入金額</span><input type="text" inputmode="numeric" data-money id="loan-amt" value="47,000,000"><span class="nf-unit">円</span></div>
+        <div class="nf"><span class="nf-lbl">内ボーナス払 1回あたり希望額</span><input type="text" inputmode="numeric" data-money id="bonus-pay" value="0"><span class="nf-unit">円</span></div>
+        <div class="sl"><div class="sl-hd"><span>返済期間</span><b id="d-yrs">35 年</b></div>
+          <input type="range" id="loan-yrs" min="10" max="50" value="35" oninput="upAll()"></div>
+        <div class="sl"><div class="sl-hd"><span>変動金利（年率）</span><b id="d-r1">0.80 %</b></div>
+          <input type="range" id="loan-r1" min="0.2" max="3" step="0.05" value="0.8" oninput="upAll()"></div>
+        <div class="sl"><div class="sl-hd"><span>固定金利：フラット35S 等（年率）</span><b id="d-r2">1.60 %</b></div>
+          <input type="range" id="loan-r2" min="0.5" max="4" step="0.05" value="1.6" oninput="upAll()"></div>
+        <div class="nf"><span class="nf-lbl">世帯年収（合算可）</span><input type="text" inputmode="numeric" data-money id="nenshu" value="6,700,000"><span class="nf-unit">円</span></div>
+        <div class="note">参考：無理なく返せる目安は返済負担率（額面）25%以内・手取り比20〜25%程度です。教育費や老後資金も踏まえて担当者と一緒に確認しましょう。</div>
+      </div>
+      <div class="panel">
+        <div class="ph2">🔁 逆算：月々の希望額から借入可能額</div>
+        <div class="nf"><span class="nf-lbl">月の希望返済額</span><input type="text" inputmode="numeric" data-money id="rev-mo" value="100,000"><span class="nf-unit">円</span></div>
+        <div class="nf"><span class="nf-lbl">ボーナス1回分の希望額</span><input type="text" inputmode="numeric" data-money id="rev-bo" value="0"><span class="nf-unit">円</span></div>
+        <div class="kpi" style="margin-top:4px;"><div class="l">借入可能額（概算・変動金利/10万円単位切捨て）</div><div class="v" id="rev-out">—</div></div>
+      </div>
+      <div class="panel">
+        <div class="ph2">📖 あわせて知っておきたい</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <span class="info-chip" style="align-self:flex-start" onclick="openG('flat35')">ℹ️ フラット35Sとは</span>
+          <span class="info-chip" style="align-self:flex-start" onclick="openG('genzei')">ℹ️ 住宅ローン減税とは</span>
+          <span class="info-chip" style="align-self:flex-start" onclick="openG('danshin')">ℹ️ 団体信用生命保険とは</span>
+          <span class="info-chip" style="align-self:flex-start" onclick="openG('tsunagi')">ℹ️ つなぎ融資とは</span>
+          <span class="info-chip" style="align-self:flex-start" onclick="openG('ikkatsu')">ℹ️ 建物完成前 住宅ローン一括実行とは</span>
+          <span class="info-chip" style="align-self:flex-start" onclick="openG('hosho')">ℹ️ 保証協会保証料とは</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="cmpwrap">
+        <div class="cmpbox now"><div class="cmp-tag">変動金利の場合</div>
+          <div class="cmp-num" id="m1">—</div>
+          <div class="cmp-sub">月々 <span id="bo1"></span>／ 総返済額 <b id="t1">—</b></div></div>
+        <div class="cmpbox new"><div class="cmp-tag">全期間固定（フラット35S 等）の場合</div>
+          <div class="cmp-num" id="m2">—</div>
+          <div class="cmp-sub">月々 <span id="bo2"></span>／ 総返済額 <b id="t2">—</b></div></div>
+      </div>
+      <div class="panel" style="margin-top:14px;">
+        <div class="ph2">🎁 住宅ローン減税の概算（※1）</div>
+        <div class="kpis" style="grid-template-columns:1fr 1fr;">
+          <div class="kpi"><div class="l">13年間の控除額 合計（概算・変動）</div><div class="v" id="genzei-out">—</div></div>
+          <div class="kpi"><div class="l">年平均に換算すると</div><div class="v" id="genzei-yr">—</div></div>
+        </div>
+        <div class="note">毎年の住宅ローン残高×0.7%を13年間、所得税等から控除する制度の単純概算です。実際は住宅の性能区分ごとの借入限度額と、納めている所得税・住民税の額が上限になります。長期優良住宅・ZEHは限度額が優遇されます。</div>
+        <button class="btn mini no-print" style="margin-top:8px;" onclick="gotoTab('genzei')">🎁 住宅の種別・年収まで考慮した詳細版 →「ローン控除」タブへ</button>
+      </div>
+      <div class="panel">
+        <div class="ph2">📊 返済負担率チェック（年間返済額 ÷ 世帯年収）</div>
+        <div class="gauge"><div class="gauge-pin" id="g-pin" data-v="—" style="left:20%"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--mu);margin-top:-16px;margin-bottom:8px;"><span>0%</span><span>ゆとり〜適正（〜25%目安）</span><span>注意</span><span>45%</span></div>
+        <table class="rate-tbl"><thead><tr><th>額面世帯年収</th><th>金融機関の審査基準（目安）</th></tr></thead>
+        <tbody id="rate-rows">
+          <tr data-min="1000000" data-max="2999999"><td>100万円以上 300万円未満</td><td>20%</td></tr>
+          <tr data-min="3000000" data-max="4499999"><td>300万円以上 450万円未満</td><td>30%</td></tr>
+          <tr data-min="4500000" data-max="5999999"><td>450万円以上 600万円未満</td><td>35%</td></tr>
+          <tr data-min="6000000" data-max="999999999"><td>600万円以上</td><td>40%</td></tr>
+        </tbody></table>
+        <div class="note">審査基準は「借りられる上限」の目安です。教育費や老後資金も踏まえた「無理なく返せる金額」（手取り比20〜25%程度）を担当者と一緒に確認しましょう。ボーナス払い分（年2回）も年間返済額に含めて判定しています。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 2.5 ローン控除シミュレーション ═══════════ -->
+<div class="pg" id="tab-genzei">
+  <div class="ph">
+    <div class="ph-ey">Tax Deduction — 令和8年度税制改正対応</div>
+    <h2>住宅ローン控除（減税）<em>シミュレーション</em></h2>
+    <p>住宅ローン控除は「A：年末残高×0.7%」「B：年間の最大控除額」「C：控除対象税額（所得税＋住民税）」の<b>3つのうち最も少ない金額</b>が各年の控除額になります。借入額・金利・期間は資金計画書・ローンタブと自動連動。住宅の種別・入居年・子育て世帯等の条件で13年間（一部10年間）の控除額を年ごとに試算します。</p>
+  </div>
+
+  <div class="btnrow no-print">
+    <button class="btn pri" onclick="window.print()">🖨️ 印刷 / PDF保存</button>
+  </div>
+
+  <div class="l2">
+    <!-- 左：条件 -->
+    <div>
+      <div class="panel">
+        <div class="ph2">🔧 借入条件</div>
+        <label style="display:flex;align-items:center;gap:7px;font-size:11px;margin-bottom:10px;cursor:pointer;">
+          <input type="checkbox" id="gz-link" checked onchange="upGenzei()"> 資金計画書・ローンタブと連動する
+        </label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:10.5px;margin:-4px 0 10px;cursor:pointer;color:var(--mu);">
+          <input type="radio" name="gzlm" checked onchange="gzLoanMode=1;upGenzei()"> 変動金利
+          <input type="radio" name="gzlm" onchange="gzLoanMode=2;upGenzei()" style="margin-left:10px;"> 固定金利
+        </label>
+        <div class="nf"><span class="nf-lbl">借入額</span><input type="text" inputmode="numeric" data-money id="gz-amt" value="47,000,000"><span class="nf-unit">円</span></div>
+        <div class="nf"><span class="nf-lbl">金利（年率）</span><input type="number" id="gz-rate" value="0.80" step="0.05"><span class="nf-unit">%</span></div>
+        <div class="nf"><span class="nf-lbl">返済期間</span><input type="number" id="gz-yrs" value="35" min="10" max="50"><span class="nf-unit">年</span></div>
+        <div class="note">元利均等返済・金利は全期間一定として年末残高を試算します（ボーナス払い分も含めて計算）。</div>
+      </div>
+
+      <div class="panel">
+        <div class="ph2">🏠 住宅・入居の条件</div>
+        <select class="big" id="gz-nc" onchange="upGenzei()">
+          <option value="new" selected>新築住宅・買取再販住宅</option>
+          <option value="used">中古住宅（既存住宅）</option>
+        </select>
+        <select class="big" id="gz-type" onchange="upGenzei()">
+          <option value="chouki" selected>長期優良住宅・低炭素住宅</option>
+          <option value="zeh">ZEH水準省エネ住宅</option>
+          <option value="shoene">省エネ基準適合住宅</option>
+          <option value="sonota">その他の住宅</option>
+        </select>
+        <select class="big" id="gz-year" onchange="upGenzei()">
+          <option value="2026" selected>2026年 入居</option>
+          <option value="2027">2027年 入居</option>
+          <option value="2028">2028年 入居</option>
+          <option value="2029">2029年 入居</option>
+          <option value="2030">2030年 入居</option>
+        </select>
+        <label style="display:flex;align-items:flex-start;gap:7px;font-size:11px;margin-bottom:6px;cursor:pointer;line-height:1.6;">
+          <input type="checkbox" id="gz-kosodate" checked onchange="upGenzei()" style="margin-top:2px;">
+          <span><b>子育て世帯・若者夫婦世帯</b><br><span style="font-size:9.5px;color:var(--mu)">19歳未満の子がいる世帯、または夫婦のどちらかが40歳未満の世帯（借入限度額が上乗せされます）</span></span>
+        </label>
+        <div class="note">長期優良住宅・ZEH水準に該当する場合、最も優遇された借入限度額（子育て世帯等なら最大5,000万円）を活用できます。該当の有無は担当者にご確認ください。</div>
+      </div>
+
+      <div class="panel">
+        <div class="ph2">💼 収入・扶養の条件</div>
+        <label style="display:flex;align-items:center;gap:7px;font-size:11px;margin-bottom:10px;cursor:pointer;">
+          <input type="checkbox" id="gz-nenshu-link" checked onchange="upGenzei()"> ローンタブの世帯年収と連動
+        </label>
+        <div class="nf"><span class="nf-lbl">控除を受ける方の年収（額面）</span><input type="text" inputmode="numeric" data-money id="gz-nenshu" value="6,700,000"><span class="nf-unit">円</span></div>
+        <div class="nf"><span class="nf-lbl">扶養家族の人数</span><input type="number" id="gz-fuyo" value="1" min="0" max="10"><span class="nf-unit">人</span></div>
+        <div class="note">扶養家族＝控除対象となる配偶者・扶養親族（16歳以上）の人数です。ペアローンの場合はそれぞれの年収・借入額で個別に試算してください（合算年収では税額が過大になります）。</div>
+      </div>
+    </div>
+
+    <!-- 右：結果 -->
+    <div>
+      <div id="gz-na-msg" class="gz-na" style="display:none"></div>
+      <div class="kpis" id="gz-kpis">
+        <div class="kpi hl"><div class="l"><span id="gz-period">13</span>年間の控除額 合計</div><div class="v" id="gz-total">—</div></div>
+        <div class="kpi"><div class="l">初年度の控除額</div><div class="v" id="gz-first">—</div></div>
+        <div class="kpi"><div class="l">年平均の控除額</div><div class="v" id="gz-avg">—</div></div>
+      </div>
+
+      <div class="gz-abc">
+        <div class="gz-abc-box a"><span class="tag">A</span><h5>年末残高 × 0.7%</h5><p>各年12月末時点の住宅ローン残高の0.7%。残高が減るにつれて少しずつ小さくなります。</p><div class="val" id="gz-a1">—</div></div>
+        <div class="gz-abc-box b"><span class="tag">B</span><h5>年間の最大控除額</h5><p>住宅の種別・入居年・子育て世帯等で決まる借入限度額 × 0.7%。<span id="gz-b-desc">—</span></p><div class="val" id="gz-b1">—</div></div>
+        <div class="gz-abc-box c"><span class="tag">C</span><h5>控除対象税額</h5><p>納めている所得税＋住民税（課税所得の5%・最大9.75万円）の合計。これを超えては戻りません。</p><div class="val" id="gz-c1">—</div></div>
+      </div>
+
+      <div class="ch-box">
+        <div class="ch-hd">
+          <div class="ch-t">📊 各年の控除額（A・B・Cの最小値）</div>
+          <div class="leg">
+            <div class="li"><div class="li-d" style="background:var(--green)"></div>A が上限</div>
+            <div class="li"><div class="li-d" style="background:var(--amber)"></div>B が上限</div>
+            <div class="li"><div class="li-d" style="background:var(--bl)"></div>C が上限</div>
+          </div>
+        </div>
+        <canvas id="gz-chart" height="220" style="width:100%;"></canvas>
+      </div>
+
+      <div class="tb-box">
+        <div class="tb-t">📋 年別の控除額 内訳（A・B・Cのうち最小額＝控除額）</div>
+        <table class="gz-tbl">
+          <thead><tr><th>控除年</th><th>年末残高</th><th>A 残高×0.7%</th><th>B 年間上限</th><th>C 税額上限</th><th>控除額</th></tr></thead>
+          <tbody id="gz-tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="note">※ 令和8年度（2026年度）税制改正（適用期限の2030年までの延長、子育て世帯・若者夫婦世帯の借入限度額上乗せ等）を反映した概算です。<br>
+      ※ 給与所得者を想定し、所得控除は基礎控除・扶養控除・社会保険料控除（年収の15%と仮定）のみ考慮。住民税は所得割10%・調整控除考慮の概算で、復興特別所得税・その他の控除（生命保険料控除等）は考慮していません。<br>
+      ※ 年収・扶養家族・世帯区分は控除期間中変わらないものとし、入居月＝返済開始月として計算しています。繰上げ返済をすると残高が減り控除額も減少します。<br>
+      ※ 適用には合計所得2,000万円以下・返済期間10年以上・床面積等の要件があります。正確な金額は税務署・税理士等でご確認ください。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 3. 今と新築後 ═══════════ -->
+<div class="pg" id="tab-cmp">
+  <div class="ph">
+    <div class="ph-ey">Before / After</div>
+    <h2>今のお支払いと <em>新築後のお支払い</em></h2>
+    <p>「家賃を払い続ける今」と「マイホームに住む新築後」の毎月を比較します。光熱費は太陽光搭載・高断熱住宅の参考データを、生命保険は団信を前提にした見直し目安を参照できます。</p>
+  </div>
+  <div class="l2">
+    <div>
+      <div class="panel">
+        <div class="ph2">🏢 今のお支払い（毎月）</div>
+        <div class="nf"><span class="nf-lbl">家賃</span><input type="text" inputmode="numeric" data-money id="n-yachin" value="80,000"><span class="nf-unit">円</span></div>
+        <div class="nf"><span class="nf-lbl">駐車場代</span><input type="text" inputmode="numeric" data-money id="n-park" value="8,000"><span class="nf-unit">円</span></div>
+        <div class="nf"><span class="nf-lbl">光熱費（電気・ガス・灯油）</span><input type="text" inputmode="numeric" data-money id="n-kounetsu" value="25,000"><span class="nf-unit">円</span></div>
+        <div class="nf"><span class="nf-lbl">生命保険料</span><input type="text" inputmode="numeric" data-money id="n-hoken" value="15,000"><span class="nf-unit">円</span></div>
+      </div>
+      <div class="panel">
+        <div class="ph2">🏡 新築後のお支払い（毎月）</div>
+        <div class="nf"><span class="nf-lbl">住宅ローン（ローンタブと連動）</span><input type="text" inputmode="numeric" data-money id="a-loan" value="0" disabled><span class="nf-unit">円</span></div>
+        <label style="display:flex;align-items:center;gap:7px;font-size:10.5px;margin:-4px 0 10px;cursor:pointer;color:var(--mu);">
+          <input type="radio" name="lm" checked onchange="cmpMode=1;upAll()"> 変動金利
+          <input type="radio" name="lm" onchange="cmpMode=2;upAll()" style="margin-left:10px;"> 固定金利
+        </label>
+        <div class="nf"><span class="nf-lbl">光熱費（太陽光・オール電化後）</span><input type="text" inputmode="numeric" data-money id="a-kounetsu" value="13,700"><span class="nf-unit">円</span></div>
+        <button class="btn mini no-print" style="margin:-4px 0 10px;" onclick="$('a-kounetsu').value='13,700';upAll()">📊 太陽光・オール電化住宅の参考値（約13,700円/月）を入れる</button>
+        <div class="nf"><span class="nf-lbl">生命保険料（団信で見直し後）</span><input type="text" inputmode="numeric" data-money id="a-hoken" value="8,000"><span class="nf-unit">円</span></div>
+        <div class="nf"><span class="nf-lbl">固定資産税等の積立（月割）</span><input type="text" inputmode="numeric" data-money id="a-zeikin" value="12,000"><span class="nf-unit">円</span></div>
+        <div class="nf" style="background:var(--green-a);"><span class="nf-lbl" style="color:var(--green-d)">▲ 太陽光発電の経済効果（売電＋節電・差引）</span><input type="text" inputmode="numeric" data-money id="a-taiyo" value="0"><span class="nf-unit">円</span></div>
+        <button class="btn mini no-print" style="margin:-4px 0 10px;" onclick="$('a-taiyo').value='13,400';upAll()">☀️ 10年平均の経済効果（約13,400円/月）を入れる</button>
+        <div class="nf" style="background:var(--green-a);"><span class="nf-lbl" style="color:var(--green-d)">▲ 住宅ローン控除の効果（月換算・差引）</span><input type="text" inputmode="numeric" data-money id="a-genzei" value="0" oninput="aGenzeiManual=true;upAll()"><span class="nf-unit">円</span></div>
+        <div class="note" style="margin:-4px 0 10px;">控除効果は「ローン控除」タブの試算（期間平均÷12ヶ月・100円丸め）が自動で入ります。手入力で上書きも可能です。</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span class="info-chip" onclick="openG('taiyo_kouka')">ℹ️ 太陽光の費用効果（※2）</span>
+          <span class="info-chip" onclick="openG('danshin')">ℹ️ 団信で保険を見直せる理由</span>
+          <span class="info-chip" onclick="openG('izoku')">ℹ️ 遺族年金という安心</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="cmpwrap">
+        <div class="cmpbox now"><div class="cmp-tag">今のお支払い 合計</div>
+          <div class="cmp-num" id="c-now">—</div><div class="cmp-sub">毎月 ／ 年間 <b id="c-now-y">—</b></div></div>
+        <div class="cmpbox new"><div class="cmp-tag">新築後のお支払い 合計</div>
+          <div class="cmp-num" id="c-new">—</div><div class="cmp-sub">毎月 ／ 年間 <b id="c-new-y">—</b></div></div>
+      </div>
+      <div id="c-diff" class="diff-band ok">—</div>
+      <div class="panel" style="margin-top:14px;">
+        <div class="ph2">🛡️ 生命保険 見直しの目安（収入保障保険・月額保険料）</div>
+        <table class="hint-tbl"><thead><tr><th>加入開始年齢</th><th>保障 月10万円</th><th>保障 月15万円（参考）</th><th>保障 月20万円</th><th>10万⇔20万の差額</th></tr></thead><tbody>
+          <tr><td>25歳</td><td>2,640円</td><td>3,825円</td><td>4,820円</td><td>2,180円</td></tr>
+          <tr><td>30歳</td><td>3,340円</td><td>4,875円</td><td>6,220円</td><td>2,880円</td></tr>
+          <tr><td>35歳</td><td>4,620円</td><td>6,795円</td><td>8,780円</td><td>4,160円</td></tr>
+          <tr><td>40歳</td><td>6,750円</td><td>9,990円</td><td>13,040円</td><td>6,290円</td></tr>
+          <tr><td>45歳</td><td>10,540円</td><td>15,675円</td><td>20,620円</td><td>10,080円</td></tr>
+          <tr><td>50歳</td><td>17,220円</td><td>25,695円</td><td>33,980円</td><td>16,760円</td></tr>
+        </tbody></table>
+        <div class="note">団体信用生命保険で住宅ローンが保障され、遺族年金（例：会社員・年収500万円・妻とお子様2人の場合、月約15万円が目安）もあるため、住宅取得を機に高額な死亡保障を見直せる場合があります。※保険料は目安です。</div>
+      </div>
+      <div class="panel">
+        <div class="ph2">💡 比較のポイント</div>
+        <div style="font-size:12px;line-height:2;">
+          <p>・家賃は何年払っても資産になりませんが、住宅ローンのお支払いは<b style="color:var(--green-d)">「自分の資産」への積み立て</b>という側面があります。</p>
+          <p>・太陽光（約6kW搭載時）の費用効果は<b style="color:var(--green-d)">月額平均 約13,400円</b>（新築後1〜10年平均、売電＋節電の参考値）。太陽光・高断熱住宅の光熱費は月1万〜1.7万円程度が目安です。</p>
+          <p>・一方で新築後は固定資産税やメンテナンス費用も発生します。月額だけでなくライフサイクルコスト全体で比較しましょう。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 4. 建てどき比較 ═══════════ -->
+<div class="pg" id="tab-toki">
+  <div class="ph">
+    <div class="ph-ey">Timing Simulation</div>
+    <h2>マイホームは<em>今が建てどき？！</em></h2>
+    <p>「今建てる」場合と「◯年後に建てる」場合を比較します。建築費の上昇（戸建は2011年からの10年間で坪8.9〜20.8万円上昇＝40坪換算で約356〜832万円）、金利変動リスク、その間の家賃支払い、補助金の有無をまとめて試算します。</p>
+  </div>
+  <div class="l2">
+    <div class="panel">
+      <div class="ph2">🔧 条件</div>
+      <div class="sl"><div class="sl-hd"><span>何年後と比べる？</span><b id="d-tn">5 年後</b></div>
+        <input type="range" id="t-n" min="1" max="10" value="5" oninput="upToki()"></div>
+      <div class="nf"><span class="nf-lbl">建築費（建物＋付帯・諸費用）</span><input type="text" inputmode="numeric" data-money id="t-build" value="35,000,000"><span class="nf-unit">円</span></div>
+      <div class="nf"><span class="nf-lbl">土地購入費</span><input type="text" inputmode="numeric" data-money id="t-land" value="10,000,000"><span class="nf-unit">円</span></div>
+      <div class="nf"><span class="nf-lbl">今の自己資金</span><input type="text" inputmode="numeric" data-money id="t-jiko" value="3,000,000"><span class="nf-unit">円</span></div>
+      <div class="nf"><span class="nf-lbl">マイホーム貯金</span><input type="text" inputmode="numeric" data-money id="t-savemo" value="10,000"><span class="nf-unit">円/月</span></div>
+      <div class="nf"><span class="nf-lbl">今の家賃</span><input type="text" inputmode="numeric" data-money id="t-yachin" value="75,000"><span class="nf-unit">円/月</span></div>
+      <div class="nf"><span class="nf-lbl">賃貸更新費 × 回数</span><input type="text" inputmode="numeric" data-money id="t-koshin" value="20,000" style="width:70px"><span class="nf-unit">円 ×</span><input type="number" id="t-kcount" value="2" min="0" max="10" style="width:44px"><span class="nf-unit">回</span></div>
+      <div class="sl"><div class="sl-hd"><span>建築費の上昇率（年）</span><b id="d-tinf">2.14 %</b></div>
+        <input type="range" id="t-inf" min="0" max="5" step="0.01" value="2.14" oninput="upToki()"></div>
+      <div class="sl"><div class="sl-hd"><span>金利：今</span><b id="d-tr">1.10 %</b></div>
+        <input type="range" id="t-r" min="0.3" max="3" step="0.05" value="1.1" oninput="upToki()"></div>
+      <div class="sl"><div class="sl-hd"><span>◯年後までの金利上昇幅</span><b id="d-trise">＋0.80 %</b></div>
+        <input type="range" id="t-rise" min="0" max="2" step="0.05" value="0.8" oninput="upToki()"></div>
+      <div class="nf"><span class="nf-lbl">今なら受けられる補助金等</span><input type="text" inputmode="numeric" data-money id="t-hojo" value="1,000,000"><span class="nf-unit">円</span></div>
+      <div class="note">過去には2ヶ月間で金利が0.8%上昇した例もあります。補助金（子育て支援事業等）は予算の状況により受け取れない可能性があります。</div>
+    </div>
+    <div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;font-size:10px;font-weight:700;color:var(--mu);padding:0 12px 6px;"><span></span><span style="text-align:right;color:var(--green-d)">今 建てると</span><span style="text-align:right;color:var(--bl)" id="t-futlbl">5年後 建てると</span></div>
+      <div class="toki-row"><div class="t-lbl">建築費</div><div class="t-now" id="tk-b1">—</div><div class="t-fut"><span id="tk-b2">—</span><span class="t-cap" id="tk-bcap"></span></div></div>
+      <div class="toki-row"><div class="t-lbl">自己資金</div><div class="t-now" id="tk-j1">—</div><div class="t-fut"><span id="tk-j2">—</span><span class="t-cap">貯金を続けた場合</span></div></div>
+      <div class="toki-row"><div class="t-lbl">借入金額</div><div class="t-now" id="tk-l1">—</div><div class="t-fut" id="tk-l2">—</div></div>
+      <div class="toki-row"><div class="t-lbl">総返済額（35年）</div><div class="t-now" id="tk-t1">—</div><div class="t-fut"><span id="tk-t2">—</span><span class="t-cap" id="tk-tcap"></span></div></div>
+      <div class="toki-row"><div class="t-lbl">行政による補助金</div><div class="t-now" id="tk-h1">—</div><div class="t-fut"><span id="tk-h2">—</span><span class="t-cap">終了リスクあり</span></div></div>
+      <div class="toki-row"><div class="t-lbl">それまでの家賃支払い</div><div class="t-now">0円</div><div class="t-fut"><span id="tk-y2">—</span><span class="t-cap">家賃＋更新費の累計</span></div></div>
+      <div class="toki-total">早めのスタートで、合計 <b id="tk-total">—</b> 万円 おトクになる試算です<br><span>（総返済額の差＋家賃累計＋補助金の合計・概算）</span></div>
+      <div class="note">計算条件：元利均等・ボーナス返済なし・繰上げ返済なし・返済期間35年。建築費は上昇率で複利計算、◯年後の金利＝今の金利＋上昇幅。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 5. FPシミュレーション ═══════════ -->
+<div class="pg" id="tab-fp">
+  <div class="ph">
+    <div class="ph-ey">FP Simulation — Life-long Cash Flow</div>
+    <h2>家族構成・年収から <em>生涯キャッシュフロー</em> を見える化</h2>
+    <p>年齢・家族・年収・支出を入力するだけで、住宅購入後の収支・貯蓄・教育費・老後資金を35年でシミュレーションします。住宅ローンの返済額は資金計画書・ローンタブと自動連動します。</p>
+  </div>
+
+  <div class="btnrow no-print">
+    <button class="btn pri" onclick="window.print()">🖨️ 印刷 / PDF保存</button>
+  </div>
+
+  <div class="l2">
+    <!-- ═══ 左：入力 ═══ -->
+    <div>
+      <div class="panel">
+        <div class="ph2">👨‍👩‍👧 家族構成・年齢</div>
+        <div class="fp-member-grid" id="fp-member-grid"></div>
+        <button class="fp-add-btn" id="fp-add-member" onclick="fpAddMember()">＋ 家族を追加</button>
+        <div class="note">「子」を含むご家族には教育費が自動で計上されます。</div>
+      </div>
+
+      <div class="panel">
+        <div class="ph2">💼 収入・キャリア</div>
+        <div class="sl"><div class="sl-hd"><span>本人 現在年収</span><b id="lbl-fp-inc1">600万円</b></div>
+          <input type="range" id="fp-inc1" min="100" max="2000" step="50" value="600">
+          <div class="sl-hints"><span>100万</span><span>2,000万</span></div></div>
+        <div class="sl"><div class="sl-hd"><span>年収上昇率（年）</span><b id="lbl-fp-iraise">1.5%</b></div>
+          <input type="range" id="fp-iraise" min="0" max="5" step="0.5" value="1.5">
+          <div class="sl-hints"><span>0%（横ばい）</span><span>5%（高成長）</span></div></div>
+        <div class="sl"><div class="sl-hd"><span>配偶者 現在年収</span><b id="lbl-fp-inc2">300万円</b></div>
+          <input type="range" id="fp-inc2" min="0" max="1000" step="50" value="300">
+          <div class="sl-hints"><span>0万</span><span>1,000万</span></div></div>
+        <div class="fp-sec">退職年齢・退職金</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div class="sl"><div class="sl-hd"><span>定年退職年齢</span><b id="lbl-fp-ret">65歳</b></div>
+            <input type="range" id="fp-ret" min="55" max="75" step="1" value="65"></div>
+          <div class="sl"><div class="sl-hd"><span>退職金</span><b id="lbl-fp-retpay">1,500万円</b></div>
+            <input type="range" id="fp-retpay" min="0" max="5000" step="100" value="1500"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="ph2">💸 支出・教育費・老後 <span class="info-chip no-print" onclick="openFPGuide()" style="float:right">📖 金額の目安</span></div>
+        <div class="sl"><div class="sl-hd"><span>基本生活費（月・住宅ローン除く）</span><b id="lbl-fp-living">25万円</b></div>
+          <input type="range" id="fp-living" min="10" max="80" step="1" value="25">
+          <div class="sl-hints"><span>10万</span><span>80万</span></div></div>
+        <div class="sl"><div class="sl-hd"><span>生活費上昇率（年）</span><b id="lbl-fp-lraise">1.0%</b></div>
+          <input type="range" id="fp-lraise" min="0" max="4" step="0.5" value="1.0"></div>
+        <div class="fp-sec">教育費設定</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div class="sl"><div class="sl-hd"><span>子1人あたり教育費総額</span><b id="lbl-fp-edu">1,500万円</b></div>
+            <input type="range" id="fp-edu" min="500" max="4000" step="100" value="1500">
+            <div class="sl-hints"><span>公立中心</span><span>私立一貫</span></div></div>
+          <div class="sl"><div class="sl-hd"><span>教育費ピーク年齢（子）</span><b id="lbl-fp-edupeak">18歳</b></div>
+            <input type="range" id="fp-edupeak" min="15" max="22" step="1" value="18"></div>
+        </div>
+        <div class="fp-sec">老後・年金</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div class="sl"><div class="sl-hd"><span>年金受給月額（退職後）</span><b id="lbl-fp-pension">20万円</b></div>
+            <input type="range" id="fp-pension" min="5" max="50" step="1" value="20"></div>
+          <div class="sl"><div class="sl-hd"><span>老後 月間生活費</span><b id="lbl-fp-oldliving">20万円</b></div>
+            <input type="range" id="fp-oldliving" min="10" max="50" step="1" value="20"></div>
+        </div>
+        <div class="fp-sec">現在の貯蓄残高</div>
+        <div class="sl"><div class="sl-hd"><span>現在の金融資産</span><b id="lbl-fp-savings">500万円</b></div>
+          <input type="range" id="fp-savings" min="0" max="5000" step="100" value="500">
+          <div class="sl-hints"><span>0万</span><span>5,000万</span></div></div>
+      </div>
+
+      <div class="panel">
+        <div class="ph2">🏦 住宅ローン連動</div>
+        <label style="display:flex;align-items:center;gap:7px;font-size:11px;margin-bottom:10px;cursor:pointer;">
+          <input type="checkbox" id="fp-loan-link" checked onchange="upFP()"> 資金計画書・ローンタブと連動する
+        </label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:10.5px;margin:-4px 0 10px;cursor:pointer;color:var(--mu);">
+          <input type="radio" name="fplm" checked onchange="fpLoanMode=1;upFP()"> 変動金利
+          <input type="radio" name="fplm" onchange="fpLoanMode=2;upFP()" style="margin-left:10px;"> 固定金利
+        </label>
+        <div class="nf"><span class="nf-lbl">月々の返済額</span><input type="text" inputmode="numeric" data-money id="fp-loan-mo" value="0"><span class="nf-unit">円</span></div>
+        <div class="nf"><span class="nf-lbl">返済期間</span><input type="number" id="fp-loan-yrs" value="35" min="1" max="50"><span class="nf-unit">年</span></div>
+        <div class="note">連動ON時はローンタブの計算結果（ボーナス払い含む年間返済額を月割り）が自動で入ります。</div>
+      </div>
+    </div>
+
+    <!-- ═══ 右：結果 ═══ -->
+    <div>
+      <div class="fp-kpi-row" id="fp-kpi-row"></div>
+      <div id="fp-alert" class="fp-alert" style="display:none"></div>
+
+      <div class="ch-box">
+        <div class="ch-hd">
+          <div class="ch-t">📈 年間収支・貯蓄残高 推移（35年）</div>
+          <div class="leg">
+            <div class="li"><div class="li-d" style="background:var(--bl)"></div>年間収入</div>
+            <div class="li"><div class="li-d" style="background:var(--rd)"></div>年間支出</div>
+            <div class="li"><div class="li-d" style="background:var(--green)"></div>貯蓄残高</div>
+          </div>
+        </div>
+        <canvas id="fp-cf-chart" height="240" style="width:100%;"></canvas>
+      </div>
+
+      <div class="ch-box">
+        <div class="ch-hd"><div class="ch-t">🥧 現在（初年度）の年間支出構成</div></div>
+        <div class="pie-wrap">
+          <div class="pie-canvas-box"><canvas id="fp-pie" width="220" height="220" style="width:220px;height:220px;"></canvas></div>
+          <div class="pie-legend" id="fp-pie-legend"></div>
+        </div>
+      </div>
+
+      <div class="tb-box">
+        <div class="tb-t">📋 キャッシュフロー詳細（年次・単位：万円）</div>
+        <table class="fp-cf">
+          <thead><tr>
+            <th>年</th><th>本人年齢</th><th>年間収入</th><th>住宅ローン</th><th>生活費</th><th>教育費</th><th>年間収支</th><th>貯蓄残高</th>
+          </tr></thead>
+          <tbody id="fp-tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="note">※ 本シミュレーションは概算です。税・社会保険料は年収に含めた手取りベースでご入力ください。教育費はピーク年齢を中心に±8年で簡易配分しています。配偶者の年収は定年まで一定、退職金は定年到達年に一括計上します。正確なライフプランはFP資格を持つ担当者にご相談ください。</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════ 7. アレスα ═══════════ -->
+<div class="pg" id="tab-pack">
+  <div class="ph">
+    <div class="ph-ey">ALLES α — 家づくりのプロフェッショナルだから実現できる究極の家</div>
+    <h2>品質も価格も、欲張ってください。<em>アレスα</em></h2>
+    <p>生涯の安心 × 豪華標準装備 × 納得の価格。プランを選んで「資金計画書に反映」を押すと、①建築本体工事費・商品名・施工面積が資金計画書に自動入力されます。</p>
+  </div>
+
+  <div class="panel">
+    <div class="pk-hero">
+      <div>
+        <div class="pk-price">1,780<small>万円〜（税別）</small></div>
+        <div style="font-size:11px;color:var(--mu);margin-top:4px;">税込 1,958万円〜｜標準施工面積26坪・標準間取り3LDK〜｜全てを含んでこの価格</div>
+        <div class="pk-badges">
+          <span class="pk-badge">耐震等級3</span><span class="pk-badge">制震ダンパー標準</span><span class="pk-badge">HEAT20・G2（UA値0.46以下）</span><span class="pk-badge">BELS取得</span><span class="pk-badge">太陽光5.77kW</span><span class="pk-badge o">自由設計</span><span class="pk-badge o">オール電化</span><span class="pk-badge o">第一種換気</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="ph2">📐 プラン別価格（プランを選んで資金計画書へ）</div>
+    <div class="pk-grid" id="pk-grid"></div>
+    <div class="note" style="margin-top:10px;">※ 参考プランの価格です。家族構成やライフスタイルに合わせた間取りのアレンジも可能です。※ 別途、付帯費用（建築確認申請・地盤補償・安全対策・現場監理・諸検査・SSバリュー申請・BELS申請・耐震等級3取得申請 等）がかかります。資金計画書③の初期値をご確認ください。</div>
+  </div>
+
+  <div class="panel">
+    <div class="ph2">✓ アレスαの標準仕様（全てを含んでこの価格）</div>
+    <div class="std-grid" style="display:grid;">
+      <span>自由設計</span><span>耐震等級3（性能表示計算・LIXIL確認）</span><span>制震ダンパー標準（揺れ最大約88%軽減）</span><span>ハイブリッドパネル工法（筋交工法の約1.4倍の強度）</span><span>HEAT20・G2グレード UA値0.46以下（BELS取得）</span><span>太陽光発電 5.77kW</span><span>天井・壁ウレタン吹付断熱（フォームライトSL）</span><span>床断熱材 ミラフォームラムダ90mm・基礎内断熱</span><span>第一種換気システム（熱交換型）</span><span>オール樹脂サッシ APW330（YKK AP）</span><span>アルゴンガス入りLow-E複層ガラス</span><span>高断熱玄関ドア（YKK AP ヴェナート）</span><span>外壁：KMEW光セラ16mm（セルフクリーニング）</span><span>ガルバリウム鋼板屋根</span><span>オール電化（エコキュート・IHヒーター）</span><span>全室LED照明器具</span><span>食洗機付システムキッチン（人造大理石天板）</span><span>高性能ユニットバス（エコベンチ浴槽）</span><span>1F・2Fシャワートイレ</span><span>傷に強いフローリング（ワックス不要）</span><span>大容量玄関収納</span><span>シロアリ保証10年</span><span>地盤調査・諸検査料</span><span>付帯工事</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="ph2">⭐ アレスホームが選ばれる10のメリット</div>
+    <div class="merit-list">
+      <div class="merit"><span class="n">01</span><span>グループ年間165棟の実績によるスケールメリットを活かし、いい家を安く。</span></div>
+      <div class="merit"><span class="n">02</span><span>2021年度 松山市・東予商圏・南予商圏 着工棟数第一位認定の実績による安心感。</span></div>
+      <div class="merit"><span class="n">03</span><span>耐震等級3の証明書を取得＋国内最大手のLIXILが、万が一地震で倒壊しても最大2,000万円まで補償。愛媛県で地震の補償をしているのはアレスホームだけ。</span></div>
+      <div class="merit"><span class="n">04</span><span>パネル工法（一般住宅の1.4倍の強度）× 制震ダンパーで震度7の地震にも耐える。</span></div>
+      <div class="merit"><span class="n">05</span><span>高気密・高断熱、ZEHの性能で今の光熱費を大幅に削減できて家計にも優しい。</span></div>
+      <div class="merit"><span class="n">06</span><span>太陽光発電が標準搭載で月々の光熱費を軽減＋売電収入を得られる。</span></div>
+      <div class="merit"><span class="n">07</span><span>憧れのライフスタイルを叶える完全自由設計の住まい。</span></div>
+      <div class="merit"><span class="n">08</span><span>アフターメンテナンスも安心長期保証＋お家のトラブルも24時間365日駆けつけ。</span></div>
+      <div class="merit"><span class="n">09</span><span>第一種換気システムで常に新鮮な空気を取り込むため、1年中安心で快適な暮らし。</span></div>
+      <div class="merit"><span class="n">10</span><span>コミコミ価格で追加が少なく、価格が明瞭でわかりやすい。</span></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="ph2">🛡️ 安心の保証制度</div>
+    <div class="hosho-grid">
+      <div class="hosho"><h4>LIXIL SSバリュー 耐震補償</h4><p>耐震等級3の証明書を取得＋万が一地震の揺れで全壊した場合、<span class="big">最高2,000万円</span>まで建て替え費用の一部を補償。<b>愛媛県ではアレスホームのみ。</b></p></div>
+      <div class="hosho"><h4>地盤保障</h4><p>着工前に厳密な地盤調査を実施。地盤調査完了日から11年間・<span class="big">最大3億円</span>の充実の安心保障。</p></div>
+      <div class="hosho"><h4>住宅瑕疵担保責任保険</h4><p>第三者機関による基礎配筋検査・躯体検査（2回）。万が一不具合が発生した場合、10年後まで補修費用を保険でカバー。</p></div>
+      <div class="hosho"><h4>長期建物保障</h4><p>構造躯体10年・雨漏り10年・クロス2年・シロアリ10年。アレスホーム独自の10年建物保証書を発行。</p></div>
+      <div class="hosho"><h4>定期点検体制</h4><p>お引き渡し後、1年目・2年目・5年目・10年目と第三者機関による定期点検・検査・メンテナンスを実施。一生涯のお付き合い。</p></div>
+      <div class="hosho"><h4>アレスサポートクラブ</h4><p>住宅トラブル365日かけつけ。水・カギ・ガラス・電気設備・ガス設備のトラブルに<b>24時間受付・応急処置無料</b>。火災保険の損害査定・医療案内ダイヤルも。</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ 8. 土地相場マップ ═══════════ -->
+<div class="pg" id="tab-tochi">
+  <div class="ph">
+    <div class="ph-ey">Land Price Map — 松山・伊予・松前・東温・砥部</div>
+    <h2>エリア別坪単価 <em>早分かり表</em></h2>
+    <p>丸枠の金額が平均の坪単価、価格帯は売土地で公開されている価格帯です。各金額は土地の形状・接道状況により変わります。エリアを選んで希望坪数を入れると土地の概算価格を計算し、資金計画書②に反映できます。</p>
+  </div>
+
+  <div class="panel">
+    <div class="tc-tools">
+      <input type="text" id="tc-q" placeholder="🔍 エリア名で検索（例：余戸、久米、道後…）" oninput="renderTochi()">
+      <span id="tc-zones"></span>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;font-size:10px;color:var(--mu);align-items:center;">
+      物件流通量：<span class="stk stk0">そこそこある</span><span class="stk stk1">少ない</span><span class="stk stk2">あまりない</span><span class="stk stk3">ほとんどない</span>
+    </div>
+    <div style="max-height:430px;overflow:auto;border:1px solid var(--bdr2);border-radius:9px;">
+      <table class="tc">
+        <thead><tr><th onclick="tcSort('n')">エリア</th><th onclick="tcSort('z')">地区</th><th onclick="tcSort('t')">平均坪単価 ▼</th><th>物件流通量</th><th>公開価格帯（参考）</th></tr></thead>
+        <tbody id="tc-body"></tbody>
+      </table>
+    </div>
+    <div class="tc-calc">
+      <div><label>選択エリア</label><div id="tc-sel" style="font-weight:900;font-size:14px;min-width:120px;">未選択</div></div>
+      <div><label>坪単価（万円/坪）</label><input type="number" id="tc-tanka" value="0" oninput="tcCalc()"></div>
+      <div><label>希望坪数</label><input type="number" id="tc-tsubo" value="60" oninput="tcCalc()"></div>
+      <div style="flex:1;min-width:150px;"><label>土地概算価格</label><div class="tc-out" id="tc-price">—</div></div>
+      <button class="btn pri" onclick="tcApply()">📋 資金計画書②に反映</button>
+    </div>
+    <div class="note" style="margin-top:8px;">※ アレスホーム「エリア別坪単価・相場価格 早分かり表」より。実際の売出価格は土地の形状・接道状況・時期により変動します。最新の売土地情報は担当者にお問い合わせください。</div>
+  </div>
+</div>
+
+<!-- ═══════════ 9. 家づくりの流れ ═══════════ -->
+<div class="pg" id="tab-flow">
+  <div class="ph">
+    <div class="ph-ey">Home Building Story — お家づくりストーリー</div>
+    <h2>ご来店からお引き渡しまで <em>16のステップ</em></h2>
+    <p>皆様の一生に一度のお家づくりを、ぜひ一緒に考えさせてください。正しい家づくりは「1. 求めていること → 2. 正しい予算 → 3. 土地選びの基準 → 4. 家のプラン」の順番で進めることが大切です。</p>
+  </div>
+  <div class="panel">
+    <div class="fl-grid" id="fl-grid"></div>
+    <div class="note" style="margin-top:10px;">※ 日数は目安です。土地の状況・プラン内容・時期により前後します。事前申込み以降は、お申込みを頂いた方を優先してご対応しています。※ 事前審査〜お家完成までは、原則新規のお借入れは禁止です。</div>
+  </div>
+</div>
+
+<!-- ═══════════ 10. 事前審査 ═══════════ -->
+<div class="pg" id="tab-shinsa">
+  <div class="ph">
+    <div class="ph-ey">Pre-Approval Guide — 大切な資金計画</div>
+    <h2>住宅ローン <em>事前審査ガイド</em></h2>
+    <p>事前審査とは、本申込を行う前に、ローンが通るかどうかを事前にローン会社に見てもらうものです。「自分が払えると思っていても、借りることができない」場合があります。ただし、対策を打たずに安易に出すのはとても危険。まずはチェックリストで確認しましょう。</p>
+  </div>
+
+  <div class="panel">
+    <div class="ph2">✅ 事前審査を出しておく3つのメリット</div>
+    <div class="pm3">
+      <div class="pm-card"><h4>① 詳細な計画が立てられる</h4><p>総額が明確になれば、土地・建物・諸費用のバランスを踏まえた詳細な資金計画が立てられます。</p></div>
+      <div class="pm-card"><h4>② 土地の値下げ交渉が可能に</h4><p>土地の売り主に対して価格・仲介手数料等の交渉がしやすくなり、土地申込の優先順位も上がります。</p></div>
+      <div class="pm-card"><h4>③ 低金利で住宅ローンを確定</h4><p>提出時の低金利で住宅ローンを確定できます。金利上昇局面では特に大きなメリットです。</p></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="ph2">⚠️ 事前審査前チェックリスト — 当てはまるものはありますか？</div>
+    <div id="ck-list"></div>
+    <div id="ck-result" class="ck-result ck-ok">現在チェックはありません。当てはまる項目があればタップしてください。</div>
+  </div>
+
+  <div class="panel">
+    <div class="ph2">❌ 事前審査に万が一落ちてしまった場合の3つのデメリット</div>
+    <div class="pm3">
+      <div class="pm-card"><h4>① 借入可能額を減額される</h4><p>審査に落ちた履歴が残り、借入可能額が減額されてしまう可能性があります。</p></div>
+      <div class="pm-card"><h4>② 最低半年は同じ銀行に申込不可</h4><p>最低半年間は同じ銀行に住宅ローンの申込ができなくなります。</p></div>
+      <div class="pm-card"><h4>③ 条件の悪い銀行・金利になる</h4><p>今すぐという場合には、条件の悪い銀行・金利を選ばざるを得なくなります。</p></div>
+    </div>
+    <div class="note" style="margin-top:10px;"><b>銀行の審査では、過去から現在のローン履歴が全部わかります。</b>消費者金融・各種ローン・クレジットカードをお持ちの方は審査が厳しくなりますが、通らないとは限りません。自己申告のある方は心証が良く、年収・勤続年数に対しベストな条件で借入できることも。<b>過去・現在のローン履歴は必ず自己申告してください。</b>知識を持って対策を打てば、通る審査はあります。安易に出さず、担当者と一緒に打ち合わせを行いながら進めましょう。</div>
+  </div>
+
+  <div class="panel">
+    <div class="ph2">🤝 マイホームを叶えるために — 家が完成するまでの3つの約束</div>
+    <div class="yak"><span class="n">1</span>新たにクレジットカードを作らない</div>
+    <div class="yak"><span class="n">2</span>ローンの支払いを遅らせない</div>
+    <div class="yak"><span class="n">3</span>新たにお金を借りない</div>
+    <div class="note">この3点を守らなければ、事前審査を通過してもかなり高い確率で住宅ローンを借り入れできません。必ず守ってくださいね。</div>
+  </div>
+
+  <div class="panel">
+    <div class="ph2">💪 対策を講じた事前審査の成功事例</div>
+    <div class="case"><b>CASE 1</b>｜他社3社で事前審査に全て落ちた → アレスホームに出会い、対策を打ち、ローンが通った。</div>
+    <div class="case"><b>CASE 2</b>｜車のローン・キャッシングで合計500万円の借入があったが、事前審査に成功。</div>
+    <div class="case"><b>CASE 3</b>｜他社申込では A銀行1,800万円・B銀行1,890万円・C銀行審査落ち → アレスホームにて申込み、D銀行3,200万円まで借入OK。</div>
+    <div class="case"><b>CASE 4</b>｜勤続年数1年ジャスト・年収250万円だったが、審査の結果2,430万円まで借入OK。</div>
+  </div>
+</div>
+
+<div class="sticky-sum no-print">
+  <div class="ss-item"><div class="l">建築総費用 E</div><div class="v" id="ss-total">—</div></div>
+  <div class="ss-item"><div class="l">借入金額</div><div class="v" id="ss-loan">—</div></div>
+  <div class="ss-item"><div class="l">月々（変動）</div><div class="v" id="ss-m1">—</div></div>
+  <div class="ss-item"><div class="l">月々（固定）</div><div class="v" id="ss-m2">—</div></div>
+  <div class="ss-item"><div class="l">今との差</div><div class="v" id="ss-diff">—</div></div>
+</div>
+
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeG()">
+  <div class="modal">
+    <button class="modal-x" onclick="closeG()">✕</button>
+    <div class="cat" id="m-cat"></div>
+    <h3 id="m-title"></h3>
+    <img class="m-img" id="m-img" style="display:none" alt="">
+    <div class="desc" id="m-desc"></div>
+    <div class="point"><b>POINT</b><span id="m-point"></span></div>
+    <div class="meyasu" id="m-meyasu" style="display:none;"></div>
+  </div>
+</div>
+
+<!-- FP金額目安ポップアップ -->
+<div class="modal-bg" id="fpg-bg" onclick="closeFPGuide(event)">
+  <div class="modal fpg-modal">
+    <button class="m-close" onclick="closeFPGuide()">✕</button>
+    <div class="cat">FP SIMULATION — 入力金額の目安</div>
+    <h3>生活費・教育費・老後資金の目安</h3>
+
+    <div class="fpg-sec">🛒 基本生活費（月・住宅ローン除く）の目安</div>
+    <table class="fpg"><thead><tr><th>世帯構成</th><th>目安（食費・水道光熱・通信・日用品・車・保険等）</th></tr></thead><tbody>
+      <tr><td>夫婦2人</td><td>約22〜26万円/月</td></tr>
+      <tr><td>夫婦＋子1人</td><td>約25〜30万円/月</td></tr>
+      <tr><td>夫婦＋子2人</td><td>約28〜33万円/月</td></tr>
+    </tbody></table>
+    <div class="note">総務省「家計調査」の2人以上世帯の消費支出（約29万円/月・住居費除く）をもとにした目安です。愛媛県は車を複数台保有する世帯が多く、車両費で±2〜3万円変動します。</div>
+
+    <div class="fpg-sec">🎓 教育費（子1人あたり・total）の目安</div>
+    <table class="fpg"><thead><tr><th>進路パターン</th><th>幼稚園〜大学 合計</th></tr></thead><tbody>
+      <tr><td>すべて公立＋国公立大学（自宅通学）</td><td>約1,000〜1,100万円</td></tr>
+      <tr><td>高校まで公立＋私立大学 文系</td><td>約1,200〜1,400万円</td></tr>
+      <tr><td>高校から私立＋私立大学 理系</td><td>約1,500〜1,800万円</td></tr>
+      <tr><td>中学から私立＋私立大学（下宿）</td><td>約2,200〜2,800万円</td></tr>
+    </tbody></table>
+    <div class="note">文部科学省「子供の学習費調査」・日本政策金融公庫「教育費負担の実態調査」をもとにした目安です。下宿の場合は仕送りで＋400〜500万円程度。シミュレーターの初期値1,500万円は「公立中心＋私立大学」の中間的な想定です。</div>
+
+    <div class="fpg-sec">👴 老後の生活費（夫婦2人・月額）の目安</div>
+    <table class="fpg"><thead><tr><th>暮らし方</th><th>月額</th></tr></thead><tbody>
+      <tr><td>最低限の日常生活費</td><td>約23万円/月</td></tr>
+      <tr><td>ゆとりある老後（旅行・趣味含む）</td><td>約38万円/月</td></tr>
+      <tr><td>単身の場合</td><td>上記の6〜7割程度</td></tr>
+    </tbody></table>
+    <div class="fpg-sec">💰 年金受給額（月額）の目安</div>
+    <table class="fpg"><thead><tr><th>世帯パターン</th><th>月額</th></tr></thead><tbody>
+      <tr><td>会社員（平均年収500万）＋専業主婦(夫)</td><td>約21〜23万円/月</td></tr>
+      <tr><td>共働き会社員夫婦</td><td>約26〜30万円/月</td></tr>
+      <tr><td>自営業夫婦（国民年金のみ）</td><td>約13〜14万円/月</td></tr>
+    </tbody></table>
+    <div class="note">生命保険文化センター「生活保障に関する調査」・厚生労働省の年金額例をもとにした目安です。ねんきん定期便でご自身の見込額を確認するとより正確なシミュレーションができます。新築住宅なら老後の住居費（家賃）が不要になる点も大きな安心材料です。</div>
+  </div>
+</div>
+
+<div class="foot">
+  <b>アレスホーム（株式会社アレス）</b>｜性能と価格を極めた、その先へ。<br>
+  ※ 本シミュレーターの試算はすべて参考値です。金利・税制・保険料・補助金・各種費用は時期や条件により変動します。正式な資金計画は担当者が個別に作成いたします。<br>
+  ※ 印紙税は軽減措置適用時の税額です（電子契約の場合、請負契約書・売買契約書の印紙は不要）。※ 火災・地震保険料は東京海上日動火災保険（株）参考（5年一括・家財付・概算）。
+</div>
+
+<script>
+/* ══════════ 費用ナレッジベース（資金計画書Excelより） ══════════ */
+const KB = {
+  kodawari:{cat:'建物工事',t:'こだわり費用（予備費）',d:'お客様のご要望で標準仕様から変更や追加をする費用のことです。あらかじめ予算取りしておくと、あとで予算オーバーすることが少なくなります。',p:'あらかじめ予備枠を確保しておくと、あとで予算オーバーすることが少なくなります。「ここだけはこだわりたい」に備えて予算取りしておくと安心です。',m:'例：間接照明 約15万円（3,640mmの場合）／エコカラット・タイル貼り 約15万円（約9㎡）'},
+  okugai:{cat:'付帯工事',t:'屋外設備工事費',d:'屋外上下水道接続・雨水地下浸透・屋外不凍栓柱工事など、上下水道を建物まで配管し、雨水を敷地内で浸透処理し、外で使う水道を設ける工事です。',p:'配管は敷地内に上下水道が引き込まれている場所からになります。敷地内に無い場合は別途、本管取り出し工事が必要です。旗竿地など敷地の形状によって配管距離が長くなると費用が増えます。'},
+  jokaso:{cat:'付帯工事',t:'合併浄化槽工事',d:'下水道未整備地域において設置が必要な場合の費用です。キッチンやお風呂などの生活排水を自分の敷地内で処理する設備で、きれいになった水は敷地内で浸透処理することが一般的です。',p:'下水道がある場合と比べて金額が高くなります。地域によっては補助金がある場合があるので、計画段階でしっかり予算取りをしましょう。'},
+  kancho:{cat:'付帯工事',t:'官庁申請費',d:'建築確認申請作成費用・手数料を含む、市町村等への申請費用です。許可が出ると「確認済証」、完了検査に合格すると「検査済証」が発行されます。',p:'同じ市町村でも申請内容が異なる場合があります。地域によって建築確認申請が必要な場合と工事届のみの場合があるため、住宅会社に確認しましょう。'},
+  chosa:{cat:'付帯工事',t:'敷地・地盤調査費',d:'敷地及び役所調査・近隣環境調査・地耐力調査・地盤保証等の費用です。調査結果によっては地盤改良工事が必要になります。',p:'調査の結果によっては地盤補強工事が必要になります（③の「地盤補強工事」欄）。地盤保証の内容は担当者にご確認ください。'},
+  flat35:{cat:'融資関係',t:'フラット35S 申請料',d:'【フラット35】は全期間固定金利型の住宅ローンです。金利引下げ期間終了後の金利も借入時に確定するため、将来のライフプランが立てやすくなります。自営業・派遣・パートの方や親子リレー返済、セカンドハウスにも幅広く対応しています。',p:'ポイント制の金利引下げ（1ポイントで5年間 年▲0.25%）があります。適用可否・申請費用は担当者にご確認ください。',m:'申請料の目安：フラット35S 15万円／フラット35S（ZEH）・BELS含む 21〜25万円（ref表より）'},
+  full:{cat:'建物工事',t:'標準仕様（本体価格に含まれるもの）',d:'アレスαの本体価格には、耐震等級3の構造＋制震ダンパー、ZEH基準を上回るHEAT20・G2グレード（UA値0.46以下・BELS取得）、太陽光発電5.77kW、天井・壁ウレタン吹付断熱、第一種換気システム、オール樹脂サッシAPW330＋アルゴンガス入りLow-E複層ガラス、オール電化、全室LED照明、光セラ外壁、地盤調査・諸検査料、付帯工事までが標準で含まれています。',p:'「生涯の安心 × 豪華標準装備 × 納得の価格」。コミコミ価格で追加が少なく、価格が明瞭でわかりやすいのがアレスαの特長です。詳細な仕様は担当者にご確認ください。'},
+  shomei:{cat:'建物工事',t:'照明器具工事費',d:'全居室の照明器具と取り付け工事の費用です。建物工事費とは別費用になっている場合があります。',p:'長寿命・省電力のLED照明がおすすめです（一般的に一式で30万円前後が目安）。含まれる範囲は担当者にご確認ください。'},
+  curtain:{cat:'付帯費用',t:'カーテンレール・カーテン費用',d:'カーテンレール工事とカーテン購入の費用です。建物工事費とは別費用になります（③に計上）。',p:'一般的に一式で30万円前後が目安です。アレスホームではカーテンレール見積書で個別にお見積りします。'},
+  kasetsu:{cat:'付帯工事',t:'仮設工事費',d:'敷地内の養生、駐車場費用、電線防護管費用、小運搬費用等が必要な場合の費用です。仮設トイレ、ネットフェンス、看板設置、砕石敷き等も含まれます。',p:'一般的な分譲地でおよそ40万円程度、土地によって0〜60万円程度が目安。道幅が狭い・高低差がある等の条件で変わるため、現地を拝見した上でのご提案が必要です。'},
+  kaitai:{cat:'付帯工事',t:'解体工事費',d:'家屋の解体、樹木の撤去、門塀の撤去費用等が必要な場合の費用です。',p:'建物の大きさだけでなく、建物内の不用品、車両が敷地に入れるか、近隣の状況などでも費用が変わります。事前に予算の確認をしましょう。'},
+  asbestos:{cat:'付帯工事',t:'アスベスト調査・処分費',d:'家屋の解体に伴う調査費用、またアスベスト含有の場合に必要な処分費用です。解体工事に際し、調査が義務付けられています。',p:'処分費が高くなる可能性もあるため、早めの事前調査がおすすめです。'},
+  morido:{cat:'付帯工事',t:'盛土・造成工事',d:'敷地の造成（盛土、鋤土、擁壁等）が必要な場合の費用です。道路より敷地が低い場合に土を盛ったり、隣地に土がこぼれないよう擁壁を作ったりします。',p:'費用や時間がかなりかかる場合もあるため、事前に必要な内容を把握し、予算とスケジュールを計画しましょう。'},
+  jiban:{cat:'付帯工事',t:'地盤改良工事',d:'地盤調査後の解析結果より特殊基礎・改良工事が必要な場合の費用です。方法と金額は調査データ・周辺の地層・建物の大きさなどで決まります。',p:'必要になった場合は大きな費用がかかります。地盤の弱い地域と分かっている場合は、最初から予算取りをしておきましょう。'},
+  sekkeihenko:{cat:'付帯工事',t:'設計変更費用',d:'自由設計の場合、図面作成・壁量計算の費用が必要となります。完成までにたくさんの図面（設備図・壁量計算図・換気図・電気図など）を作成するためです。',p:'企画プランをそのまま建てる場合、または軽微な変更の場合は設計費用がマイナスになります。詳細金額はプラン内容確定時にお伝えします。'},
+  choki:{cat:'付帯工事',t:'設計各種申請費用',d:'長期優良住宅、BELS、住宅性能評価、認定低炭素住宅、ZEHなどの公的な認定・評価を取得するための申請費用です。プルダウンで申請の種類を選ぶと概算金額が入ります。',p:'長期優良住宅の主なメリット：固定資産税1/2減税が5年間に延長（約6万円）、登録免許税の軽減、不動産取得税の控除拡大（1,300万円）、地震保険が耐震等級3で50%割引、住宅ローン減税の限度額拡大など。アレスホームでは耐震等級3・BELS等の申請費用を③に計上しています。',m:'目安：長期優良住宅10万円／認定低炭素11万円／性能評価一式35万円／BELS 6万円／ZEH申請（BELS含む）16万円／フラット35S 15万円 等'},
+  gaiko:{cat:'付帯工事',t:'外構工事',d:'駐車場の整備、玄関まわり、ウッドデッキ、フェンス、植栽、物置の設置など、建物完成後に敷地を整備する工事です。',p:'ご予定の内容で予算取りをしましょう。',m:'目安：土間コンクリート（2台分）約70〜80万円税抜／メッシュフェンス 約1.5万円/m／カーポート積雪100cm対応（2台分）約47万円税抜'},
+  suido:{cat:'諸費用',t:'上水道加入金・下水道負担金',d:'新しく上下水道を使用する時に一度だけかかる費用です（エリアによって変わりますがメーター口径20mmを推奨しております）。金額は各自治体・地区によって異なります。',p:'市町村（同じ市町村でも地区）によって大きく異なります。松山市・伊予市・松前町・東温市など、担当者が地区ごとに正確にお調べしますので、事前に予算取りをしましょう。'},
+  jichinsai:{cat:'諸費用',t:'地鎮祭',d:'神主手配・お供物・初穂料を含む費用です。新築工事の前に土地の神様を祀り、工事の無事と完成、末永い安全を祈願するお祭りです。',p:'実施は任意で、弊社にて手配する場合が多いです。ご家族全員での参加をおすすめします。'},
+  hikkoshi:{cat:'諸費用',t:'引越し費用',d:'引越しを業者さんに依頼した時にかかる費用です。荷物量・移動距離・作業内容・時期で大きく変わります。',p:'荷物量・移動距離・時期（3〜4月は割高）で大きく変わります。余裕を持って手配しましょう。'},
+  kagu:{cat:'諸費用',t:'家具・家電費用',d:'ベッド・ソファ・ダイニングテーブルなどの家具、冷蔵庫・洗濯機・テレビなどの家電を購入する費用です。',p:'新築に合わせて購入予定のものは、しっかり予算を組んでおきましょう。',m:'目安：ダイニングセット8〜50万／ソファ5〜50万／ベッド5〜30万／冷蔵庫(500L)15〜20万／ドラム式洗濯機15〜30万／TV(60型台)15〜30万 など'},
+  inshi:{cat:'税金',t:'印紙税',d:'契約書などの文書を作成したときにかかる国の税金です。①工事請負契約時 ②土地売買契約時 ③金銭消費貸借契約（住宅ローン契約）時の3か所で必要になります。契約金額に応じて自動計算しています（請負・売買は軽減税率）。',p:'電子契約の場合は請負契約書の印紙が不要になります。国にも認められており、銀行融資などにもそのまま活用できます。契約方法は担当者にご確認ください。',m:'軽減税率の例：契約金額1,000万円超〜5,000万円以下＝1万円（請負・売買）。金銭消費貸借契約は軽減なし＝2万円（同区分）。'},
+  shutoku_b:{cat:'税金',t:'不動産取得税（建物）',d:'建物を取得したときに一度だけかかる税金です。（固定資産税評価額−1,200万円）×3%（概算）で計算します。',p:'新築住宅は評価額から1,200万円の控除があるため（延床50㎡以上240㎡以下）、30〜40坪台の家では0円になることが多いです。'},
+  toki:{cat:'諸費用',t:'登記費用（建物）',d:'滅失・表題・保存登記等の費用で、登録免許税・報酬料を含みます（概算）。土地家屋調査士が「建物表題登記」、司法書士が「所有権保存登記」を法務局へ登記します。',p:'建物の登記が完了しないと住宅ローンでお金を借りられず、所有者であることを主張することもできません。手続きが遅れないように注意しましょう。'},
+  fit:{cat:'諸費用',t:'太陽光発電FIT申請費用',d:'太陽光発電システムを設置する場合の、固定価格買取制度（FIT）の申請費用です。行政書士へ直接お支払いいただきます。',p:'目安は5,000円程度です。売電を開始するために必要な手続きです。'},
+  bunpitsu:{cat:'土地関係',t:'土地分筆・農地転用・開発行為 他',d:'測量、申請料等の費用です。①敷地を2つに分ける「土地分筆」、②農地を宅地にする「農地転用」、③市街化調整区域で新築する際の「開発行為」申請などがあります。',p:'費用だけでなく、手続き完了までに時間もかかります。スケジュールにも注意しましょう。'},
+  shutoku_t:{cat:'税金',t:'不動産取得税（土地）',d:'土地を取得したときに一度だけかかる税金です。概算：（固定資産評価額×1/2）×3%−軽減額。',p:'60坪・1,000万円の土地なら約8万円。マイホーム完成後に還付の手続きをするとほとんどが還付されます。忘れないようにしましょう。'},
+  chukai:{cat:'土地関係',t:'仲介手数料',d:'不動産業者が仲介している土地を購入した際に発生する手数料です。（土地価格×3%＋60,000円）＋消費税が上限です（400万円超の場合）。',p:'土地価格1,000万円なら396,000円。売主物件は仲介手数料が不要（0円）の場合があります。購入する土地に必要か事前に確認しましょう。'},
+  kotei:{cat:'土地関係',t:'固定資産税精算分',d:'土地決済日より年末迄の日割計算（概算）で、買主が負担する分です。1月1日時点の所有者である売主が1年分を納税するため、引き渡し日以降の分を日割りで売主に支払います。',p:'土地購入の日で精算金額が決まります。購入前に売主さんへ金額を確認しましょう。'},
+  iten:{cat:'土地関係',t:'所有権移転登記料',d:'土地購入時に所有者を売主から買主へ移転する登記費用で、登録免許税・報酬料を含みます（概算）。一般的に買主が負担します。',p:'土地の価格によりますが約10〜20万円かかります。購入前に登記費用を確認しましょう。'},
+  kasai:{cat:'融資関係',t:'火災保険料（5年一括）',d:'契約した補償額を上限に損害額だけ保険金を受け取れる保険で、住宅ローン融資の基本条件です。火災のほか落雷・雪災・風災・爆発なども対象。水災を付けるかどうかで保険料が変わります。保険金額を選ぶと概算が自動入力されます（家財付・東京海上日動参考）。',p:'2022年10月から契約は最長5年が上限で、毎年払いより一括払いがお得です。住宅会社が代理店の場合、万一の際の対応が早くなるため加入をおすすめします。',m:'概算（5年一括・水災なし）：保険金額2,500万円→78,770円／3,000万円→89,540円／3,500万円→100,260円／4,000万円→111,030円'},
+  jishin:{cat:'融資関係',t:'地震保険料（5年一括）',d:'地震・噴火・津波による損害に備える保険で、火災保険とセットで加入します。保険金額は火災保険の50%が上限です（家財付・概算）。',p:'耐震等級3の住宅は地震保険50%割引の対象になります（通常10%→耐震等級3で50%）。アレスホームでは耐震等級3取得申請に対応しています（③参照）。',m:'概算（5年一括）：地震保険金額1,250万円→39,460円／1,500万円→46,030円／1,750万円→52,610円／2,000万円→59,180円'},
+  hosho:{cat:'融資関係',t:'保証協会保証料',d:'銀行からお金を借りるとき、保証人を立てる代わりに銀行指定の保証協会へ支払う費用です。これにより保証人不要で住宅ローンを借りられます。',p:'支払い方法は「一括前払い」と「借入金利上乗せ払い（年0.1〜0.4%程度）」の2つ。自己資金が多い方は一括前払い、少ない方は金利上乗せを選ぶ傾向があります。'},
+  danshin:{cat:'融資関係',t:'団体信用生命保険',d:'住宅ローン返済者のための生命保険です。返済中に返済者が死亡・高度障害状態になってしまった場合に備え、金融機関が住宅ローン金利の中で生命保険を掛けています。',p:'万が一のときには住宅ローンが無くなり、残されたご家族は住宅ローンの心配をせずにマイホームで生活できます。既存の高額な生命保険を見直せる場合があります（比較タブの見直し目安表もご覧ください）。'},
+  yushi:{cat:'融資関係',t:'融資手数料',d:'銀行から住宅ローンを借りるときに支払う手数料です。',p:'金融機関によって大きく異なります。一般的にネット銀行は手数料が高額（借入額の2.2%等）で、地方銀行は数万円のところが多いです。事前に確認しましょう。'},
+  tsunagi:{cat:'融資関係',t:'つなぎ融資利息分',d:'住宅ローンは一般的に建物完成後に実行されますが、支払いは土地購入時・契約時金・中間金と完成前にもあります。住宅ローンの借入金を担保に前借りして支払うのが「つなぎ融資」で、その前払い利息分です（金利2.625%）。金額と期間（日数）を入れると利息が自動計算されます。',p:'かなりの費用になるため予算取りが必要です。金利・期間・支払いタイミングは金融機関により異なるため、担当者と一緒に確認しましょう。'},
+  ikkatsu:{cat:'融資関係',t:'建物完成前 住宅ローン一括実行',d:'限られた銀行で利用できる方式で、工事の進捗に合わせていつでも住宅ローンを実行して払い出しができます。早めに返済をスタートする方法と、完成まで利息分のみ支払う方法を選択できます。',p:'これを利用すると、つなぎ融資を使わない・使う期間を短くすることができます。取り扱い金融機関・条件は地域により異なるため、担当者と一緒に進めましょう。'},
+  teito:{cat:'融資関係',t:'抵当権設定費用',d:'住宅ローンを借りる際、土地・建物に金融機関の抵当権を設定するための費用です（概算）。',p:'登録免許税という税金等の実費に加え、司法書士への報酬が含まれます。費用は住宅ローンを借りるお客様の負担となるため、予算取りをおすすめします。'},
+  genzei:{cat:'知っておきたい',t:'住宅ローン減税',d:'毎年の住宅ローン残高の0.7%を13年間、所得税から控除（住民税からも一部控除）できる制度です。「ローン控除」タブで住宅の種別・入居年・年収・扶養家族まで考慮した年別の控除額を試算できます。',p:'住宅の性能区分ごとに借入限度額が定められており、長期優良住宅・ZEHは優遇されます（子育て世帯・若者夫婦世帯はさらに上乗せ）。詳しくは「ローン控除」タブで試算できます。'},
+  taiyo_kouka:{cat:'知っておきたい',t:'太陽光発電の費用効果',d:'太陽光（約6kW搭載時）による「売電収入＋購入不要になる電気料金」の効果です。売電単価は1〜4年目24円、5〜10年目8.3円、節電単価25円で算出（売電期間10年間）。',p:'費用効果は新築後1〜4年目で月額約15,900円、5〜10年目で約11,800円、10年平均で月額約13,400円の試算（参考値）。太陽光・高断熱住宅の光熱費は月平均1万〜1.7万円程度が目安です。'},
+  futan:{cat:'融資関係',t:'返済負担率',d:'年間返済額 ÷ 額面世帯年収で計算する、金融機関の審査で使われる指標です。年収により20〜40%の基準が目安になります。',p:'一般例:世帯年収500万円で借入3,000万円・35年・金利1%なら月々84,685円（年間約102万円）で、返済負担率は20.3%です。手取り比20〜25%程度が無理のない目安です。'},
+  zoyo:{cat:'知っておきたい',t:'贈与税',d:'ご両親などから資金援助を受けてマイホームを建てる場合に関係する税金です。住宅取得等資金の贈与には非課税の特例枠があり、一定額まで贈与税がかかりません。',p:'非課税枠や要件は年度により変わります。資金援助のご予定がある場合は、契約・贈与のタイミングも含めて早めに担当者へご相談ください。資金計画書の「贈与」欄にご記入ください。'},
+  izoku:{cat:'知っておきたい',t:'遺族年金',d:'一家の働き手の方などが亡くなられたときに、ご家族に給付される年金です。例えば会社員のご主人（年収500万円・妻と未成年のお子様2人）に万一があった場合、月に約15万円が支給される目安です。',p:'団体信用生命保険で住宅ローンが無くなり、住むところが確保でき、遺族年金があれば生活していくことができます。マイホームを持っていれば高額な生命保険は必要ないとも言えます（職業・所得・払込期間により支給額は変わります）。'},
+  tateto:{cat:'知っておきたい',t:'建てどき（タイミング）',d:'資材や人件費の高騰で建築費は上昇傾向。戸建て住宅では2011年からの10年間で坪8.9〜20.8万円上昇しており、40坪換算で約356〜832万円の上昇です。金利も過去には2ヶ月で0.8%上昇した例があります。',p:'待っている間も家賃と更新費の支払いは続きます。「建てどき比較」タブで、今建てる場合と◯年後の場合の差額を試算できます。'},
+};
+
+/* ══════════ ref表（Excelより） ══════════ */
+/* 火災・地震保険（5年一括・家財付・概算） 保険金額(万):[水災なし,水災あり,地震] */
+const INS = {2500:[78770,166160,39460],3000:[89540,186010,46030],3500:[100260,209550,52610],4000:[111030,233090,59180],4500:[121800,256670,65760]};
+/* 印紙税（軽減税率）: [上限額, 税額] */
+const INSHI_UKEOI=[[10000,0],[1000000,200],[2000000,200],[3000000,500],[5000000,1000],[10000000,5000],[50000000,10000],[100000000,30000],[500000000,60000]];
+const INSHI_BAIBAI=[[10000,0],[500000,200],[1000000,500],[5000000,1000],[10000000,5000],[50000000,10000],[100000000,30000],[500000000,60000]];
+const INSHI_KINSHO=[[10000,0],[100000,200],[500000,400],[1000000,1000],[5000000,2000],[10000000,10000],[50000000,20000],[100000000,60000],[500000000,100000]];
+/* 設計各種申請（ref表より・概算） */
+const SEKKEI_OPT=[['選択なし',0],['長期優良住宅（設計審査・認定申請）',100000],['認定低炭素（設計審査・認定申請）',110000],['性能評価申請一式（設計＋建設評価）',350000],['性能評価（設計評価のみ）',200000],['性能評価（建設評価のみ・現場検査4回）',230000],['BELS（設計審査）',60000],['ZEH申請（BELS含む）',160000],['現金取得証明',60000],['法43条但し書き（申請許可）',65000],['カーポート確認申請（100㎡以内）',90000],['計画変更（200㎡以内）',45000],['子育て支援事業 申請',20000],['フラット35S',150000],['フラット35S（ZEH）・BELS含む',210000]];
+const TSUNAGI_R=0.02625;
+
+const fmt=n=>isFinite(n)?Math.round(n).toLocaleString('ja-JP'):'—';
+const fmtM=n=>isFinite(n)?(n/10000).toLocaleString('ja-JP',{maximumFractionDigits:0})+'万':'—';
+const $=id=>document.getElementById(id);
+const NUMV=v=>+String(v).replace(/[^0-9.-]/g,'')||0;      /* カンマ付き文字列→数値 */
+const NUM=id=>NUMV((typeof id==='string'?$(id):id).value);
+const SETC=(el,v)=>{el.value=(Math.round(+v)||0).toLocaleString('en-US');}; /* カンマ付きで代入 */
+/* 金額入力欄: 入力のたびにカンマを自動整形 */
+document.addEventListener('input',e=>{
+  const el=e.target; if(!el.matches||!el.matches('input[data-money]'))return;
+  const raw=el.value.replace(/[^0-9]/g,'');
+  const f=raw?(+raw).toLocaleString('en-US'):'';
+  if(el.value!==f){el.value=f;try{el.setSelectionRange(f.length,f.length);}catch(_){}}
+},true);
+const bracket=(tbl,amt)=>{for(const[u,v]of tbl){if(amt<=u)return v;}return tbl[tbl.length-1][1];};
+let cmpMode=1;
+
+/* タブ */
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.pg').forEach(x=>x.classList.remove('on'));
+  t.classList.add('on'); $('tab-'+t.dataset.t).classList.add('on');
+  window.scrollTo({top:0});
+  if(t.dataset.t==='fp')upFP(); /* 非表示中はcanvas幅0のため表示時に再描画 */
+  if(t.dataset.t==='genzei')upGenzei();
+});
+
+/* ══════════ 資金計画書 構築 ══════════ */
+const chip=k=>k?`<span class="info-chip" onclick="openG('${k}')">ℹ️</span>`:'';
+const inp=(sec,v,extra='')=>`<input type="text" inputmode="numeric" data-money value="${(+v||0).toLocaleString('en-US')}" data-sec="${sec}" ${extra} oninput="upAll()">`;
+let tsuChukanManual=false; /* つなぎ融資（中間金）を手入力したらtrue＝自動入力停止 */
+
+function buildPlan(){
+  const tb=$('est-body'); const R=[];
+  const row=(no,n,d,sec,v,k,incl)=>R.push(`<tr><td class="no">${no||''}</td><td class="nm">${n}</td><td class="desc">${d||''} ${chip(k)}</td>${incl?'<td class="amt"><span class="incl">建物価格に含む</span></td>':`<td class="amt">${inp(sec,v)} 円</td>`}</tr>`);
+  const crow=(no,n,d,id,sec,k,extraHtml)=>R.push(`<tr><td class="no">${no||''}</td><td class="nm">${n}</td><td class="desc">${d||''} ${extraHtml||''} ${chip(k)}</td><td class="amt"><span class="cval" id="${id}">—</span> 円</td></tr>`);
+  const sub=(label,id)=>R.push(`<tr class="sub"><td></td><td>${label}</td><td></td><td class="amt" id="${id}">—</td></tr>`);
+  const cat=(label,id)=>R.push(`<tr class="cat"><td colspan="3">${label}</td><td class="amt"><b id="${id}">—</b></td></tr>`);
+  const gcat=t=>R.push(`<tr class="gcat"><td colspan="4">${t}</td></tr>`);
+
+  R.push(`<tr><th style="width:24px"></th><th style="width:26%">名　称</th><th>形状・内容など</th><th class="r">金　額</th></tr>`);
+
+  /* ① 建築本体工事費（B） */
+  cat('①　建築本体工事費 ＋ 追加変更オプション工事（税込）','catB');
+  R.push(`<tr><td class="no"></td><td class="nm">商品名・施工面積</td><td class="desc"><input class="mini-inp" id="e-shohin" style="width:210px;text-align:left" placeholder="例：アレスα 26坪プラン"> ／ <input class="mini-inp" type="number" value="0" step="0.01" id="yuka-m2" oninput="upAll()"> ㎡（<span class="cval" id="yuka-out">0</span> 坪）</td><td class="amt"></td></tr>`);
+  R.push(`<tr><td class="no"></td><td class="nm">本体価格（税抜）</td><td class="desc">商品プランの建築本体工事費（「アレスα」タブからプラン選択で自動入力） ${chip('full')}</td><td class="amt">${inp('B',17800000,'id="e-honto"')} 円</td></tr>`);
+  R.push(`<tr><td colspan="4" style="padding:0;border:none;"><details class="std"><summary>✓ 本体価格に含まれる主な標準仕様（タップで一覧）</summary><div class="std-grid">
+    <span>自由設計</span><span>耐震等級3（性能表示計算）</span><span>制震ダンパー（揺れ最大約88%軽減）</span><span>HEAT20・G2グレード（UA値0.46以下・BELS取得）</span><span>太陽光発電 5.77kW</span><span>高気密・高断熱（天井・壁ウレタン吹付断熱）</span><span>第一種換気システム（熱交換型）</span><span>オール樹脂サッシ APW330＋アルゴンガス入りLow-E複層ガラス</span><span>高断熱玄関ドア（YKK AP ヴェナート）</span><span>外壁：光セラ16mm（セルフクリーニング）</span><span>オール電化（エコキュート・IH）</span><span>全室LED照明器具</span><span>食洗機付システムキッチン（人造大理石天板）</span><span>高性能ユニットバス</span><span>1F・2Fシャワートイレ</span><span>ガルバリウム鋼板屋根</span><span>基礎パッキン工法・基礎内断熱</span><span>シロアリ保証10年</span><span>地盤調査・諸検査料</span><span>付帯工事</span>
+  </div></details></td></tr>`);
+  row('','追加変更オプション工事①','標準仕様からの変更・追加のご要望（品名・内容）','B',0,'kodawari');
+  row('','追加変更オプション工事②','','B',0,null);
+  row('','追加変更オプション工事③','','B',0,null);
+  R.push(`<tr id="kodawari-add-row" class="no-print"><td class="no"></td><td colspan="3" style="padding:4px 10px;"><button class="btn mini" onclick="addKodawari()">＋ 追加変更オプション工事を追加（④以降）</button></td></tr>`);
+  sub('小計（本体＋追加変更オプション・税抜）','sB0');
+  R.push(`<tr><td></td><td style="color:var(--mu)">消費税（10%）</td><td></td><td class="amt" style="color:var(--mu);font-family:'DM Mono',monospace" id="sBx">—</td></tr>`);
+
+  /* ② 土地購入費（A） */
+  cat('②　土地購入費','catA');
+  R.push(`<tr><td class="no"></td><td class="nm">住所・土地面積</td><td class="desc"><input class="mini-inp" id="e-tochi-addr" style="width:220px;text-align:left" placeholder="建設地（例：松山市〇〇）"> ／ <input class="mini-inp" id="tsubo-m2" type="number" value="0" step="0.01" oninput="upAll()"> ㎡（<span class="cval" id="tsubo-out">0</span> 坪）</td><td class="amt"></td></tr>`);
+  R.push(`<tr><td class="no"></td><td class="nm">土地価格</td><td class="desc">売主・仲介の別は下の③「仲介手数料」をご確認ください（「土地相場」タブから概算反映もできます）</td><td class="amt">${inp('A',10000000,'id="e-tochi"')} 円</td></tr>`);
+
+  /* ③ 土地代金以外＋本体工事以外（C2＝実費 ／ C＝課税） */
+  cat('③　土地代金以外 ＋ 本体工事以外にかかる費用','catC');
+  gcat('土地代金以外にかかる費用（実費）');
+  R.push(`<tr><td class="no"></td><td class="nm">土地契約印紙代（土地売買契約時）</td><td class="desc"><label style="white-space:nowrap"><input type="checkbox" id="e-inshiT-auto" checked onchange="upAll()"> 自動計算</label>（土地価格から・軽減税率）／チェックを外すと金額を手入力できます ${chip('inshi')}</td><td class="amt">${inp('C2',10000,'id="e-inshiT"')} 円</td></tr>`);
+  R.push(`<tr><td class="no"></td><td class="nm">不動産仲介手数料</td><td class="desc"><label style="white-space:nowrap"><input type="checkbox" id="e-chukai" checked onchange="upAll()"> 仲介物件</label> ／ <label style="white-space:nowrap"><input type="checkbox" id="e-chukai-auto" checked onchange="upAll()"> 自動計算</label>（土地価格×3%＋60,000円）＋消費税／売主物件なら「仲介物件」を外して0円に ${chip('chukai')}</td><td class="amt">${inp('C2',396000,'id="e-chukai-amt"')} 円</td></tr>`);
+  row('','土地所有権登記費用','所有権移転登記　登録免許税・報酬料含む（概算）','C2',150000,'iten');
+  row('','固定資産税精算分','土地決済日より年末迄の日割計算（概算）','C2',30000,'kotei');
+  row('','不動産取得税（土地）','※概算（固定資産評価額×1/2）×3%−軽減額 ※還付あり','C2',0,'shutoku_t');
+  row('','上水道負担金（加入金）','市町村・メーター口径により異なります','C2',120000,'suido');
+  row('','水道引込工事','前面道路から敷地内への引込が必要な場合','C2',0,'okugai');
+  row('','下水道引込工事','前面道路から敷地内への引込が必要な場合','C2',0,null);
+  row('','公共下水受益者負担金','市町村・土地面積により異なります','C2',0,null);
+  row('','浄化槽申請費用','下水道未整備地域の場合','C2',0,'jokaso');
+  row('','農地転用等申請費用','農地を宅地にする場合の申請費用','C2',0,'bunpitsu');
+  row('','土地造成費用','盛土・鋤土・擁壁等が必要な場合','C2',0,'morido');
+  row('','分筆費用','敷地を分ける場合の測量・申請料等','C2',0,'bunpitsu');
+  row('','架橋費用','水路等に橋を架ける必要がある場合','C2',0,null);
+  row('','解体費用','既存家屋の解体・樹木や門塀の撤去が必要な場合','C2',0,'kaitai');
+  row('','境界ブロック工事','隣地との境界ブロック・フェンスが必要な場合','C2',0,null);
+  row('','測量費用','境界明示がない土地・境界査定をしない土地など','C2',0,null);
+  sub('小計（土地代金以外・実費）','sC2v');
+  gcat('本体工事以外にかかる費用（税抜）');
+  row(1,'建築確認申請費用','建築確認申請の作成費用・手数料を含む','C',300000,'kancho');
+  row(2,'地盤保証書発行費用','地盤調査に基づく保証書の発行費用','C',150000,'chosa');
+  row(3,'安全対策費用','工事中の安全対策・近隣養生等','C',100000,'kasetsu');
+  row(4,'現場監理費用','工事監理・現場管理の費用','C',500000,null);
+  row(5,'諸検査費用','中間検査・完了検査等の費用','C',200000,null);
+  row(6,'SSバリュー申請費用','','C',150000,null);
+  row(7,'耐震等級3取得申請費用','耐震等級3の性能評価・申請費用（地震保険50%割引の対象）','C',150000,'choki');
+  row(8,'BELS申請費用','省エネ性能表示（BELS）の申請費用','C',150000,null);
+  row(9,'太陽光・各種補助金申請費用','太陽光発電・行政補助金等の申請費用','C',150000,'fit');
+  row(10,'住宅設備機器延長保証費用','住宅設備の延長保証','C',100000,null);
+  row(11,'HEMS設置費用','エネルギー見える化システムの設置','C',100000,null);
+  row(12,'敷地調査費用','敷地及び役所調査・近隣環境調査・地耐力調査等','C',100000,'chosa');
+  R.push(`<tr><td class="no">13</td><td class="nm">地盤補強工事</td><td class="desc">地盤調査後の解析結果より特殊基礎・改良工事が必要な場合（判明次第 金額を入力） ${chip('jiban')}</td><td class="amt"><input type="text" inputmode="numeric" data-money value="" placeholder="別途" data-sec="C" oninput="upAll()"> 円</td></tr>`);
+  row(14,'浄化槽設置費用','下水道未整備地域において設置が必要な場合','C',0,'jokaso');
+  R.push(`<tr><td class="no">15</td><td class="nm">外構工事費用</td><td class="desc">駐車場整備・フェンス・植栽・物置等（外構見積書より） ${chip('gaiko')}<br><input type="text" class="memo-inp" placeholder="内容を入力（例：駐車場2台分・境界フェンス・ポスト・植栽）" maxlength="120"></td><td class="amt">${inp('C',0)} 円</td></tr>`);
+  row(16,'カーテンレール費用','カーテンレール工事一式（カーテンレール見積書より）','C',0,'curtain');
+  row(17,'カーテン購入費用','','C',0,null);
+  row(18,'エアコン設置工事','','C',0,null);
+  row(19,'ＴＶアンテナ設置費用','','C',0,null);
+  row(20,'資材高騰費用','','C',0,null);
+  sub('小計（本体工事以外・税抜）','sC0');
+  R.push(`<tr><td></td><td style="color:var(--mu)">消費税（10%）</td><td></td><td class="amt" style="color:var(--mu);font-family:'DM Mono',monospace" id="sCx">—</td></tr>`);
+
+  /* ④ 諸経費（D） */
+  cat('④　諸　経　費（実費）','catD');
+  gcat('銀行融資にかかる諸費用');
+  crow('','契約印紙代（金銭消費貸借契約時）','借入金額から自動計算（本則税率）','c-inshiK','D','inshi');
+  row('','ローン諸費用・融資手数料','金融機関により異なります（地銀は数万円が目安）','D',55000,'yushi');
+  row('','保証協会保証料','一括前払い or 借入金利上乗せ（年0.1〜0.4%）','D',0,'hosho');
+  row('','団体信用生命保険','多くの場合 金利に含まれます','D',0,'danshin');
+  row('','建物追加保存登記代','','D',0,null);
+  R.push(`<tr><td class="no"></td><td class="nm">つなぎ融資利息分（土地購入資金）</td><td class="desc">金利2.625% ／ 金額 <input class="mini-inp tsu-amt" type="number" value="10000000" step="100000" style="width:88px" oninput="upAll()"> 円 × 期間 <input class="mini-inp tsu-day" type="number" value="210" style="width:46px" oninput="upAll()"> 日 ${chip('tsunagi')}</td><td class="amt"><span class="cval tsu-out">—</span> 円</td></tr>`);
+  R.push(`<tr><td class="no"></td><td class="nm">つなぎ融資利息分（契約時金）</td><td class="desc">金利2.625% ／ 金額 <input class="mini-inp tsu-amt" type="text" inputmode="numeric" data-money value="0" style="width:92px" oninput="upAll()"> 円 × 期間 <input class="mini-inp tsu-day" type="number" value="0" style="width:46px" oninput="upAll()"> 日</td><td class="amt"><span class="cval tsu-out">—</span> 円</td></tr>`);
+  R.push(`<tr><td class="no"></td><td class="nm">つなぎ融資利息分（中間金）</td><td class="desc">金利2.625% ／ 金額 <input class="mini-inp tsu-amt" id="tsu-chukan" type="text" inputmode="numeric" data-money value="" style="width:92px" oninput="tsuChukanManual=true;upAll()"> 円 × 期間 <input class="mini-inp tsu-day" type="number" value="100" style="width:46px" oninput="upAll()"> 日 ／ 建物金額の2/3を自動入力（編集可） ${chip('ikkatsu')}</td><td class="amt"><span class="cval tsu-out">—</span> 円</td></tr>`);
+  row('','銀行手数料','','D',0,null);
+  row('','建物滅失登記','既存建物を解体した場合','D',0,'toki');
+  row('','抵当権設定費用','登録免許税等の実費＋司法書士報酬（概算）','D',100000,'teito');
+  gcat('建築にかかるその他、諸費用');
+  crow('','建物契約印紙代（工事請負契約時）',`請負契約金額から自動計算（軽減税率） <label style="white-space:nowrap"><input type="checkbox" id="e-denshi" onchange="upAll()"> 電子契約（印紙不要）</label>`,'c-inshiB','D','inshi');
+  R.push(`<tr><td class="no"></td><td class="nm">建物表示・保存登記代</td><td class="desc">滅失・表題・保存登記等 登録免許税・報酬料含む ／ <select class="est-sel kak-sel" onchange=""><option selected>概算</option><option>確定</option></select> ${chip('toki')}</td><td class="amt">${inp('D',150000)} 円</td></tr>`);
+  row('','不動産取得税（建物）','（固定資産税評価額−1,200万円）×3%（概算）※多くの場合0円','D',0,'shutoku_b');
+  row('','固定資産税','新築後にかかる税金の予算取り（家屋調査後に確定）','D',0,null);
+  R.push(`<tr><td class="no"></td><td class="nm">火災保険料（5年一括）</td><td class="desc">保険金額 <select id="e-hoken-amt" onchange="setHoken()" class="mini-inp" style="width:90px">${Object.keys(INS).map(k=>`<option value="${k}" ${k==='3000'?'selected':''}>${(+k).toLocaleString()}万円</option>`).join('')}</select> <label style="white-space:nowrap"><input type="checkbox" id="e-suisai" onchange="setHoken()"> 水災あり</label> 家財付 ／ <select class="est-sel kak-sel" onchange=""><option selected>概算</option><option>確定</option></select> ${chip('kasai')}</td><td class="amt">${inp('D',89540,'id="e-kasai"')} 円</td></tr>`);
+  R.push(`<tr><td class="no"></td><td class="nm">地震保険料（5年一括）</td><td class="desc">火災保険金額の50%・家財付 ／ <select class="est-sel kak-sel" onchange=""><option selected>概算</option><option>確定</option></select> <label style="white-space:nowrap"><input type="checkbox" id="e-jishin-on" checked onchange="setHoken()"> 加入する</label> ${chip('jishin')}</td><td class="amt">${inp('D',46030,'id="e-jishin"')} 円</td></tr>`);
+  row('','地鎮祭','神主手配・お供物・初穂料（弊社にて手配の場合）','D',35000,'jichinsai');
+  row('','上棟費用','ご祝儀・お弁当等を用意される場合','D',0,null);
+  row('','引越し費用','荷物量・移動距離・時期で変わります','D',0,'hikkoshi');
+  row('','家具・家電費用','','D',0,'kagu');
+
+  /* 総合計 */
+  R.push(`<tr class="cat"><td colspan="3" style="background:#111111;color:#fff;font-size:13px;">新　築　予　算　総合計（①＋②＋③＋④）</td><td class="amt" style="background:#111111;color:#fff;"><b id="catE" style="font-size:17px;">—</b></td></tr>`);
+
+  tb.innerHTML=R.join('');
+  tsuChukanManual=false;
+  kodawariN=3;
+  setHoken(false);
+  upAll();
+}
+function resetPlan(){ if(confirm('内容を初期値に戻します。よろしいですか？')) buildPlan(); }
+
+function setHoken(recalc=true){
+  const amt=$('e-hoken-amt').value, sui=$('e-suisai').checked, jon=$('e-jishin-on').checked;
+  const d=INS[amt];
+  SETC($('e-kasai'),sui?d[1]:d[0]);
+  SETC($('e-jishin'),jon?d[2]:0);
+  if(recalc)upAll();
+}
+
+/* ══════════ 集計 ══════════ */
+function upAll(){
+  /* 坪換算 */
+  const set=(id,v)=>{const e=$(id); if(e)e.textContent=fmt(v);};
+  $('tsubo-out').textContent=((+$('tsubo-m2').value||0)*0.3025).toFixed(2);
+  $('yuka-out').textContent=((+$('yuka-m2').value||0)*0.3025).toFixed(2);
+
+  /* セクション単純合計 */
+  const sum=s=>[...document.querySelectorAll(`#est-body input[data-sec="${s}"]`)].reduce((a,i)=>a+NUMV(i.value),0);
+  const A=sum('A');
+  /* 屋外設備・仮設: 「建物価格に含む」切替（sum('C')前に反映） */
+  [['okugai'],['kasetsu']].forEach(([k])=>{
+    const mode=$('e-'+k+'-mode'), ip=$('e-'+k), lbl=$('e-'+k+'-incl'), en=document.querySelector('.'+k+'-en');
+    if(!mode||!ip)return;
+    if(mode.value==='incl'){
+      if(NUMV(ip.value)>0)ip.dataset.keep=NUMV(ip.value);
+      ip.value='0'; ip.style.display='none'; lbl.style.display=''; if(en)en.style.display='none';
+    }else{
+      if(ip.style.display==='none'){ip.style.display='';lbl.style.display='none';if(en)en.style.display='';
+        if(ip.dataset.keep){SETC(ip,+ip.dataset.keep);delete ip.dataset.keep;}}
+    }
+  });
+
+  const B0=sum('B'), Bx=Math.round(B0*0.10), B=B0+Bx;
+  /* 設計申請セレクト */
+  const sels=[...document.querySelectorAll('.sekkei-sel')], souts=[...document.querySelectorAll('.sekkei-out')];
+  let sekkei=0; sels.forEach((s,i)=>{const v=+s.value||0; sekkei+=v; souts[i].textContent=fmt(v);});
+  const C0=sum('C')+sekkei, Cx=Math.round(C0*0.10);
+
+  /* D 自動計算列 */
+  const inshiB=$('e-denshi').checked?0:bracket(INSHI_UKEOI,B);            /* 請負印紙: 税込契約額 */
+  /* 売買印紙: 自動計算ON→土地価格から算出して入力欄へ反映、OFF→手入力値をそのまま使用（sum('D')に含まれる） */
+  const eIT=$('e-inshiT');
+  if($('e-inshiT-auto').checked){SETC(eIT,A>0?bracket(INSHI_BAIBAI,A):0);eIT.disabled=true;}
+  else eIT.disabled=false;
+  /* 仲介手数料: 仲介物件ON＋自動計算ON→土地価格から算出、自動OFF→手入力（sum('D')に含まれる） */
+  const eCK=$('e-chukai-amt');
+  if(!$('e-chukai').checked){SETC(eCK,0);eCK.disabled=true;}
+  else if($('e-chukai-auto').checked){SETC(eCK,A>0?Math.round((A*0.03+60000)*1.10):0);eCK.disabled=true;}
+  else eCK.disabled=false;
+  const tAmts=[...document.querySelectorAll('.tsu-amt')], tDays=[...document.querySelectorAll('.tsu-day')], tOuts=[...document.querySelectorAll('.tsu-out')];
+  /* つなぎ融資（中間金）: 建物金額(税込)の2/3を100万円単位で四捨五入して自動入力（手入力後は自動更新停止） */
+  if(!tsuChukanManual&&$('tsu-chukan'))SETC($('tsu-chukan'),Math.round(B*2/3/1000000)*1000000);
+  let tsunagi=0; tAmts.forEach((a,i)=>{const v=Math.round(NUMV(a.value)*TSUNAGI_R*(+tDays[i].value||0)/365); tsunagi+=v; tOuts[i].textContent=fmt(v);});
+  set('c-inshiB',inshiB);
+  /* ③ 土地代金以外（実費・C2）: 印紙・仲介の自動計算反映後に集計 */
+  const C2=sum('C2'); const C=C0+Cx+C2; set('sC2v',C2);
+
+  /* 金消印紙は借入額依存 → 先に暫定Dで総費用を出し、その借入額で再計算（2パス） */
+  const jiko=NUM('jiko')+NUM('enjo');
+  let inshiK=0;
+  let D=sum('D')+inshiB+tsunagi;
+  for(let pass=0;pass<2;pass++){
+    const totalTmp=A+B+C+D+inshiK;
+    const needTmp=Math.max(0,totalTmp-jiko);
+    inshiK=needTmp>0?bracket(INSHI_KINSHO,needTmp):0;
+  }
+  set('c-inshiK',inshiK);
+  D+=inshiK;
+
+  const E=A+B+C+D;
+  set('catA',A); set('sB0',B0); set('sBx',Bx); set('catB',B);
+  set('sC0',C0); set('sCx',Cx); set('catC',C); set('catD',D); set('catE',E);
+
+  const need=Math.max(0,E-jiko);
+  $('k-total').innerHTML=fmt(E)+'<small>円</small>';
+  $('k-jiko').innerHTML=fmt(jiko)+'<small>円</small>';
+  $('k-loan').innerHTML=fmt(need)+'<small>円</small>';
+
+  /* ══ ローン ══ */
+  if($('loan-link').checked){SETC($('loan-amt'),need);$('loan-amt').disabled=true;}
+  else $('loan-amt').disabled=false;
+  const P=NUM('loan-amt'), yrs=+$('loan-yrs').value, n=yrs*12;
+  $('d-yrs').textContent=yrs+' 年';
+  const r1=+$('loan-r1').value, r2=+$('loan-r2').value;
+  $('d-r1').textContent=r1.toFixed(2)+' %'; $('d-r2').textContent=r2.toFixed(2)+' %';
+  const pay=(P,r,n)=>{const m=r/100/12; return P<=0?0:(m===0?P/n:P*m*Math.pow(1+m,n)/(Math.pow(1+m,n)-1));};
+  const payBo=(Pb,r,y)=>{const i=r/100/12,j=Math.pow(1+i,6)-1,N=y*2; return Pb<=0?0:Pb*j*Math.pow(1+j,N)/(Math.pow(1+j,N)-1);};
+  const invBo=(b,r,y)=>{const i=r/100/12,j=Math.pow(1+i,6)-1,N=y*2; return b<=0?0:b*(Math.pow(1+j,N)-1)/(j*Math.pow(1+j,N));};
+  /* ボーナス元本を希望額から概算配分 */
+  const boWish=NUM('bonus-pay');
+  const calc=(r)=>{
+    let Pb=Math.min(P,Math.floor(invBo(boWish,r,yrs)/100000)*100000);
+    const Pm=P-Pb;
+    const m=pay(Pm,r,n), b=payBo(Pb,r,yrs);
+    return {m,b,total:m*n+b*yrs*2,annual:m*12+b*2};
+  };
+  const L1=calc(r1), L2=calc(r2);
+  $('m1').textContent=fmt(L1.m)+'円'; $('t1').textContent=fmtM(L1.total)+'円';
+  $('m2').textContent=fmt(L2.m)+'円'; $('t2').textContent=fmtM(L2.total)+'円';
+  $('bo1').textContent=boWish>0?`＋ボーナス1回 ${fmt(L1.b)}円 `:'';
+  $('bo2').textContent=boWish>0?`＋ボーナス1回 ${fmt(L2.b)}円 `:'';
+
+  /* 逆算 */
+  const rm=NUM('rev-mo'), rb=NUM('rev-bo'), i1=r1/100/12;
+  const Pm_r=i1===0?rm*n:rm*(Math.pow(1+i1,n)-1)/(i1*Math.pow(1+i1,n));
+  const Pb_r=invBo(rb,r1,yrs);
+  $('rev-out').innerHTML=fmt(Math.floor((Pm_r+Pb_r)/100000)*100000)+'<small>円</small>';
+
+  /* 住宅ローン減税 概算（変動・月次償還の年末残高×0.7%×13年） */
+  let bal=P, gz=0; const mo1=L1.m, i0=r1/100/12;
+  for(let y=1;y<=13&&bal>0;y++){
+    for(let mth=0;mth<12&&bal>0;mth++){bal=bal*(1+i0)-mo1;}
+    if(bal>0)gz+=bal*0.007;
+  }
+  $('genzei-out').innerHTML='約'+fmtM(gz)+'<small>円</small>';
+  $('genzei-yr').innerHTML='約'+fmt(gz/13)+'<small>円/年</small>';
+
+  /* 負担率 */
+  const nen=NUM('nenshu')||1;
+  const rate=L1.annual/nen*100;
+  const pin=$('g-pin'); pin.style.left=Math.min(97,rate/45*100)+'%'; pin.dataset.v=rate.toFixed(1)+'%';
+  document.querySelectorAll('#rate-rows tr').forEach(tr=>tr.classList.toggle('hit',nen>=+tr.dataset.min&&nen<=+tr.dataset.max));
+
+  /* ══ 今と新築後 ══ */
+  _cmpLoanM=cmpMode===1?L1.m:L2.m;
+  SETC($('a-loan'),_cmpLoanM);
+  const d=upCmpTotals();
+
+  /* ステッカーバー */
+  $('ss-total').innerHTML=fmtM(E)+'<small>円</small>';
+  $('ss-loan').innerHTML=fmtM(need)+'<small>円</small>';
+  $('ss-m1').innerHTML=fmt(L1.m)+'<small>円</small>';
+  $('ss-m2').innerHTML=fmt(L2.m)+'<small>円</small>';
+  $('ss-diff').innerHTML=(d<=0?'▲':'＋')+fmt(Math.abs(d))+'<small>円</small>';
+
+  /* FP連携用（ボーナス払い込みの年間返済額を月割り） */
+  _fpLoan={m1:L1.annual/12, m2:L2.annual/12, yrs:yrs};
+  /* 控除タブ連携用 */
+  _gzLoan={P:need, r1:r1, r2:r2, yrs:yrs, bo:boWish, nenshu:NUM('nenshu')};
+
+  upToki();
+  upFP();
+  upGenzei();
+}
+document.addEventListener('input',e=>{if(e.target.matches('#jiko,#enjo,#loan-amt,#bonus-pay,#nenshu,#rev-mo,#rev-bo,#n-yachin,#n-park,#n-kounetsu,#n-hoken,#a-kounetsu,#a-hoken,#a-zeikin,#a-taiyo'))upAll();
+  if(e.target.matches('#t-build,#t-land,#t-jiko,#t-savemo,#t-yachin,#t-koshin,#t-kcount,#t-hojo'))upToki();});
+
+/* ══════════ 建てどき ══════════ */
+function upToki(){
+  if(!$('t-n'))return;
+  const N=+$('t-n').value; $('d-tn').textContent=N+' 年後'; $('t-futlbl').textContent=N+'年後 建てると';
+  const inf=+$('t-inf').value; $('d-tinf').textContent=inf.toFixed(2)+' %';
+  const r=+$('t-r').value; $('d-tr').textContent=r.toFixed(2)+' %';
+  const rise=+$('t-rise').value; $('d-trise').textContent='＋'+rise.toFixed(2)+' %';
+  const build=NUM('t-build'), land=NUM('t-land'), jiko=NUM('t-jiko');
+  const save=NUM('t-savemo'), yachin=NUM('t-yachin');
+  const koshin=NUM('t-koshin')*(+$('t-kcount').value||0);
+  const hojo=+$('t-hojo').value||0;
+
+  const build2=build*Math.pow(1+inf/100,N);
+  const jiko2=jiko+save*12*N;
+  const loan1=Math.max(0,build+land-jiko-hojo);
+  const loan2=Math.max(0,build2+land-jiko2);
+  const pay=(P,r)=>{const m=r/100/12,n=420; return P<=0?0:P*m*Math.pow(1+m,n)/(Math.pow(1+m,n)-1);};
+  const tot1=pay(loan1,r)*420, tot2=pay(loan2,r+rise)*420;
+  const rent=yachin*12*N+koshin;
+
+  $('tk-b1').textContent=fmtM(build); $('tk-b2').textContent=fmtM(build2);
+  $('tk-bcap').textContent='年'+inf.toFixed(2)+'%上昇の場合';
+  $('tk-j1').textContent=fmtM(jiko); $('tk-j2').textContent=fmtM(jiko2);
+  $('tk-l1').textContent=fmtM(loan1); $('tk-l2').textContent=fmtM(loan2);
+  $('tk-t1').textContent=fmtM(tot1); $('tk-t2').textContent=fmtM(tot2);
+  $('tk-tcap').textContent='金利 '+(r+rise).toFixed(2)+'% の場合';
+  $('tk-h1').textContent=fmtM(hojo); $('tk-h2').textContent='0円';
+  $('tk-y2').textContent=fmtM(rent);
+  const otoku=(tot2-tot1)+rent; /* 補助金はloan1に反映済みのため二重計上しない */
+  $('tk-total').textContent=Math.max(0,Math.round(otoku/10000)).toLocaleString('ja-JP');
+}
+
+/* ══════════ 解説モーダル ══════════ */
+function openG(k){
+  const it=KB[k]; if(!it)return;
+  $('m-cat').textContent=it.cat; $('m-title').textContent=it.t;
+  $('m-desc').textContent=it.d; $('m-point').textContent=it.p;
+  $('m-img').style.display='none';
+  const m=$('m-meyasu'); if(it.m){m.style.display='block';m.textContent='📐 '+it.m;}else m.style.display='none';
+  $('modal-bg').classList.add('on');
+}
+function closeG(){$('modal-bg').classList.remove('on');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeG();});
+
+/* ══════════ こだわり費用の追加（④以降） ══════════ */
+let kodawariN=3;
+const KMARU=['④','⑤','⑥','⑦','⑧','⑨','⑩','⑪','⑫'];
+function addKodawari(){
+  const anchor=$('kodawari-add-row'); if(!anchor)return;
+  kodawariN++;
+  const maru=KMARU[kodawariN-4]||('('+kodawariN+')');
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td class="no"></td><td class="nm">追加変更オプション工事${maru}</td><td class="desc"><input type="text" class="memo-inp" placeholder="内容（任意）" style="margin-top:0"></td><td class="amt"><input type="text" inputmode="numeric" data-money value="0" data-sec="B" oninput="upAll()"> 円</td>`;
+  anchor.parentNode.insertBefore(tr,anchor);
+  upAll();
+}
+
+/* ══════════ 今と新築後: 合計計算（太陽光効果・控除効果の差引対応） ══════════ */
+let _cmpLoanM=0, aGenzeiManual=false;
+function upCmpTotals(){
+  if(!$('c-now'))return;
+  const now=NUM('n-yachin')+NUM('n-park')+NUM('n-kounetsu')+NUM('n-hoken');
+  const after=_cmpLoanM+NUM('a-kounetsu')+NUM('a-hoken')+NUM('a-zeikin')-NUM('a-taiyo')-NUM('a-genzei');
+  $('c-now').textContent=fmt(now)+'円'; $('c-now-y').textContent=fmtM(now*12)+'円';
+  $('c-new').textContent=fmt(after)+'円'; $('c-new-y').textContent=fmtM(after*12)+'円';
+  const d=after-now, band=$('c-diff');
+  if(d<=0){band.className='diff-band ok';band.innerHTML=`新築後のほうが 毎月 <b>${fmt(-d)}円</b> 軽くなる試算です（太陽光・ローン控除の効果 差引後）`;}
+  else{band.className='diff-band '+(d<20000?'ok':'ng');band.innerHTML=`新築後は 毎月 <b>＋${fmt(d)}円</b>。この差額で「賃貸では手に入らない資産と性能」を得る計画です`;}
+  return d;
+}
+
+/* ══════════ FPシミュレーション 金額目安ポップアップ ══════════ */
+function openFPGuide(){$('fpg-bg').classList.add('on');}
+function closeFPGuide(e){if(!e||e.target===$('fpg-bg')||e.target.classList.contains('m-close'))$('fpg-bg').classList.remove('on');}
+
+/* ══════════ 住宅ローン控除シミュレーション（令和8年度税制改正対応） ══════════ */
+let gzLoanMode=1;
+let _gzLoan={P:0,r1:0.8,r2:1.6,yrs:35,bo:0,nenshu:6700000};
+/* 借入限度額テーブル（万円）[通常, 子育て世帯等] 2026〜2030年入居 */
+const GZ_LIMIT={
+  new:{
+    chouki:{lim:[4500,5000],yrs:13,label:'長期優良住宅・低炭素住宅（新築）'},
+    zeh:{lim:[3500,4500],yrs:13,label:'ZEH水準省エネ住宅（新築）'},
+    shoene:{lim:[2000,3000],yrs:13,until:2027,label:'省エネ基準適合住宅（新築）',na:'省エネ基準適合住宅の新築は、2028年以降の入居分は原則として住宅ローン控除の対象外です（2027年末までに建築確認を受けたもの等は上限2,000万円・控除期間10年の経過措置あり）。長期優良住宅・ZEH水準ならこの制限はありません。'},
+    sonota:{na:'「その他の住宅」の新築は、2024年以降の入居分は住宅ローン控除の対象外です（2023年までに建築確認を受けたもの等を除く）。長期優良住宅・ZEH水準なら控除を最大限活用できます。'},
+  },
+  used:{
+    chouki:{lim:[3500,4500],yrs:13,label:'長期優良住宅・低炭素住宅（中古）'},
+    zeh:{lim:[3500,4500],yrs:13,label:'ZEH水準省エネ住宅（中古）'},
+    shoene:{lim:[2000,3000],yrs:13,label:'省エネ基準適合住宅（中古）'},
+    sonota:{lim:[2000,2000],yrs:10,label:'その他の住宅（中古）'},
+  },
+};
+
+/* 所得税・住民税の概算（給与所得者・2026年） */
+function gzCalcTax(nenshu,fuyo){
+  /* 給与所得控除（令和7年改正後） */
+  let kj;
+  if(nenshu<=1900000)kj=650000;
+  else if(nenshu<=3600000)kj=nenshu*0.30+80000;
+  else if(nenshu<=6600000)kj=nenshu*0.20+440000;
+  else if(nenshu<=8500000)kj=nenshu*0.10+1100000;
+  else kj=1950000;
+  const shotoku=Math.max(0,nenshu-kj);
+  const shakai=nenshu*0.15; /* 社会保険料控除の概算 */
+  /* 基礎控除（所得税・所得金額に応じ58〜95万円） */
+  let kiso;
+  if(shotoku<=1320000)kiso=950000;
+  else if(shotoku<=3360000)kiso=880000;
+  else if(shotoku<=4890000)kiso=680000;
+  else if(shotoku<=6550000)kiso=630000;
+  else if(shotoku<=23500000)kiso=580000;
+  else kiso=0;
+  const kazeiS=Math.max(0,Math.floor((shotoku-shakai-kiso-fuyo*380000)/1000)*1000);
+  const kazeiJ=Math.max(0,Math.floor((shotoku-shakai-430000-fuyo*330000)/1000)*1000);
+  /* 所得税速算表 */
+  const BR=[[1950000,.05,0],[3300000,.10,97500],[6950000,.20,427500],[9000000,.23,636000],[18000000,.33,1536000],[40000000,.40,2796000],[Infinity,.45,4796000]];
+  let zei=0; for(const[u,r,d]of BR){if(kazeiS<=u){zei=kazeiS*r-d;break;}}
+  zei=Math.max(0,Math.floor(zei));
+  /* 住民税所得割（10%・調整控除考慮） */
+  const jinteki=50000+fuyo*50000;
+  let chosei;
+  if(kazeiJ<=2000000)chosei=Math.min(jinteki,kazeiJ)*0.05;
+  else chosei=Math.max(jinteki-(kazeiJ-2000000),50000)*0.05;
+  const jumin=Math.max(0,Math.floor(kazeiJ*0.10-chosei));
+  /* 住民税からの控除上限＝課税総所得の5%・最大9.75万円 */
+  const juminLimit=Math.min(jumin,Math.floor(kazeiS*0.05),97500);
+  return{shotokuzei:zei,juminLimit};
+}
+
+/* 年末残高の推移（元利均等・ボーナス払い考慮） */
+function gzBalances(P,r,yrs,boWish,nYears){
+  const i=r/100/12,n=yrs*12;
+  const j=Math.pow(1+i,6)-1,N2=yrs*2;
+  const invBo2=b=>b<=0?0:b*(Math.pow(1+j,N2)-1)/(j*Math.pow(1+j,N2));
+  let Pb=Math.min(P,Math.floor(invBo2(boWish)/100000)*100000); if(!(Pb>0))Pb=0;
+  const Pm=P-Pb;
+  const m=Pm<=0?0:(i===0?Pm/n:Pm*i*Math.pow(1+i,n)/(Math.pow(1+i,n)-1));
+  const b=Pb<=0?0:Pb*j*Math.pow(1+j,N2)/(Math.pow(1+j,N2)-1);
+  let balM=Pm,balB=Pb; const out=[];
+  for(let mo2=1;mo2<=nYears*12;mo2++){
+    balM=Math.max(0,balM*(1+i)-m);
+    if(mo2%6===0)balB=Math.max(0,balB*(1+j)-b);
+    if(mo2%12===0)out.push(balM+balB);
+  }
+  return out;
+}
+
+function upGenzei(){
+  if(!$('gz-amt'))return;
+  /* 連動 */
+  const link=$('gz-link').checked;
+  if(link){
+    SETC($('gz-amt'),_gzLoan.P);
+    $('gz-rate').value=(gzLoanMode===1?_gzLoan.r1:_gzLoan.r2).toFixed(2);
+    $('gz-yrs').value=_gzLoan.yrs;
+  }
+  $('gz-amt').disabled=link; $('gz-rate').disabled=link; $('gz-yrs').disabled=link;
+  const nlink=$('gz-nenshu-link').checked;
+  if(nlink)SETC($('gz-nenshu'),_gzLoan.nenshu);
+  $('gz-nenshu').disabled=nlink;
+
+  const P=NUM('gz-amt'), r=+$('gz-rate').value||0, yrs=+$('gz-yrs').value||35;
+  const nenshu=NUM('gz-nenshu'), fuyo=+$('gz-fuyo').value||0;
+  const nc=$('gz-nc').value, type=$('gz-type').value, nyukyo=+$('gz-year').value;
+  const kosodate=$('gz-kosodate').checked;
+
+  /* 限度額判定 */
+  const spec=GZ_LIMIT[nc][type];
+  const naMsg=$('gz-na-msg');
+  let na=null;
+  if(!spec.lim)na=spec.na;
+  else if(spec.until&&nyukyo>spec.until)na=spec.na;
+  if(na){
+    naMsg.textContent='🚫 '+na; naMsg.style.display='block';
+    $('gz-total').innerHTML='0<small>円</small>'; $('gz-first').innerHTML='0<small>円</small>'; $('gz-avg').innerHTML='0<small>円</small>';
+    $('gz-a1').textContent='—'; $('gz-b1').textContent='対象外'; $('gz-c1').textContent='—'; $('gz-b-desc').textContent='';
+    $('gz-tbody').innerHTML='<tr><td colspan="6" style="text-align:center;font-family:\'Noto Sans JP\',sans-serif;color:var(--mu);padding:14px;">この条件では住宅ローン控除の対象外です。住宅の種別・入居年をご確認ください。</td></tr>';
+    const rc=fpInitCanvas('gz-chart',220); /* クリアのみ */
+    if(!aGenzeiManual&&$('a-genzei')){SETC($('a-genzei'),0);upCmpTotals();}
+    return;
+  }
+  naMsg.style.display='none';
+
+  const limitMan=spec.lim[kosodate?1:0];    /* 万円 */
+  const period=spec.yrs;                     /* 控除期間 */
+  const B=Math.floor(limitMan*10000*0.007);  /* 年間最大控除額（円） */
+  $('gz-period').textContent=period;
+  $('gz-b-desc').textContent='今回の条件：'+spec.label+'／限度額 '+limitMan.toLocaleString()+'万円'+(kosodate?'（子育て世帯等の上乗せ適用）':'');
+
+  /* C：控除対象税額 */
+  const tax=gzCalcTax(nenshu,fuyo);
+  const C=tax.shotokuzei+tax.juminLimit;
+
+  /* A：年末残高×0.7% */
+  const boWish=link?_gzLoan.bo:0;
+  const bals=gzBalances(P,r,yrs,boWish,period);
+
+  const rows=[]; let total=0;
+  for(let y=0;y<period;y++){
+    const bal=bals[y];
+    const A=Math.floor(bal*0.007);
+    const kojo=Math.min(A,B,C);
+    const which=kojo===C&&C<=A&&C<=B?'c':(kojo===B&&B<=A?'b':'a');
+    total+=kojo;
+    rows.push({y:y+1,bal,A,B,C,kojo,which});
+  }
+
+  $('gz-total').innerHTML='約'+fmtM(total)+'<small>円</small>';
+  $('gz-first').innerHTML=fmt(rows[0].kojo)+'<small>円</small>';
+  $('gz-avg').innerHTML=fmt(total/period)+'<small>円/年</small>';
+  $('gz-a1').textContent='初年度 '+fmt(rows[0].A)+'円';
+  $('gz-b1').textContent='年 '+fmt(B)+'円';
+  $('gz-c1').textContent='年 '+fmt(C)+'円';
+
+  /* テーブル */
+  const badge={a:'<span class="gz-badge a">A</span>',b:'<span class="gz-badge b">B</span>',c:'<span class="gz-badge c">C</span>'};
+  $('gz-tbody').innerHTML=rows.map(rr=>
+    '<tr><td>'+rr.y+'年目</td>'
+    +'<td>'+fmtM(rr.bal)+'円</td>'
+    +'<td'+(rr.which==='a'?' class="min"':'')+'>'+fmt(rr.A)+'</td>'
+    +'<td'+(rr.which==='b'?' class="min"':'')+'>'+fmt(rr.B)+'</td>'
+    +'<td'+(rr.which==='c'?' class="min"':'')+'>'+fmt(rr.C)+'</td>'
+    +'<td class="min">'+fmt(rr.kojo)+'円'+badge[rr.which]+'</td></tr>').join('')
+    +'<tr class="total"><td>合計（'+period+'年間）</td><td></td><td></td><td></td><td></td><td class="min">'+fmt(total)+'円</td></tr>';
+
+  drawGzChart(rows);
+
+  /* 今と新築後タブへ: 控除の月換算効果を自動反映（手入力後は停止） */
+  if(!aGenzeiManual&&$('a-genzei')){
+    SETC($('a-genzei'),Math.round(total/period/12/100)*100);
+    upCmpTotals();
+  }
+}
+
+function drawGzChart(rows){
+  const r=fpInitCanvas('gz-chart',220); if(!r)return;
+  const{ctx,W,H}=r;
+  const pad={t:14,r:10,b:26,l:58};
+  const cW=W-pad.l-pad.r, cH=H-pad.t-pad.b, n=rows.length;
+  const maxV=Math.max.apply(null,rows.map(x=>x.kojo))*1.15||1;
+  /* グリッド */
+  ctx.strokeStyle='rgba(0,0,0,.08)';ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){
+    const yy=pad.t+(cH/4)*i;
+    ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(pad.l+cW,yy);ctx.stroke();
+    const val=maxV-(maxV/4)*i;
+    ctx.fillStyle='rgba(110,122,116,.85)';ctx.font='9px DM Mono,monospace';ctx.textAlign='right';
+    ctx.fillText(Math.round(val/10000)+'万',pad.l-5,yy+3);
+  }
+  const colors={a:'#111111',b:'#555555',c:'#3d3d3d'};
+  const bw=Math.min(30,cW/n*0.62), gap2=(cW-bw*n)/(n+1);
+  rows.forEach((rr,i)=>{
+    const x=pad.l+gap2+(bw+gap2)*i;
+    const h=rr.kojo/maxV*cH;
+    ctx.fillStyle=colors[rr.which];
+    ctx.beginPath();
+    ctx.roundRect?ctx.roundRect(x,pad.t+cH-h,bw,h,[3,3,0,0]):ctx.rect(x,pad.t+cH-h,bw,h);
+    ctx.fill();
+    /* 金額ラベル */
+    ctx.fillStyle='rgba(34,48,43,.75)';ctx.font='8px DM Mono,monospace';ctx.textAlign='center';
+    ctx.fillText((rr.kojo/10000).toFixed(1),x+bw/2,pad.t+cH-h-4);
+    /* 年ラベル */
+    ctx.fillStyle='rgba(110,122,116,.8)';ctx.font='8.5px sans-serif';
+    ctx.fillText(rr.y+'年',x+bw/2,H-pad.b+12);
+  });
+}
+document.addEventListener('input',e=>{if(e.target.matches('#gz-amt,#gz-rate,#gz-yrs,#gz-nenshu,#gz-fuyo'))upGenzei();});
+
+function gotoTab(t){const btn=document.querySelector('.tab[data-t="'+t+'"]');if(btn)btn.onclick();}
+
+/* ══════════ FPシミュレーション ══════════ */
+let _fpLoan={m1:0,m2:0,yrs:35};
+let fpLoanMode=1;
+const FP={
+  members:[
+    {role:'本人', icon:'🧑', age:35},
+    {role:'配偶者', icon:'👩', age:33},
+    {role:'子①', icon:'🧒', age:5},
+  ],
+  inc1:600, iraise:1.5, inc2:300,
+  ret:65, retpay:1500,
+  living:25, lraise:1.0,
+  edu:1500, edupeak:18,
+  pension:20, oldliving:20,
+  savings:500,
+};
+const FP_YEARS=35;
+
+function fpRenderMembers(){
+  const grid=$('fp-member-grid'); if(!grid)return;
+  grid.innerHTML=FP.members.map((m,i)=>
+    '<div class="fp-member-row">'
+    +'<span class="fp-member-icon">'+m.icon+'</span>'
+    +'<div class="fp-member-name">'+m.role+'</div>'
+    +'<div><input class="fp-mem-age-input" type="number" min="0" max="100" value="'+m.age
+      +'" onchange="FP.members['+i+'].age=+this.value;upFP()">&nbsp;<span style="font-size:10px;color:var(--mu)">歳</span></div>'
+    +(i>=3?'<button class="fp-mem-del" onclick="fpDelMember('+i+')">✕</button>':'<span></span>')
+    +'</div>').join('');
+}
+function fpDelMember(i){FP.members.splice(i,1);fpRenderMembers();upFP();}
+function fpAddMember(){
+  const roles=['子②','子③','親①','親②','その他'], icons=['🧒','🧒','👴','👵','👤'];
+  const idx=Math.max(0,FP.members.length-3);
+  FP.members.push({role:roles[Math.min(idx,roles.length-1)], icon:icons[Math.min(idx,icons.length-1)], age:3});
+  fpRenderMembers();upFP();
+}
+
+/* ── キャッシュフロー計算（単位：万円） ── */
+function fpCalcCF(){
+  const rows=[];
+  let savings=FP.savings;
+  const baseLife=FP.living*12;
+  /* ローン：連動ON→ローンタブの計算結果、OFF→手入力 */
+  const link=$('fp-loan-link')&&$('fp-loan-link').checked;
+  let loanMo, loanYrs;
+  if(link){
+    loanMo=fpLoanMode===1?_fpLoan.m1:_fpLoan.m2;
+    loanYrs=_fpLoan.yrs;
+    if($('fp-loan-mo')){SETC($('fp-loan-mo'),loanMo);$('fp-loan-mo').disabled=true;}
+    if($('fp-loan-yrs')){$('fp-loan-yrs').value=loanYrs;$('fp-loan-yrs').disabled=true;}
+  }else{
+    if($('fp-loan-mo'))$('fp-loan-mo').disabled=false;
+    if($('fp-loan-yrs'))$('fp-loan-yrs').disabled=false;
+    loanMo=$('fp-loan-mo')?NUM('fp-loan-mo'):0;
+    loanYrs=+($('fp-loan-yrs')&&$('fp-loan-yrs').value)||35;
+  }
+  const loanAnn=loanMo*12/10000; /* 万円/年 */
+  const myAge0=FP.members.length>0?FP.members[0].age:35;
+  const kids=FP.members.filter(m=>m.role.indexOf('子')>=0);
+
+  for(let yr=0;yr<FP_YEARS;yr++){
+    const myAge=myAge0+yr;
+    const retired=myAge>=FP.ret;
+    const inc1=retired?0:Math.round(FP.inc1*Math.pow(1+FP.iraise/100,yr));
+    const inc2=retired?0:FP.inc2;
+    const pension=retired?FP.pension*12:0;
+    const retBonus=(myAge===FP.ret)?FP.retpay:0;
+    const totalInc=inc1+inc2+pension+retBonus;
+    const loanThisYr=(yr<loanYrs)?loanAnn:0;
+    const lifeExp=retired?FP.oldliving*12:Math.round(baseLife*Math.pow(1+FP.lraise/100,yr));
+    let eduExp=0;
+    kids.forEach(k=>{
+      const kidAge=k.age+yr;
+      const dist=Math.abs(kidAge-FP.edupeak);
+      if(dist<=8){eduExp+=Math.round(FP.edu/8*Math.max(0,1-dist/10));}
+    });
+    const totalExp=loanThisYr+lifeExp+eduExp;
+    const balance=totalInc-totalExp;
+    savings+=balance;
+    rows.push({yr:yr+1,age:myAge,inc:totalInc,loan:loanThisYr,life:lifeExp,edu:eduExp,balance,savings});
+  }
+  return rows;
+}
+
+function upFP(){
+  if(!$('fp-kpi-row'))return;
+  const rows=fpCalcCF();
+  if(!rows.length)return;
+
+  /* KPI */
+  const minSavings=Math.min.apply(null,rows.map(r=>r.savings));
+  const finalSavings=rows[rows.length-1].savings;
+  const incTotal=rows.reduce((a,r)=>a+r.inc,0);
+  const redYears=rows.filter(r=>r.balance<0).length;
+  const kpis=[
+    {l:'最終貯蓄残高', v:(finalSavings>=0?'+':'')+Math.round(finalSavings).toLocaleString()+'万円', s:FP_YEARS+'年後', cls:finalSavings>=0?'c-gr':'c-rd'},
+    {l:'最低貯蓄残高', v:(minSavings>=0?'+':'')+Math.round(minSavings).toLocaleString()+'万円', s:'期間中の底', cls:minSavings>=0?'c-bl':'c-rd'},
+    {l:'総収入合計', v:Math.round(incTotal).toLocaleString()+'万円', s:FP_YEARS+'年累計', cls:'c-bl'},
+    {l:'赤字年数', v:redYears+'年', s:'収支マイナスの年', cls:redYears>0?'c-am':'c-gr'},
+  ];
+  $('fp-kpi-row').innerHTML=kpis.map(k=>
+    '<div class="fp-kpi"><div class="fp-kpi-l">'+k.l+'</div><div class="fp-kpi-v '+k.cls+'">'+k.v+'</div><div class="fp-kpi-s">'+k.s+'</div></div>').join('');
+
+  /* アラート */
+  const alertEl=$('fp-alert');
+  const msgs=[];
+  if(minSavings<0)msgs.push('⚠️ 貯蓄残高がマイナスになる時期があります。生活費の見直し・収入計画の再検討をおすすめします。');
+  if(finalSavings<0)msgs.push('🚨 シミュレーション終了時点で資産が枯渇しています。早期の計画見直しを担当者とご相談ください。');
+  if(redYears>5&&finalSavings>=0)msgs.push('📉 収支マイナスが'+redYears+'年あります。教育費ピーク前後の備えを計画しましょう。');
+  if(msgs.length===0){
+    alertEl.className='fp-alert ok';
+    alertEl.textContent='✅ このプランは資産枯渇なく'+FP_YEARS+'年間を乗り切れる見込みです。引き続き計画的な資産形成を。';
+  }else{
+    alertEl.className='fp-alert '+(finalSavings<0?'danger':'warn');
+    alertEl.innerHTML=msgs.join('<br>');
+  }
+  alertEl.style.display='block';
+
+  drawFPChart(rows);
+
+  /* 年次テーブル */
+  $('fp-tbody').innerHTML=rows.map(r=>
+    '<tr'+(r.savings<0?' class="hl"':'')+'>'
+    +'<td>'+r.yr+'年後</td>'
+    +'<td>'+r.age+'歳</td>'
+    +'<td class="pos">'+Math.round(r.inc).toLocaleString()+'</td>'
+    +'<td>'+Math.round(r.loan).toLocaleString()+'</td>'
+    +'<td>'+Math.round(r.life).toLocaleString()+'</td>'
+    +'<td>'+Math.round(r.edu).toLocaleString()+'</td>'
+    +'<td class="'+(r.balance>=0?'pos':'neg')+'">'+(r.balance>=0?'+':'')+Math.round(r.balance).toLocaleString()+'</td>'
+    +'<td class="'+(r.savings>=0?'pos':'neg')+'" style="font-weight:700">'+Math.round(r.savings).toLocaleString()+'</td>'
+    +'</tr>').join('');
+
+  /* 支出構成パイ（初年度） */
+  const r0=rows[0];
+  const segs=[
+    {label:'住宅ローン', v:r0.loan, c:'#111111'},
+    {label:'生活費', v:r0.life, c:'#777777'},
+    {label:'教育費', v:r0.edu, c:'#bbbbbb'},
+  ].filter(s=>s.v>0);
+  drawFPPie('fp-pie','fp-pie-legend',segs);
+}
+
+/* ── チャート描画 ── */
+function fpInitCanvas(id,h){
+  const c=$(id); if(!c)return null;
+  const W=c.offsetWidth||c.parentElement.offsetWidth||600;
+  if(W<=0)return null;
+  const dpr=window.devicePixelRatio||1;
+  c.width=W*dpr; c.height=h*dpr; c.style.width=W+'px'; c.style.height=h+'px';
+  const ctx=c.getContext('2d');
+  ctx.setTransform(1,0,0,1,0,0); ctx.scale(dpr,dpr); ctx.clearRect(0,0,W,h);
+  return{ctx,W,H:h};
+}
+function drawFPChart(rows){
+  const r=fpInitCanvas('fp-cf-chart',240); if(!r)return;
+  const{ctx,W,H}=r;
+  const pad={t:16,r:16,b:30,l:62};
+  const cW=W-pad.l-pad.r, cH=H-pad.t-pad.b, n=rows.length;
+  const incArr=rows.map(x=>x.inc), expArr=rows.map(x=>x.loan+x.life+x.edu), savArr=rows.map(x=>x.savings);
+  const all=incArr.concat(expArr,savArr);
+  const maxV=Math.max.apply(null,all)*1.05;
+  let minV=Math.min.apply(null,all); if(minV>0)minV=0; minV*=1.1;
+  const xOf=i=>pad.l+(i/(n-1||1))*cW;
+  const yOf=v=>pad.t+cH-(v-minV)/(maxV-minV||1)*cH;
+
+  /* グリッド＋Y軸 */
+  ctx.strokeStyle='rgba(0,0,0,.08)'; ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){
+    const yy=pad.t+(cH/4)*i;
+    ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(pad.l+cW,yy);ctx.stroke();
+    const val=maxV-((maxV-minV)/4)*i;
+    ctx.fillStyle='rgba(110,122,116,.85)';ctx.font='9px DM Mono,monospace';ctx.textAlign='right';
+    const s=Math.abs(val)>=10000?(val/10000).toFixed(1)+'億':Math.round(val).toLocaleString()+'万';
+    ctx.fillText(s,pad.l-5,yy+3);
+  }
+  /* X軸ラベル */
+  ctx.fillStyle='rgba(110,122,116,.8)';ctx.font='9px sans-serif';ctx.textAlign='center';
+  rows.forEach((rr,i)=>{if(rr.yr%5===0||rr.yr===1)ctx.fillText(rr.yr+'年',xOf(i),H-pad.b+13);});
+  /* ゼロライン */
+  if(minV<0){
+    const zy=yOf(0);
+    ctx.strokeStyle='rgba(34,48,43,.25)';ctx.setLineDash([4,3]);
+    ctx.beginPath();ctx.moveTo(pad.l,zy);ctx.lineTo(pad.l+cW,zy);ctx.stroke();ctx.setLineDash([]);
+  }
+  /* 面積＋折れ線 */
+  const fill=(arr,c1,c2)=>{
+    ctx.beginPath();
+    arr.forEach((v,i)=>i===0?ctx.moveTo(xOf(i),yOf(v)):ctx.lineTo(xOf(i),yOf(v)));
+    ctx.lineTo(xOf(arr.length-1),yOf(Math.max(0,minV)));ctx.lineTo(xOf(0),yOf(Math.max(0,minV)));ctx.closePath();
+    const g=ctx.createLinearGradient(0,pad.t,0,pad.t+cH);
+    g.addColorStop(0,c1);g.addColorStop(1,c2);ctx.fillStyle=g;ctx.fill();
+  };
+  const line=(arr,color,lw)=>{
+    ctx.beginPath();ctx.strokeStyle=color;ctx.lineWidth=lw;
+    arr.forEach((v,i)=>i===0?ctx.moveTo(xOf(i),yOf(v)):ctx.lineTo(xOf(i),yOf(v)));
+    ctx.stroke();
+  };
+  fill(incArr,'rgba(44,95,138,.12)','rgba(44,95,138,.01)');
+  fill(expArr,'rgba(180,67,47,.10)','rgba(180,67,47,.01)');
+  line(incArr,'#3d3d3d',2);
+  line(expArr,'#B4432F',2);
+  line(savArr,'#111111',2.5);
+}
+function drawFPPie(canvasId,legendId,segments){
+  const c=$(canvasId); if(!c)return;
+  const dpr=window.devicePixelRatio||1, SIZE=220;
+  c.width=SIZE*dpr;c.height=SIZE*dpr;c.style.width=SIZE+'px';c.style.height=SIZE+'px';
+  const ctx=c.getContext('2d');
+  ctx.setTransform(1,0,0,1,0,0);ctx.scale(dpr,dpr);ctx.clearRect(0,0,SIZE,SIZE);
+  const total=segments.reduce((a,s)=>a+s.v,0); if(!total)return;
+  const cx=SIZE/2,cy=SIZE/2,R=98,ri=58,gap=0.022;
+  let angle=-Math.PI/2;
+  segments.forEach(seg=>{
+    const slice=2*Math.PI*seg.v/total; if(slice<0.001)return;
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,R,angle+gap,angle+slice-gap);
+    ctx.closePath();ctx.fillStyle=seg.c;ctx.fill();
+    angle+=slice;
+  });
+  ctx.beginPath();ctx.arc(cx,cy,ri,0,2*Math.PI);ctx.fillStyle='#FFFFFF';ctx.fill();
+  ctx.fillStyle='#000000';ctx.font='700 12px "Zen Kaku Gothic New",sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('年間支出',cx,cy-10);
+  ctx.font='500 17px "DM Mono",monospace';ctx.fillStyle='#111111';
+  ctx.fillText(Math.round(total).toLocaleString()+'万',cx,cy+10);
+  const lg=$(legendId); if(!lg)return;
+  lg.innerHTML=segments.map(seg=>{
+    const pct=(seg.v/total*100).toFixed(1);
+    return '<div class="pie-row"><div class="pie-dot" style="background:'+seg.c+'"></div>'
+      +'<div class="pie-lbl">'+seg.label+'</div>'
+      +'<div class="pie-val">'+Math.round(seg.v).toLocaleString()+'万円</div>'
+      +'<span class="pie-pct">'+pct+'%</span></div>';
+  }).join('');
+}
+
+/* FPスライダーイベント */
+(function(){
+  const fpSliders=[
+    {id:'fp-inc1',p:'inc1',l:'lbl-fp-inc1',f:v=>(+v).toLocaleString()+'万円'},
+    {id:'fp-iraise',p:'iraise',l:'lbl-fp-iraise',f:v=>v+'%'},
+    {id:'fp-inc2',p:'inc2',l:'lbl-fp-inc2',f:v=>(+v).toLocaleString()+'万円'},
+    {id:'fp-ret',p:'ret',l:'lbl-fp-ret',f:v=>v+'歳'},
+    {id:'fp-retpay',p:'retpay',l:'lbl-fp-retpay',f:v=>(+v).toLocaleString()+'万円'},
+    {id:'fp-living',p:'living',l:'lbl-fp-living',f:v=>v+'万円'},
+    {id:'fp-lraise',p:'lraise',l:'lbl-fp-lraise',f:v=>v+'%'},
+    {id:'fp-edu',p:'edu',l:'lbl-fp-edu',f:v=>(+v).toLocaleString()+'万円'},
+    {id:'fp-edupeak',p:'edupeak',l:'lbl-fp-edupeak',f:v=>v+'歳'},
+    {id:'fp-pension',p:'pension',l:'lbl-fp-pension',f:v=>v+'万円'},
+    {id:'fp-oldliving',p:'oldliving',l:'lbl-fp-oldliving',f:v=>v+'万円'},
+    {id:'fp-savings',p:'savings',l:'lbl-fp-savings',f:v=>(+v).toLocaleString()+'万円'},
+  ];
+  fpSliders.forEach(sl=>{
+    const el=$(sl.id); if(!el)return;
+    el.addEventListener('input',function(){
+      FP[sl.p]=+this.value;
+      const lbl=$(sl.l); if(lbl)lbl.textContent=sl.f(this.value);
+      upFP();
+    });
+  });
+  document.addEventListener('input',e=>{if(e.target.matches('#fp-loan-mo,#fp-loan-yrs'))upFP();});
+})();
+
+
+/* ══════════ アレスα プラン ══════════ */
+const PACKS=[
+ {t:'26坪プラン',m2:86.10,tsubo:26.04,p:1780,pt:1958,madori:'3LDK〜'},
+ {t:'28坪プラン',m2:92.74,tsubo:28.05,p:1860,pt:2046,madori:'3〜4LDK'},
+ {t:'30坪プラン',m2:102.25,tsubo:30.93,p:1940,pt:2134,madori:'4LDK'},
+ {t:'32坪プラン',m2:105.99,tsubo:32.06,p:2020,pt:2222,madori:'4LDK'},
+ {t:'34坪プラン',m2:112.61,tsubo:34.06,p:2100,pt:2310,madori:'4〜5LDK'},
+ {t:'36坪プラン',m2:121.51,tsubo:36.75,p:2180,pt:2398,madori:'5LDK'}
+];
+function renderPacks(){
+  const g=$('pk-grid'); if(!g)return;
+  g.innerHTML=PACKS.map((p,i)=>'<div class="pk-card"><div class="t">'+p.t+'</div><div class="m2">施工面積 '+p.m2.toFixed(2)+'㎡（'+p.tsubo.toFixed(2)+'坪）｜'+p.madori+'</div><div class="pr">'+p.p.toLocaleString()+'<small> 万円〜（税別）</small></div><div class="tax">税込 '+p.pt.toLocaleString()+'万円〜｜太陽光5.77kW標準</div><button class="btn pri mini" onclick="applyPack('+i+')">📋 資金計画書に反映</button></div>').join('');
+}
+function applyPack(i){
+  const p=PACKS[i];
+  const sh=$('e-shohin'); if(sh)sh.value='アレスα '+p.t;
+  const ym=$('yuka-m2'); if(ym)ym.value=p.m2;
+  const ho=$('e-honto'); if(ho)SETC(ho,p.p*10000);
+  upAll(); gotoTab('plan');
+}
+
+/* ══════════ エリア別坪単価データ（早分かり表より・単位:万円/坪） ══════════ */
+/* s: 0=そこそこある 1=少ない 2=あまりない 3=ほとんどない */
+const TOCHI=[
+ {n:'北条南エリア',z:'北条・堀江',t:12,s:0,r:'588万〜1,650万円'},{n:'北条北エリア',z:'北条・堀江',t:13,s:0,r:'397万〜1,660万円'},
+ {n:'堀江',z:'北条・堀江',t:18,s:0,r:'530万〜1,200万円'},{n:'福角',z:'北条・堀江',t:10,s:1},{n:'和気',z:'北条・堀江',t:16,s:1},{n:'勝岡',z:'北条・堀江',t:19,s:1,r:'500万〜900万円'},
+ {n:'高浜',z:'三津・港',t:12,s:2,r:'660万〜850万円'},{n:'梅津寺',z:'三津・港',t:10,s:2},{n:'太山寺',z:'三津・港',t:15,s:1},{n:'石風呂',z:'三津・港',t:20,s:3},
+ {n:'中須賀',z:'三津・港',t:22,s:2},{n:'三津',z:'三津・港',t:20,s:0,r:'600万〜1,100万円'},{n:'東山',z:'三津・港',t:20,s:0},{n:'古三津',z:'三津・港',t:20,s:0},
+ {n:'清住',z:'三津・港',t:23,s:0},{n:'山西',z:'三津・港',t:22,s:0},{n:'別府',z:'城西',t:25,s:0,r:'980万〜1,300万円'},{n:'衣山・朝日ヶ丘',z:'城西',t:20,s:1},
+ {n:'安城寺',z:'城北',t:25,s:2,r:'1,100万〜1,800万円'},{n:'西長戸',z:'城北',t:28,s:1},{n:'東長戸',z:'城北',t:30,s:1},{n:'久万ノ台',z:'城北',t:35,s:2,r:'798万〜1,650万円'},
+ {n:'馬木',z:'城北',t:25,s:2},{n:'内宮',z:'城北',t:20,s:3},{n:'高木',z:'城北',t:18,s:2},{n:'平田・谷町',z:'城北',t:20,s:3,r:'1,000万〜1,200万円'},
+ {n:'鴨川・志津川',z:'城北',t:35,s:2,r:'1,000万〜2,100万円'},{n:'吉藤',z:'城北',t:30,s:1},{n:'白水台',z:'城北',t:20,s:1},{n:'姫原',z:'城北',t:35,s:2},{n:'山越',z:'城北',t:35,s:2},
+ {n:'御幸',z:'城北',t:28,s:3},{n:'清水町',z:'城北',t:50,s:3},{n:'美沢',z:'城西',t:30,s:2},
+ {n:'中央',z:'中心部',t:35,s:2,r:'1,300万〜2,900万円'},{n:'本町',z:'中心部',t:50,s:3},{n:'木屋町',z:'中心部',t:50,s:3},{n:'味酒',z:'中心部',t:35,s:2},
+ {n:'南江戸',z:'中心部',t:45,s:2},{n:'持田',z:'中心部',t:60,s:2},{n:'岩崎',z:'道後・城東',t:50,s:2},
+ {n:'道後',z:'道後・城東',t:50,s:2,r:'1,500万〜3,500万円'},{n:'道後平',z:'道後・城東',t:20,s:3},{n:'下伊台',z:'道後・城東',t:15,s:2},{n:'上伊台',z:'道後・城東',t:15,s:3,r:'980万〜1,600万円'},
+ {n:'湯の山',z:'道後・城東',t:25,s:2,r:'600万〜980万円'},{n:'溝辺',z:'道後・城東',t:15,s:2},{n:'石手',z:'道後・城東',t:40,s:2},{n:'正円寺',z:'道後・城東',t:25,s:0},
+ {n:'畑寺・東野',z:'道後・城東',t:25,s:0,r:'800万〜1,500万円'},{n:'桑原',z:'道後・城東',t:30,s:0,r:'800万〜1,500万円'},{n:'築山・日の出町',z:'道後・城東',t:28,s:1},
+ {n:'北吉田',z:'城西・空港',t:20,s:3},{n:'北斎院',z:'城西・空港',t:26,s:1},{n:'高岡',z:'城西・空港',t:25,s:0,r:'780万〜1,300万円'},{n:'南斎院',z:'城西・空港',t:27,s:1},
+ {n:'南吉田',z:'城西・空港',t:22,s:2},{n:'空港通り',z:'城西・空港',t:30,s:0},{n:'久保田',z:'城西・空港',t:27,s:3},{n:'富久',z:'城西・空港',t:25,s:3},{n:'針田',z:'城西・空港',t:35,s:3},
+ {n:'生石',z:'城西・空港',t:30,s:1},{n:'土居田',z:'城南',t:35,s:1},
+ {n:'東垣生',z:'余戸・垣生',t:23,s:1},{n:'西垣生',z:'余戸・垣生',t:25,s:0,r:'980万〜1,200万円'},{n:'余戸西・南',z:'余戸・垣生',t:30,s:2},{n:'余戸中',z:'余戸・垣生',t:33,s:2},
+ {n:'余戸東',z:'余戸・垣生',t:34,s:2},{n:'保免西',z:'余戸・垣生',t:34,s:2},{n:'保免中',z:'余戸・垣生',t:34,s:2},
+ {n:'小栗',z:'城南',t:40,s:2},{n:'藤原',z:'城南',t:40,s:2},{n:'竹原',z:'城南',t:40,s:1},{n:'立花',z:'城南',t:20,s:1},{n:'中村',z:'城南',t:25,s:1},
+ {n:'小坂',z:'城南',t:35,s:1,r:'700万〜1,100万円'},{n:'枝松・三町',z:'城南',t:28,s:1},{n:'朝生田',z:'城南',t:35,s:1,r:'1,300万〜1,700万円'},
+ {n:'和泉北',z:'城南',t:40,s:2,r:'950万〜1,500万円'},{n:'和泉南',z:'城南',t:30,s:2},{n:'西石井',z:'城南',t:33,s:1},{n:'東石井',z:'城南',t:35,s:1},{n:'居相',z:'城南',t:38,s:1},
+ {n:'市坪北・南',z:'城南',t:25,s:2,r:'600万〜988万円'},{n:'古川北・南',z:'城南',t:37,s:1},{n:'古川西',z:'城南',t:35,s:2},{n:'北井門',z:'城南',t:38,s:1},
+ {n:'北土居',z:'城南',t:33,s:1},{n:'南土居',z:'森松・南部',t:25,s:1},{n:'森松',z:'森松・南部',t:27,s:1,r:'656万〜1,196万円'},{n:'高井',z:'森松・南部',t:23,s:1},{n:'南高井',z:'森松・南部',t:25,s:3},
+ {n:'福音寺',z:'久米・東部',t:30,s:0,r:'900万〜1,300万円'},{n:'鷹子',z:'久米・東部',t:25,s:2},{n:'平井',z:'久米・東部',t:30,s:2},
+ {n:'北久米・来住',z:'久米・東部',t:30,s:1,r:'1,000万〜1,700万円'},{n:'南久米',z:'久米・東部',t:30,s:1},{n:'久米窪田',z:'久米・東部',t:30,s:1},
+ {n:'今在家',z:'久米・東部',t:33,s:1},{n:'北梅本',z:'久米・東部',t:20,s:2,r:'680万円〜'},{n:'南梅本',z:'久米・東部',t:25,s:2},
+ {n:'重信',z:'東温市',t:25,s:0,r:'900万〜1,400万円'},{n:'松瀬川',z:'東温市',t:9,s:0},{n:'南方',z:'東温市',t:10,s:2,r:'400万〜800万円'},{n:'則之内',z:'東温市',t:15,s:1},
+ {n:'北黒田・北川原',z:'松前町',t:15,s:1},{n:'筒井',z:'松前町',t:30,s:1},{n:'徳丸',z:'松前町',t:25,s:1,r:'800万〜1,300万円'},
+ {n:'下吾川',z:'伊予市',t:18,s:0,r:'600万〜988万円'},{n:'灘町',z:'伊予市',t:20,s:1},{n:'米湊',z:'伊予市',t:15,s:0},{n:'大平',z:'伊予市',t:10,s:2},
+ {n:'重光・拾町・高尾田',z:'砥部町',t:20,s:2,r:'880万〜1,300万円'},{n:'宮内',z:'砥部町',t:15,s:1,r:'600万〜880万円'},{n:'上野・原町',z:'砥部町',t:20,s:2},{n:'大南・北川毛',z:'砥部町',t:10,s:1}
+];
+const STK_LBL=['そこそこある','少ない','あまりない','ほとんどない'];
+let tcZone='すべて', tcSortKey='t', tcSortAsc=true, tcSelIdx=-1;
+function tcSort(k){ if(tcSortKey===k)tcSortAsc=!tcSortAsc; else{tcSortKey=k;tcSortAsc=true;} renderTochi(); }
+function renderTochi(){
+  const body=$('tc-body'); if(!body)return;
+  const zones=['すべて',...new Set(TOCHI.map(x=>x.z))];
+  $('tc-zones').innerHTML=zones.map(z=>'<button class="zf '+(z===tcZone?'on':'')+'" onclick="tcZone=\''+z+'\';renderTochi()">'+z+'</button>').join(' ');
+  const q=($('tc-q').value||'').trim();
+  let rows=TOCHI.map((x,i)=>({...x,i})).filter(x=>(tcZone==='すべて'||x.z===tcZone)&&(!q||x.n.includes(q)||x.z.includes(q)));
+  rows.sort((a,b)=>{const va=a[tcSortKey],vb=b[tcSortKey];return (va<vb?-1:va>vb?1:0)*(tcSortAsc?1:-1);});
+  body.innerHTML=rows.map(x=>'<tr class="'+(x.i===tcSelIdx?'sel':'')+'" onclick="tcSelect('+x.i+')"><td style="font-weight:700;">'+x.n+'</td><td style="color:var(--mu);font-size:10.5px;">'+x.z+'</td><td class="pr">'+x.t+'万円/坪</td><td><span class="stk stk'+x.s+'">'+STK_LBL[x.s]+'</span></td><td style="color:var(--rd);font-size:10.5px;">'+(x.r||'—')+'</td></tr>').join('')
+    ||'<tr><td colspan="5" style="color:var(--mu);">該当するエリアが見つかりませんでした。</td></tr>';
+}
+function tcSelect(i){
+  tcSelIdx=i; const x=TOCHI[i];
+  $('tc-sel').textContent=x.n;
+  $('tc-tanka').value=x.t;
+  renderTochi(); tcCalc();
+}
+function tcCalc(){
+  const t=+$('tc-tanka').value||0, s=+$('tc-tsubo').value||0;
+  const p=t*s;
+  $('tc-price').textContent=p>0?p.toLocaleString()+' 万円':'—';
+}
+function tcApply(){
+  const t=+$('tc-tanka').value||0, s=+$('tc-tsubo').value||0;
+  if(t<=0||s<=0){alert('エリアを選択（または坪単価を入力）し、希望坪数を入力してください。');return;}
+  const et=$('e-tochi'); if(et)SETC(et,Math.round(t*s*10000));
+  const tm=$('tsubo-m2'); if(tm)tm.value=(s/0.3025).toFixed(2);
+  const ad=$('e-tochi-addr');
+  if(ad&&tcSelIdx>=0){
+    const x=TOCHI[tcSelIdx];
+    const city=['東温市','伊予市','松前町','砥部町'].includes(x.z)?x.z:'松山市';
+    ad.value=city+' '+x.n.replace('エリア','')+(city==='松山市'?'（'+x.z+'）':'');
+  }
+  upAll(); gotoTab('plan');
+}
+
+/* ══════════ 家づくりの流れ（16ステップ） ══════════ */
+const FLOW=[
+ {t:'ご来店',d:'初回のご来場・ショールームのご案内・構造見学会',dur:''},
+ {t:'性能見学会',d:'性能見学会・失敗しない土地の選び方セミナー・充実のアフターサポートのご説明',dur:'約1〜7日'},
+ {t:'土地ヒアリング',d:'ご希望のエリア・ご予算のヒアリング・土地調査',dur:'約7日'},
+ {t:'土地案内',d:'土地の現地ご案内（住宅会社スタッフの同行がおすすめ）',dur:'約7日'},
+ {t:'土地買付',d:'ご希望の土地の買付',dur:''},
+ {t:'事前申込み',d:'資金計画後のローンの事前審査申し込み ※以降、お家完成まで原則新規お借入れは禁止',dur:'約7〜14日'},
+ {t:'プラン提案',d:'プランご提出・お客様に合ったプランをご提案（アレスベストプラン）',dur:'約7日'},
+ {t:'プラン決定',d:'お客様に合ったプランを一緒に決めましょう',dur:'約7日'},
+ {t:'ご契約',d:'建物のご契約・土地のご契約',dur:'約7日'},
+ {t:'ローン本申込',d:'住宅ローンの本申込み',dur:'約40日'},
+ {t:'土地決済',d:'土地代金のお支払い',dur:'約5日'},
+ {t:'地鎮祭',d:'工事中の安全、工事後の家内安全を祈願します',dur:'約3日'},
+ {t:'着工',d:'着工式・地盤検査・配筋（第三者機関の配筋検査）',dur:'約25日'},
+ {t:'上棟',d:'上棟検査（第三者機関の躯体検査）',dur:'約65日'},
+ {t:'社内検査',d:'完工・完了検査・完工後の社内検査・お客様との立会い検査',dur:'約14日'},
+ {t:'お引き渡し',d:'お引き渡し式・保証書のお渡し。ここから一生涯のお付き合いが始まります',dur:''}
+];
+function renderFlow(){
+  const g=$('fl-grid'); if(!g)return;
+  g.innerHTML=FLOW.map((s,i)=>'<div class="fl-step"><span class="no">STEP '+String(i+1).padStart(2,'0')+'</span><h4>'+s.t+'</h4><p>'+s.d+'</p>'+(s.dur?'<span class="dur">次の工程まで '+s.dur+'</span>':'')+'</div>').join('');
+}
+
+/* ══════════ 事前審査チェックリスト ══════════ */
+const CKS=[
+ {t:'過去3年以内に狭心症・糖尿病・高血圧・基礎疾患・精神的な病等で通院または診察検査投薬治療等を受けた',r:2},
+ {t:'過去3年以内に、診療・検査・治療・投薬を受けたことがある',r:2},
+ {t:'1年以内に転職をしている',r:2},
+ {t:'自営業の方で年収や売上を抑えて申告している',r:2},
+ {t:'自動車ローンやクレジットカード等の支払いを延滞したことがある',r:2},
+ {t:'自動車ローンやカードローンの残高が残っている',r:1},
+ {t:'クレジット機能付きカードを2枚以上持っている',r:1},
+ {t:'ローンの希望額が年収の6倍以上になる',r:1},
+ {t:'親族からの資金援助を考えているが、具体的な話をしていない',r:1},
+ {t:'連帯保証人になっているが、順調に返済されている',r:1},
+ {t:'配偶者の方のパートの収入も合算したい',r:1}
+];
+function renderCK(){
+  const l=$('ck-list'); if(!l)return;
+  l.innerHTML=CKS.map((c,i)=>'<label class="ck-item" id="ck-'+i+'"><input type="checkbox" onchange="upCK(this,'+i+')"><span style="flex:1;">'+c.t+'</span><span class="ck-risk ck-r'+c.r+'">危険度'+(c.r===2?'高':'中')+'</span></label>').join('');
+}
+function upCK(el,i){
+  $('ck-'+i).classList.toggle('on',el.checked);
+  const n=[...document.querySelectorAll('#ck-list input')].filter(x=>x.checked).length;
+  const r=$('ck-result');
+  if(n===0){r.className='ck-result ck-ok';r.textContent='現在チェックはありません。当てはまる項目があればタップしてください。';}
+  else{r.className='ck-result ck-ng';r.innerHTML='⚠️ '+n+'項目に該当しています。対策を打たずに事前審査を出すと審査に落ちてしまう可能性があります。<b>安易に提出せず、必ず担当者と一緒に対策を打ってから進めましょう。</b>過去・現在のローン履歴は必ず自己申告してください（銀行の審査ではローン履歴が全部わかります）。';}
+}
+
+/* 表示中のタブ（FP・ローン控除）を印刷対象にする */
+window.addEventListener('beforeprint',()=>{
+  document.body.classList.toggle('print-fp',$('tab-fp').classList.contains('on'));
+  document.body.classList.toggle('print-genzei',$('tab-genzei').classList.contains('on'));
+});
+window.addEventListener('afterprint',()=>{document.body.classList.remove('print-fp');document.body.classList.remove('print-genzei');});
+
+buildPlan(); fpRenderMembers(); renderPacks(); renderTochi(); tcCalc(); renderFlow(); renderCK();
+</script>
+</body>
+</html>
