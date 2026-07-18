@@ -137,6 +137,30 @@ select option{background:#F0EEE9;color:#1A1A1A;}
 .shinsa-note{font-size:10px;color:var(--mu);line-height:1.9;margin-top:10px;background:rgba(0,0,0,.03);border-radius:8px;padding:10px 13px;}
 .shinsa-note b{color:var(--wh);}
 
+/* ─── 使い方ガイド ─── */
+.guide-banner{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,rgba(47,109,240,.08),rgba(47,109,240,.03));border:1px solid rgba(47,109,240,.3);border-radius:10px;padding:10px 16px;margin-bottom:14px;font-size:11px;color:var(--navy);}
+.guide-banner b{color:#2f6df0;}
+.guide-banner button{margin-left:auto;flex-shrink:0;padding:6px 14px;border-radius:7px;border:1px solid rgba(47,109,240,.4);background:#fff;color:#2f6df0;font-size:10px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;}
+.guide-banner button:hover{background:#2f6df0;color:#fff;}
+.guide-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+@media(max-width:960px){.guide-steps{grid-template-columns:1fr 1fr;}}
+.g-step{background:#fff;border:1px solid var(--bdr);border-radius:10px;padding:14px;position:relative;box-shadow:0 1px 3px rgba(16,40,77,.05);}
+.g-step .no{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#2f6df0;color:#fff;font-family:'DM Mono',monospace;font-size:13px;font-weight:700;margin-bottom:8px;}
+.g-step h4{font-size:12px;font-weight:900;color:var(--navy);margin-bottom:4px;line-height:1.4;}
+.g-step p{font-size:10px;color:var(--mu);line-height:1.75;}
+.g-step .tabref{display:inline-block;margin-top:6px;font-size:9px;font-weight:700;color:#2f6df0;background:rgba(47,109,240,.08);border-radius:5px;padding:2px 8px;}
+table.guide-tbl td{font-family:'Noto Sans JP',sans-serif;text-align:left;white-space:normal;line-height:1.7;font-size:10.5px;vertical-align:top;}
+table.guide-tbl th{text-align:left;}
+table.guide-tbl td:first-child{font-weight:700;color:var(--navy);white-space:nowrap;}
+.yougo{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+@media(max-width:760px){.yougo{grid-template-columns:1fr;}}
+.yougo-item{background:#fff;border:1px solid var(--bdr2);border-radius:8px;padding:10px 13px;}
+.yougo-item b{display:block;font-size:11px;color:#1D5FA8;margin-bottom:3px;}
+.yougo-item p{font-size:10px;color:var(--mu);line-height:1.75;}
+.faq-q{background:#fff;border:1px solid var(--bdr2);border-radius:9px;padding:12px 15px;margin-bottom:8px;}
+.faq-q b{display:block;font-size:11.5px;color:var(--navy);margin-bottom:4px;}
+.faq-q p{font-size:10.5px;color:var(--mu);line-height:1.8;}
+
 /* ─── 新: 年数/金利切り替えセレクタ ─── */
 .cmp-switch{display:flex;background:rgba(0,0,0,.05);border-radius:8px;padding:3px;margin-bottom:12px;gap:3px;}
 .cmp-sw-btn{flex:1;padding:6px 8px;border:none;border-radius:6px;background:transparent;font-size:10px;font-weight:700;color:var(--mu);cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:all .18s;}
@@ -619,22 +643,40 @@ footer a{color:#2f6df0;text-decoration:none;}
 .del-row-btn:hover{background:rgba(192,57,43,.3);}
 
 @media print{
+  @page{size:A4;margin:9mm;}
+  /* 背景色・グラフの色をそのまま印刷（円グラフ・KPI・表ヘッダーがきれいに出る） */
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important;}
   /* ナビ・アクションボタン・FP追加ボタンを非表示 */
-  .nav-miyauchi,.est-actions,.print-btn-bar,.fp-add-btn,.add-row-btn,.del-row-btn,
-  .cmp-switch,.fp-add-btn{display:none!important;}
+  .nav-miyauchi,.est-actions,.print-btn,.fp-add-btn,.add-row-btn,.del-row-btn,
+  .cmp-switch,.guide-banner{display:none!important;}
+  .print-btn-bar{border-bottom:2px solid #16284d!important;margin-bottom:10px!important;}
   /* 余白リセット */
-  .pg{padding:4px!important;}
+  .pg{padding:4px!important;max-width:100%!important;}
   body{background:#FFF!important;}
   /* 影・ボーダー軽量化 */
-  .est-doc,.panel,.ch-box,.tb-box,.plan-hero-card,.rev-sim-card,
-  .health-dash,.plan-cmp-wrap,.fp-kpi-row,.fp-alert{
-    box-shadow:none!important;border:1px solid #ddd!important;
+  .est-doc,.panel,.ch-box,.tb-box,.plan-hero-card,.rev-sim-card,.kpi,.gg,.cstrip,
+  .health-dash,.plan-cmp-wrap,.fp-kpi-row,.fp-alert,.gz-abc-box,.toki-row,.pm-card,.fb,.fam-card{
+    box-shadow:none!important;border:1px solid #d5dae3!important;
   }
   /* アクティブタブのみ表示 */
   .pg{display:none!important;}
   .pg.on{display:block!important;}
-  /* ページ改行 */
-  .ch-box, .tb-box{page-break-inside:avoid;}
+  /* 2カラム→1カラムにして A4 幅にきれいに収める */
+  .l24,.l24life,.l24inv{grid-template-columns:1fr!important;gap:10px!important;}
+  .l333{grid-template-columns:1fr 1fr 1fr!important;}
+  /* グラフ・円グラフは枠内に収め、要素の途中で改ページしない */
+  canvas{max-width:100%!important;height:auto!important;}
+  /* 円グラフは実寸のまま（拡大しすぎを防ぎ、凡例を横に並べる） */
+  .pie-canvas-box canvas,#cost-pie{width:220px!important;height:220px!important;}
+  #fp-pie{width:160px!important;height:160px!important;}
+  .pie-wrap{flex-wrap:nowrap!important;align-items:center!important;}
+  .ch-box,.tb-box,.panel,.kpis,.pie-wrap,.gz-abc,.toki-row,.toki-total,.callout,
+  .gauges,.cstrip,.util-sum,.yak,.case,.ck-item,
+  .plan-hero-card,.health-dash,.plan-cmp-wrap,.g-step,.yougo-item,.faq-q{page-break-inside:avoid;break-inside:avoid;}
+  .ph{page-break-after:avoid;}
+  /* 入力UI（スライダー等）は値のみ見えれば良いので簡素化 */
+  input[type=range]{height:2px!important;}
+  input[type=range]::-webkit-slider-thumb{width:8px!important;height:8px!important;box-shadow:none!important;}
   /* フォント調整 */
   body{font-size:11px;}
 }
@@ -777,6 +819,7 @@ footer a{color:#2f6df0;text-decoration:none;}
     <button class="tab-mi" data-tab="fp">👨‍👩‍👧 FPシミュレーション</button>
     <button class="tab-mi" data-tab="estimate">📄 資金計画書</button>
     <button class="tab-mi" data-tab="shinsa">✅ 事前審査</button>
+    <button class="tab-mi" data-tab="guide">📖 使い方ガイド</button>
   </div>
 </nav>
 
@@ -794,6 +837,7 @@ footer a{color:#2f6df0;text-decoration:none;}
     印刷 / PDF保存
   </button>
 </div>
+<div class="guide-banner">💡 <span><b>はじめてお使いの方へ：</b>左の入力欄に数字を入れると、右の結果とグラフがその場で変わります。まずは土地・建物の価格と年収を入れてみてください。</span><button onclick="gotoTab('guide')">📖 使い方ガイドを見る</button></div>
 <div class="ph">
   <div class="ph-ey">Step 1 — 資金計画・返済比率</div>
   <h2>住宅取得コスト全体と<em>返済比率</em>を把握する</h2>
@@ -2219,6 +2263,71 @@ footer a{color:#2f6df0;text-decoration:none;}
 </div>
 </div>
 
+<!-- ══════════════ TAB: 使い方ガイド ══════════════ -->
+<div class="pg" id="tab-guide">
+<div class="ph">
+  <div class="ph-ey">User's Manual — はじめての方へ</div>
+  <h2>このシミュレーターの<em>使い方ガイド</em></h2>
+  <p>マイホームの資金計画づくりを、入力するだけで「見える化」するツールです。むずかしい知識は不要。上のタブを左から順に進めるだけで、あなたの家づくりのお金の全体像がわかります。</p>
+</div>
+
+<div class="panel">
+  <div class="ph2">🚀 基本の使い方 — 5つのステップ</div>
+  <div class="guide-steps">
+    <div class="g-step"><span class="no">1</span><h4>物件と年収を入れる</h4><p>土地・建物の価格、頭金、年収を入力。月々の返済額と「無理のない借入かどうか」が3つのメーターですぐわかります。</p><span class="tabref">📋 資金計画</span></div>
+    <div class="g-step"><span class="no">2</span><h4>金利を銀行から選ぶ</h4><p>建築予定地の都道府県を選ぶと、使える銀行の一覧が出ます。銀行名を選ぶだけで最新の金利が入ります（毎日13時更新）。</p><span class="tabref">📋 資金計画</span></div>
+    <div class="g-step"><span class="no">3</span><h4>戻ってくる税金を確認</h4><p>住宅ローン控除で13年間にいくら税金が戻るかを自動計算。長期優良住宅なら控除がさらに大きくなります。</p><span class="tabref">🎁 ローン控除</span></div>
+    <div class="g-step"><span class="no">4</span><h4>住んでからのお金を見る</h4><p>太陽光の売電効果、断熱性能による光熱費の差、賃貸と持ち家の30年比較。「建てたあと」の家計が見えます。</p><span class="tabref">☀️ 太陽光 ／ 🏡 ライフサイクル</span></div>
+    <div class="g-step"><span class="no">5</span><h4>差額を将来に回す</h4><p>ローンの組み方で生まれる月々の差額を積立投資に回すと、35年でいくらになるかをシミュレーション。最後に資金計画書を印刷して完成です。</p><span class="tabref">📈 投資 ／ 📄 資金計画書</span></div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="ph2">🗂️ 各タブでできること</div>
+  <div class="tb-box" style="border:none;box-shadow:none;padding:0;margin:0;">
+  <table class="guide-tbl">
+    <thead><tr><th style="width:150px;">タブ</th><th>できること</th><th style="width:230px;">入力するもの</th></tr></thead>
+    <tbody>
+      <tr><td>📋 資金計画</td><td>総費用・借入額・月々の返済額・返済負担率をリアルタイム計算。「年数で比較」「金利で比較」「希望の月々から逆算」の3モード。</td><td>土地/建物/諸経費、頭金、年収、金利（銀行から選択可）</td></tr>
+      <tr><td>🎁 ローン控除</td><td>住宅ローン減税で戻ってくる税金を年ごとに試算。住宅の性能・入居年・子育て世帯かどうかも考慮。</td><td>住宅の種別、入居年、年収（資金計画と自動連動）</td></tr>
+      <tr><td>☀️ 太陽光・蓄電池</td><td>太陽光パネルの発電量・売電収入・電気代削減を試算。蓄電池ありなしの比較も。</td><td>パネル容量、屋根の向き、電気使用量</td></tr>
+      <tr><td>🏡 ライフサイクルコスト</td><td>家族構成×生活スタイル×断熱等級で光熱費を自動見積り。「賃貸を続けた場合」「他社の家」との30年総額比較。</td><td>家族構成、生活スタイル、断熱等級（ボタンを選ぶだけ）</td></tr>
+      <tr><td>📈 投資シミュレーション</td><td>ローンの差額をS&amp;P500などで積立投資した場合の将来額。NISA非課税の効果も計算。</td><td>投資先を選ぶだけ（金額は自動連動）</td></tr>
+      <tr><td>⏰ 建てどき比較</td><td>「今建てる」と「数年後に建てる」の総額差。建築費の上昇・金利上昇・その間の家賃まで考慮。</td><td>何年後と比べるか（スライダー1本でOK）</td></tr>
+      <tr><td>👨‍👩‍👧 FPシミュレーション</td><td>家族の年齢・収入・教育費から、生涯の家計収支と貯蓄残高の推移をグラフ化。</td><td>家族の年齢、収入、生活費、教育費</td></tr>
+      <tr><td>📄 資金計画書</td><td>見積り形式の資金計画書を作成。項目は自由に編集でき、そのまま印刷できます。</td><td>各費用項目（初期値入り・編集自由）</td></tr>
+      <tr><td>✅ 事前審査</td><td>住宅ローン事前審査の前に確認したい11項目のチェックリストと、通すためのポイント。</td><td>当てはまる項目をタップするだけ</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="ph2">📚 用語ミニ辞典 — これだけ知っていれば大丈夫</div>
+  <div class="yougo">
+    <div class="yougo-item"><b>変動金利</b><p>世の中の金利に合わせて半年ごとに見直されるタイプ。今は低いが、将来上がる可能性があります。</p></div>
+    <div class="yougo-item"><b>固定金利（フラット35など）</b><p>借りたときの金利がずっと変わらないタイプ。少し高めですが、返済額が一生変わらない安心感があります。</p></div>
+    <div class="yougo-item"><b>返済負担率</b><p>年収に占める年間返済額の割合。25%以内が安心の目安、35%を超えると審査も家計も厳しくなります。</p></div>
+    <div class="yougo-item"><b>頭金（自己資金）</b><p>物件価格のうち現金で払う分。多いほど借入が減り利息も減りますが、手元資金を全部使わないのが鉄則です。</p></div>
+    <div class="yougo-item"><b>住宅ローン控除</b><p>年末のローン残高の0.7%分の税金が最長13年間戻ってくる制度。住宅の省エネ性能が高いほど上限が大きくなります。</p></div>
+    <div class="yougo-item"><b>断熱等級（4〜7）</b><p>家の保温性能のランク。数字が大きいほど冷暖房費が安くなります。等級6はHEAT20 G2という高性能レベルです。</p></div>
+    <div class="yougo-item"><b>団信（団体信用生命保険）</b><p>ローン返済中に万一のことがあったら残りの返済が不要になる保険。生命保険の見直しにもつながります。</p></div>
+    <div class="yougo-item"><b>NISA</b><p>投資の利益（通常は約20%課税）が非課税になる制度。毎月の積立投資と相性抜群です。</p></div>
+    <div class="yougo-item"><b>ペアローン</b><p>夫婦それぞれがローンを組む方法。借入額を増やせて、住宅ローン控除も2人分使えます。</p></div>
+    <div class="yougo-item"><b>事前審査（仮審査）</b><p>本申込の前に「いくら借りられるか」を銀行に確認する手続き。土地探しの前に済ませるのがおすすめです。</p></div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="ph2">❓ よくあるご質問</div>
+  <div class="faq-q"><b>Q. 金利や利回りの数字はいつのものですか？</b><p>A. 毎日13時に最新データへ更新されます（画面右上のバッジに最終更新日時を表示）。ただし実際の適用金利は審査・優遇条件により変わるため、目安としてご利用ください。正式な金利は担当者・金融機関にご確認を。</p></div>
+    <div class="faq-q"><b>Q. 入力した数字は保存されますか？</b><p>A. 保存されません（外部にも送信されません）。ページを閉じると初期値に戻るので、大切な結果は「印刷 / PDF保存」ボタンで残してください。</p></div>
+  <div class="faq-q"><b>Q. スライダーの数字を細かく合わせたい</b><p>A. 金利は0.01%単位で動かせます。スライダーをクリックした後、キーボードの←→キーでも1目盛りずつ動かせます。プランA/B比較表の数字は直接入力もできます。</p></div>
+  <div class="faq-q"><b>Q. どこまで正確ですか？</b><p>A. 元利均等返済など標準的な計算式を使った概算です。税制・保険・補助金は簡略化しているため、最終判断は資金計画書をもとに担当者・専門家にご相談ください。</p></div>
+  <div class="faq-q"><b>Q. きれいに印刷するには？</b><p>A. 各画面の「印刷 / PDF保存」ボタンを押すと、いま開いているタブがそのまま印刷されます。印刷画面で「カラー」を選び、「背景のグラフィック」をONにするとグラフや色がきれいに出ます。保存先を「PDFに保存」にすればPDFになります。</p></div>
+</div>
+</div>
+
 <footer>
   ※ 試算はすべて参考値です。太陽光発電量は全国平均日射量1,100kWh/kW・年に方位係数を適用した概算で、地域・屋根形状・気象条件により異なります。電力単価・FIT価格は参考値。ライフサイクルコストは物価変動・リフォーム費用・解体費用等を含みません。投資試算は過去実績に基づくもので将来の運用成果を保証しません。NISA非課税枠は現行制度を参考にした概算です。<br>
   Powered by <a href="https://puregrowth.jp" target="_blank">ピュアグロース株式会社</a> ｜ ピュアグロースクラブ
@@ -2731,7 +2840,7 @@ const setG=(id,txt,pct,col)=>{
 // ═══ CANVAS HELPERS ═══
 function initCanvas(id,h){
   const c=document.getElementById(id);if(!c)return null;
-  const ctx=c.getContext('2d'),W=c.offsetWidth||600,dpr=window.devicePixelRatio||1;
+  const ctx=c.getContext('2d'),W=c.offsetWidth||600,dpr=(window.PRINT_MODE?3:(window.devicePixelRatio||1));
   c.width=W*dpr;c.height=h*dpr;c.style.width=W+'px';c.style.height=h+'px';
   ctx.scale(dpr,dpr);ctx.clearRect(0,0,W,h);
   return{ctx,W,H:h};
@@ -2772,7 +2881,7 @@ function fillArea(ctx,arr,xOf,yOf,baseY,c1,c2,H,pad){
 // ═══ PIE CHART ═══
 function drawPie(canvasId,legendId,segments){
   const c=document.getElementById(canvasId);if(!c)return;
-  const dpr=window.devicePixelRatio||1;
+  const dpr=(window.PRINT_MODE?3:(window.devicePixelRatio||1));
   const SIZE=220;
   c.width=SIZE*dpr;c.height=SIZE*dpr;
   c.style.width=SIZE+'px';c.style.height=SIZE+'px';
@@ -4045,6 +4154,9 @@ document.getElementById('nisa-lim').addEventListener('input',function(){
   upInvest();
 });
 
+// タブ移動ヘルパー（使い方ガイドバナー等から使用）
+function gotoTab(t){const b=document.querySelector('.tab-mi[data-tab="'+t+'"]');if(b)b.click();window.scrollTo({top:0,behavior:'smooth'});}
+
 // TABS
 document.querySelectorAll('.tab-mi').forEach(btn=>{
   btn.addEventListener('click',function(){
@@ -4065,6 +4177,18 @@ document.querySelectorAll('.tab-mi').forEach(btn=>{
 
 // RESIZE
 let rto;window.addEventListener('resize',()=>{clearTimeout(rto);rto=setTimeout(()=>{upPlan();upSolar();upLife();upInvest();},120);});
+
+// ═══ 印刷時: 全グラフを高解像度（3倍）で再描画 → 印刷後に元へ戻す ═══
+function redrawAllCharts(){
+  try{upPlan();}catch(e){}
+  try{upSolar();}catch(e){}
+  try{upLife();}catch(e){}
+  try{upInvest();}catch(e){}
+  try{upGenzei();}catch(e){}
+  try{if(document.getElementById('tab-fp').classList.contains('on'))upFP();}catch(e){}
+}
+window.addEventListener('beforeprint',function(){window.PRINT_MODE=true;redrawAllCharts();});
+window.addEventListener('afterprint',function(){window.PRINT_MODE=false;redrawAllCharts();});
 
 // INIT
 document.querySelector('[data-dir="SE"]').classList.add('on');
