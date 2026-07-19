@@ -373,9 +373,11 @@ footer a{color:#2f6df0;text-decoration:none;}
 }
 .plan-cmp-eyebrow{font-size:11px;font-weight:800;color:#16284d;letter-spacing:.06em;margin-bottom:14px;}
 .plan-cmp-cards{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;margin-bottom:14px;}
+.plan-cmp-cards.three{grid-template-columns:1fr auto 1fr auto 1fr;}
 .plan-cmp-card{border-radius:12px;padding:14px 16px;border:1.5px solid var(--bdr);}
 .plan-cmp-a{background:rgba(43,114,184,.06);border-color:rgba(43,114,184,.3);}
 .plan-cmp-b{background:rgba(47,109,240,.07);border-color:rgba(47,109,240,.35);}
+.plan-cmp-c{background:rgba(108,63,168,.06);border-color:rgba(108,63,168,.35);}
 .pcc-head{font-size:11px;font-weight:800;color:#16284d;margin-bottom:10px;display:flex;align-items:baseline;gap:6px;}
 .pcc-sub{font-size:9px;font-weight:500;color:var(--mu);letter-spacing:.08em;}
 .pcc-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px;font-size:11px;}
@@ -935,6 +937,20 @@ body.print-fit{font-size:11px;}
         <input type="range" id="p-rateB" min="0.1" max="4.0" step="0.01" value="2.0">
         <div class="sl-hints"><span>0.1%</span><span>4.0%</span></div>
       </div>
+      <div class="sec">金利C（3商品目・任意）</div>
+      <div class="tg-row" style="margin-bottom:8px;">
+        <button class="tg" id="tg-c-on" onclick="setUseC(true)">比較に追加</button>
+        <button class="tg on" id="tg-c-off" onclick="setUseC(false)">使わない</button>
+      </div>
+      <div id="rateC-block" style="display:none">
+        <select class="loan-preset" id="preset-C" onchange="applyLoanPreset('C',this.value)"></select>
+        <div class="preset-note" id="note-C"></div>
+        <div class="sl">
+          <div class="sl-hd">金利C<b id="lbl-rateC">1.20%</b></div>
+          <input type="range" id="p-rateC" min="0.1" max="4.0" step="0.01" value="1.2">
+          <div class="sl-hints"><span>0.1%</span><span>4.0%</span></div>
+        </div>
+      </div>
     </div>
 
     <!-- 逆算モード -->
@@ -1049,7 +1065,7 @@ body.print-fit{font-size:11px;}
 
 <!-- ══ ④ プランA vs B 比較カード ══ -->
 <div class="plan-cmp-wrap">
-  <div class="plan-cmp-eyebrow" id="cmp-table-title">📋 プランA vs プランB 比較 <span style="font-size:9px;font-weight:500;color:var(--mu);margin-left:8px;">※ 値を直接入力して再計算できます</span></div>
+  <div class="plan-cmp-eyebrow" id="cmp-table-title">📋 <span id="cmp-title-txt">プランA vs プランB 比較</span> <span style="font-size:9px;font-weight:500;color:var(--mu);margin-left:8px;">※ 値を直接入力して再計算できます</span></div>
   <div class="plan-cmp-cards">
     <div class="plan-cmp-card plan-cmp-a">
       <div class="pcc-head">プランA <span class="pcc-sub" id="th-a">基準ローン</span></div>
@@ -1079,6 +1095,21 @@ body.print-fit{font-size:11px;}
       <div class="pcc-row pcc-highlight"><span class="pcc-lbl">月々返済</span><span class="pcc-val pcc-big" id="ct-lm">—</span></div>
       <div class="pcc-row"><span class="pcc-lbl">総返済額</span><span class="pcc-val" id="ct-lt">—</span></div>
       <div class="pcc-row"><span class="pcc-lbl">返済負担率</span><span class="pcc-val" id="ct-lr">—</span></div>
+    </div>
+    <div class="plan-cmp-vs" id="plan-cmp-vs2" style="display:none">VS</div>
+    <div class="plan-cmp-card plan-cmp-c" id="plan-cmp-card-c" style="display:none">
+      <div class="pcc-head">プランC <span class="pcc-sub" id="th-c">金利C</span></div>
+      <div class="pcc-row">
+        <span class="pcc-lbl">期間（年）</span>
+        <span class="pcc-val"><input class="pcc-input" id="ci-cy" type="number" min="1" max="50" step="1" value="" placeholder="—" oninput="onCmpCardInput('C')"></span>
+      </div>
+      <div class="pcc-row">
+        <span class="pcc-lbl">金利（%）</span>
+        <span class="pcc-val"><input class="pcc-input" id="ci-crate" type="number" min="0.1" max="10" step="0.01" value="" placeholder="—" oninput="onCmpCardInput('C')"></span>
+      </div>
+      <div class="pcc-row pcc-highlight"><span class="pcc-lbl">月々返済</span><span class="pcc-val pcc-big" id="ct-cm">—</span></div>
+      <div class="pcc-row"><span class="pcc-lbl">総返済額</span><span class="pcc-val" id="ct-ct">—</span></div>
+      <div class="pcc-row"><span class="pcc-lbl">返済負担率</span><span class="pcc-val" id="ct-cr">—</span></div>
     </div>
   </div>
   <!-- 差額ハイライト -->
@@ -2260,6 +2291,7 @@ const S={
   cmpMode:'year',   // 'year' | 'rate'
   rate:1.5,baseYr:35,longYr:50,
   rateA:0.5,rateB:2.0,yrsR:35,
+  rateC:1.2,useC:false, // 3商品目（金利モードのみ・任意）
   pvKw:6,pvUnit:25,dirF:0.93,
   util:31,er:2.0,fit:16,su:30,deg:0.5,
   use:400,mt:2,battOn:true,bc:9.5,bco:130,bli:15,
@@ -2386,7 +2418,7 @@ function currentLoanGroups(){
 function onPrefChange(v){
   selPref=v;
   buildLoanPresets();
-  ['common','A','B','rev'].forEach(function(w){var ne=document.getElementById('note-'+w);if(ne)ne.innerHTML='';});
+  ['common','A','B','C','rev'].forEach(function(w){var ne=document.getElementById('note-'+w);if(ne)ne.innerHTML='';});
 }
 function buildLoanPresets(){
   var ps=document.getElementById('pref-select');
@@ -2415,6 +2447,7 @@ function applyLoanPreset(which,val){
   if(which==='common'){S.rate=p.r;setSl('p-rate','lbl-rt');upPlan();upLife();upInvest();}
   else if(which==='A'){S.rateA=p.r;setSl('p-rateA','lbl-rateA');upPlan();upInvest();}
   else if(which==='B'){S.rateB=p.r;setSl('p-rateB','lbl-rateB');upPlan();upInvest();}
+  else if(which==='C'){S.rateC=p.r;setSl('p-rateC','lbl-rateC');if(!S.useC)setUseC(true);else upPlan();}
   else if(which==='rev'){revS.rate=p.r;setSl('rev-rate','lbl-rev-rate');upRevSim();}
   var ne=document.getElementById('note-'+which);if(ne)ne.innerHTML=note;
 }
@@ -2995,17 +3028,36 @@ function upPlan(){
   document.getElementById('ct-lr').textContent=repayB.toFixed(1)+'%';
   document.getElementById('ct-free').textContent=moD>0?fmtY(Math.round(moD)):'—';
 
-  drawPlanChart(B,trA,trB,p);
+  // ── プランC（3商品目・金利モードのみ任意）──
+  const useC=S.cmpMode==='rate'&&S.useC;
+  const cardC=document.getElementById('plan-cmp-card-c'),vsC=document.getElementById('plan-cmp-vs2');
+  if(cardC)cardC.style.display=useC?'':'none';
+  if(vsC)vsC.style.display=useC?'':'none';
+  const cardsWrap=document.querySelector('.plan-cmp-cards');
+  if(cardsWrap)cardsWrap.classList.toggle('three',useC);
+  const ttlTxt=document.getElementById('cmp-title-txt');
+  if(ttlTxt)ttlTxt.textContent=useC?'プランA vs B vs C 比較':'プランA vs プランB 比較';
+  let bmC=0,trC=0;
+  if(useC){
+    bmC=B>0?mo(B,S.rateC,S.yrsR):0;trC=bmC*S.yrsR*12;
+    var ciCy=document.getElementById('ci-cy'),ciCrate=document.getElementById('ci-crate');
+    if(ciCy&&document.activeElement!==ciCy)ciCy.value=S.yrsR;
+    if(ciCrate&&document.activeElement!==ciCrate)ciCrate.value=S.rateC.toFixed(2);
+    document.getElementById('ct-cm').textContent=B>0?fmtY(Math.round(bmC)):'—';
+    document.getElementById('ct-ct').textContent=fmtM(trC);
+    document.getElementById('ct-cr').textContent=(I>0?(bmC*12)/(I*10000)*100:0).toFixed(1)+'%';
+  }
+
+  drawPlanChart(B,trA,trB,p,useC?{r:S.rateC,tr:trC}:null);
 }
 
-function drawPlanChart(B,bTR,lTR,p){
+function drawPlanChart(B,bTR,lTR,p,c3){
   const r=initCanvas('plan-chart',180);if(!r)return;
   const{ctx,W,H}=r;
   const pad={t:16,b:40,l:70,r:20};
   const cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
   const bPrin=B*10000,lPrin=B*10000,bInt=bTR-bPrin,lInt=lTR-lPrin;
-  const maxV=(Math.max(bTR,lTR))/10000*1.1||100;
-  const barW=Math.min(cW*0.28,80),gap=(cW-barW*2)/3;
+  const maxV=(Math.max(bTR,lTR,c3?c3.tr:0))/10000*1.1||100;
 
   const labA=S.cmpMode==='year'?'基準('+p.yA+'年)':'金利A('+p.rA.toFixed(2)+'%)';
   const labB=S.cmpMode==='year'?'長期('+p.yB+'年)':'金利B('+p.rB.toFixed(2)+'%)';
@@ -3013,6 +3065,14 @@ function drawPlanChart(B,bTR,lTR,p){
   const prins=[bPrin/10000,lPrin/10000];
   const ints=[bInt/10000,lInt/10000];
   const colors=[['#2B72B8','#C0392B'],['#2B72B8','#C96A1A']];
+  if(c3){
+    labels.push('金利C('+c3.r.toFixed(2)+'%)');
+    prins.push(B);
+    ints.push((c3.tr-B*10000)/10000);
+    colors.push(['#2B72B8','#6C3FA8']);
+  }
+  const nBars=labels.length;
+  const barW=Math.min(cW*0.28,80),gap=(cW-barW*nBars)/(nBars+1);
 
   labels.forEach((lb,i)=>{
     const x=pad.l+gap+i*(barW+gap);
@@ -3863,6 +3923,8 @@ function onCmpCardInput(side){
   var rA  = parseFloat(document.getElementById('ci-arate')?.value);
   var yB  = parseFloat(document.getElementById('ci-by')   ?.value);
   var rB  = parseFloat(document.getElementById('ci-brate')?.value);
+  var yC  = parseFloat(document.getElementById('ci-cy')   ?.value);
+  var rC  = parseFloat(document.getElementById('ci-crate')?.value);
 
   if(S.cmpMode==='year'){
     // 年数モード：年数とAの金利（=共通金利）を左パネルに反映
@@ -3895,8 +3957,13 @@ function onCmpCardInput(side){
       var rslB=document.getElementById('p-rateB');
       if(rslB){rslB.value=rB;document.getElementById('lbl-rateB').textContent=rB.toFixed(2)+'%';}
     }
+    if(S.useC&&!isNaN(rC)&&rC>=0.1&&rC<=10){
+      S.rateC=rC;
+      var rslC=document.getElementById('p-rateC');
+      if(rslC){rslC.value=rC;document.getElementById('lbl-rateC').textContent=rC.toFixed(2)+'%';}
+    }
     // 期間（金利モードは共通期間）
-    var newYrs=(!isNaN(yA)&&side==='A')?yA:(!isNaN(yB)&&side==='B')?yB:NaN;
+    var newYrs=(!isNaN(yA)&&side==='A')?yA:(!isNaN(yB)&&side==='B')?yB:(!isNaN(yC)&&side==='C')?yC:NaN;
     if(!isNaN(newYrs)&&newYrs>=1&&newYrs<=50){
       S.yrsR=newYrs;
       var yrsl=document.getElementById('p-yrs-r');
@@ -3919,6 +3986,18 @@ document.getElementById('p-long').addEventListener('input',function(){S.longYr=+
 document.getElementById('p-yrs-r').addEventListener('input',function(){S.yrsR=+this.value;document.getElementById('lbl-yrs-r').textContent=+this.value+'年';upPlan();upInvest();});
 document.getElementById('p-rateA').addEventListener('input',function(){S.rateA=+this.value;document.getElementById('lbl-rateA').textContent=(+this.value).toFixed(2)+'%';upPlan();upInvest();});
 document.getElementById('p-rateB').addEventListener('input',function(){S.rateB=+this.value;document.getElementById('lbl-rateB').textContent=(+this.value).toFixed(2)+'%';upPlan();upInvest();});
+document.getElementById('p-rateC').addEventListener('input',function(){S.rateC=+this.value;document.getElementById('lbl-rateC').textContent=(+this.value).toFixed(2)+'%';upPlan();});
+
+// ═══ プランC（3商品目）の ON/OFF ═══
+function setUseC(on){
+  S.useC=on;
+  var b1=document.getElementById('tg-c-on'),b2=document.getElementById('tg-c-off');
+  if(b1)b1.classList.toggle('on',on);
+  if(b2)b2.classList.toggle('on',!on);
+  var blk=document.getElementById('rateC-block');
+  if(blk)blk.style.display=on?'':'none';
+  upPlan();
+}
 
 document.getElementById('lt-row').addEventListener('click',function(e){
   const b=e.target.closest('[data-lt]');if(!b)return;
