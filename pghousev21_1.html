@@ -79,6 +79,17 @@ select option{background:#F0EEE9;color:#1A1A1A;}
 
 .sec{font-size:9px;color:var(--mu);letter-spacing:.12em;text-transform:uppercase;margin:12px 0 7px;}
 
+/* ─── 断熱等級 2商品 光熱費比較表 ─── */
+.util-cmp{border:1px solid rgba(47,109,240,.25);border-radius:9px;padding:10px 12px;margin-bottom:8px;background:rgba(47,109,240,.04);}
+.uc-row{display:grid;grid-template-columns:1fr 72px 72px 64px;gap:4px;align-items:center;font-size:10px;color:var(--mu);padding:2px 0;}
+.uc-row b{font-family:'DM Mono',monospace;font-weight:500;text-align:right;}
+.uc-row .uc-a{color:#1D5FA8;}
+.uc-row .uc-b{color:#6b7280;}
+.uc-row.uc-head{font-size:8.5px;font-weight:700;color:var(--mu);border-bottom:1px solid rgba(47,109,240,.15);padding-bottom:4px;margin-bottom:2px;}
+.uc-row.uc-head b{font-family:'Noto Sans JP',sans-serif;font-weight:700;font-size:8.5px;}
+.uc-row.uc-sum{border-top:1px solid rgba(47,109,240,.15);margin-top:2px;padding-top:4px;font-weight:700;color:var(--wh);}
+.uc-row.uc-sum b{font-weight:700;}
+
 /* ─── 金融商品プリセット ─── */
 .loan-preset{border-color:rgba(47,109,240,.4);background:rgba(47,109,240,.04);font-weight:600;margin-bottom:5px;}
 .preset-note{font-size:9px;color:var(--mu);margin-bottom:10px;line-height:1.6;min-height:0;}
@@ -1316,7 +1327,7 @@ body.print-fit{font-size:11px;}
 <div class="ph">
   <div class="ph-ey">Step 3 — ライフサイクルコスト</div>
   <h2>家族全体の<em>生涯住居費</em>を試算する</h2>
-  <p>家族構成（6パターン）×生活スタイル（6パターン）を選ぶと月間の電気・ガス・水道代が自動で割り振られます。住宅ランニングコストとあわせて「賃貸継続」または「他社物件（断熱性能・地域別）」と当社物件の生涯住宅費を比較します。</p>
+  <p>家族構成（6パターン）×生活スタイル（6パターン）を選ぶと月間の電気・ガス・水道代が自動で割り振られます。都道府県・市区町村を選ぶと省エネ地域区分（1〜8地域）を自動判定し、断熱等級の異なる2商品の光熱費を比較できます。住宅ランニングコストとあわせて「一生賃貸」または「他社物件」と当社物件の生涯住宅費を比較します。</p>
   <p class="ph-support">・あなたのマイホーム計画を徹底サポート。ライフサイクルコスト、FP、投資計画までトータルライフをサポートします！</p>
 </div>
 <div class="l24life">
@@ -1344,14 +1355,37 @@ body.print-fit{font-size:11px;}
   </div>
   <div class="panel">
     <div class="ph2">💡 月間 光熱費・水道代<span class="preset-upd">構成×スタイル×断熱等級で自動割り振り</span></div>
-    <div class="sec" style="margin-top:0;">🏠 断熱等級（当社仕様と連動）</div>
-    <div class="tg-row" id="grade-row" style="margin-bottom:4px;">
+    <div class="sec" style="margin-top:0;">📍 建設地域（都道府県・市区町村 → 省エネ地域区分を自動判定）</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <select id="life-pref" onchange="onLifePrefChange(this.value)"></select>
+      <select id="life-city" onchange="onLifeCityChange(this.value)"></select>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin:-2px 0 10px;flex-wrap:wrap;">
+      <span style="font-size:9px;color:var(--mu);white-space:nowrap;">判定 地域区分:</span>
+      <select id="life-region" style="width:auto;margin:0;padding:4px 8px;font-weight:700;color:#1D5FA8;" onchange="onLifeRegionChange(this.value)">
+        <option value="1">1地域</option><option value="2">2地域</option><option value="3">3地域</option><option value="4">4地域</option>
+        <option value="5">5地域</option><option value="6" selected>6地域</option><option value="7">7地域</option><option value="8">8地域</option>
+      </select>
+      <span style="font-size:9px;color:var(--mu);" id="life-region-note">—</span>
+    </div>
+    <div class="sec">🏠 断熱等級で2商品を比較</div>
+    <div style="font-size:9px;color:#2f6df0;font-weight:700;margin-bottom:3px;">商品①（当社仕様・生涯住居費の試算に使用）</div>
+    <div class="tg-row" id="grade-row" style="margin-bottom:6px;">
       <button class="tg" data-gr="4">等級4<br><span style="font-size:8px;font-weight:400;">省エネ基準</span></button>
       <button class="tg" data-gr="5">等級5<br><span style="font-size:8px;font-weight:400;">ZEH基準</span></button>
       <button class="tg on" data-gr="6">等級6<br><span style="font-size:8px;font-weight:400;">HEAT20 G2</span></button>
       <button class="tg" data-gr="7">等級7<br><span style="font-size:8px;font-weight:400;">HEAT20 G3</span></button>
     </div>
+    <div style="font-size:9px;color:var(--mu);font-weight:700;margin-bottom:3px;">商品②（比較用）</div>
+    <div class="tg-row" id="grade-row2" style="margin-bottom:6px;">
+      <button class="tg on" data-gr2="4">等級4<br><span style="font-size:8px;font-weight:400;">省エネ基準</span></button>
+      <button class="tg" data-gr2="5">等級5<br><span style="font-size:8px;font-weight:400;">ZEH基準</span></button>
+      <button class="tg" data-gr2="6">等級6<br><span style="font-size:8px;font-weight:400;">HEAT20 G2</span></button>
+      <button class="tg" data-gr2="7">等級7<br><span style="font-size:8px;font-weight:400;">HEAT20 G3</span></button>
+    </div>
+    <div id="util-cmp" class="util-cmp"></div>
     <div style="font-size:9px;color:var(--mu);margin-bottom:10px;line-height:1.7;" id="grade-note">—</div>
+    <div class="sec">商品①の内訳（スライダーで微調整できます）</div>
     <div class="sl"><div class="sl-hd">電気代（月）<b id="lbl-le">1.2万円</b></div><input type="range" id="lc-el" min="0.3" max="6" step="0.1" value="1.2"></div>
     <div class="sl"><div class="sl-hd">ガス代（月）<b id="lbl-lg">0.8万円</b></div><input type="range" id="lc-gas" min="0" max="3" step="0.1" value="0.8"></div>
     <div class="sl"><div class="sl-hd">水道代（月）<b id="lbl-lw">0.5万円</b></div><input type="range" id="lc-wat" min="0.1" max="2.5" step="0.1" value="0.5"></div>
@@ -1373,8 +1407,15 @@ body.print-fit{font-size:11px;}
   </div>
 
   <div class="panel" id="lm-rent-panel">
-    <div class="ph2">🏢 賃貸の場合（比較用）</div>
-    <div class="sl"><div class="sl-hd">想定家賃（月）<b id="lbl-lrent">12万円</b></div><input type="range" id="lc-rent" min="0" max="50" step="0.5" value="12"><div class="sl-hints"><span>0万</span><span>50万</span></div></div>
+    <div class="ph2">🏢 一生賃貸に暮らす場合</div>
+    <label style="font-size:10px;color:var(--mu)">想定家賃（月）※0.1万円刻みで入力できます</label>
+    <div class="nf"><input type="number" id="lc-rent" value="12" min="0" max="100" step="0.1"><span class="nf-unit">万円</span></div>
+    <label style="font-size:10px;color:var(--mu)">駐車場（月極・台数×月額）</label>
+    <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:8px;">
+      <div class="nf"><span class="nf-lbl">台数</span><input type="number" id="lc-pkn" value="0" min="0" max="9" step="1"><span class="nf-unit">台</span></div>
+      <div class="nf"><span class="nf-lbl">月額/台</span><input type="number" id="lc-pkfee" value="0.5" min="0" max="10" step="0.1"><span class="nf-unit">万円</span></div>
+    </div>
+    <div style="font-size:9px;color:var(--mu);margin:-4px 0 10px;" id="lbl-pk-sum">駐車場代 月0.0万円</div>
     <div class="sl"><div class="sl-hd">共益費・管理費（月）<b id="lbl-lcommon">0万円</b></div><input type="range" id="lc-common" min="0" max="5" step="0.1" value="0"><div class="sl-hints"><span>0万</span><span>5万</span></div></div>
     <div class="sl"><div class="sl-hd">更新費（2年ごと）<b id="lbl-lrenew">0万円</b></div><input type="range" id="lc-renew" min="0" max="30" step="0.5" value="0"><div class="sl-hints"><span>0万</span><span>家賃1〜2ヶ月分が目安</span></div></div>
     <div class="sl"><div class="sl-hd">賃料上昇率/年<b id="lbl-lrr">0.5%</b></div><input type="range" id="lc-rr" min="0" max="3" step="0.5" value="0.5"></div>
@@ -1410,16 +1451,7 @@ body.print-fit{font-size:11px;}
     </div>
 
     <div class="sec">建設地域（省エネ地域区分）</div>
-    <select id="lo-region">
-      <option value="1">1地域（旭川・帯広など）冷暖房負荷 大</option>
-      <option value="2">2地域（札幌・岩見沢など）</option>
-      <option value="3">3地域（盛岡・青森など）</option>
-      <option value="4">4地域（仙台・長野など）</option>
-      <option value="5">5地域（つくば・宇都宮など）</option>
-      <option value="6" selected>6地域（東京・大阪・名古屋など）</option>
-      <option value="7">7地域（鹿児島・宮崎など）</option>
-      <option value="8">8地域（沖縄）冷暖房負荷 小</option>
-    </select>
+    <div style="font-size:10px;color:var(--wh);background:rgba(47,109,240,.05);border:1px solid rgba(47,109,240,.2);border-radius:7px;padding:8px 11px;margin-bottom:10px;line-height:1.6;" id="lo-region-linked">—</div>
 
     <div class="sec">他社のランニングコスト差</div>
     <div class="sl"><div class="sl-hd">他社 修繕積立（月）<b id="lbl-lo-rp">1.5万円</b></div><input type="range" id="lo-rp" min="0" max="5" step="0.1" value="1.5"><div class="sl-hints"><span>0万</span><span>メンテフリー外壁なら安い</span></div></div>
@@ -2297,6 +2329,8 @@ const S={
   use:400,mt:2,battOn:true,bc:9.5,bco:130,bli:15,
   fam:1,lstyle:'std',el:1.2,gas:0.8,wat:0.5,
   rp:1.0,tx:15,ins:5,mg:0,rent:12,rr:0.5,lcommon:0,lrenew:0,lyrs:30,
+  pkN:0,pkFee:0.5, // 賃貸の駐車場: 台数・月額/台（万円）
+  lifePref:'愛媛県',lifeCity:'松山市',utilGrade2:4, // 建設地域と断熱2商品比較
   lifeMode:'rent',  // 'rent' | 'other'
   loPrice:2200, loMyGrade:6, loOtherGrade:4, loRegion:6, loRp:1.5,
   invOn:true,fund:'sp500',
@@ -2702,6 +2736,110 @@ function upCK(el,i){
     wrap.appendChild(btn);
   });
 })();
+// ═══ 都道府県・市区町村 → 省エネ地域区分（1〜8地域・目安） ═══
+// 各都道府県: [市区町村名, 地域区分] の配列（先頭が既定値）。自動判定後に手動変更も可能。
+const LIFE_REGION={
+  '北海道':[['札幌市',2],['旭川市',1],['函館市',2],['帯広市',1],['釧路市',2],['北見市',1],['小樽市',2],['室蘭市',2]],
+  '青森県':[['青森市',3],['八戸市',3],['弘前市',3],['十和田市',3],['むつ市',3]],
+  '岩手県':[['盛岡市',3],['花巻市',3],['一関市',4],['奥州市',3],['宮古市',4],['釜石市',4]],
+  '宮城県':[['仙台市',4],['石巻市',4],['大崎市',4],['名取市',4],['気仙沼市',4]],
+  '秋田県':[['秋田市',4],['横手市',3],['大館市',3],['由利本荘市',4],['大仙市',3]],
+  '山形県':[['山形市',4],['米沢市',3],['鶴岡市',4],['酒田市',4],['新庄市',3]],
+  '福島県':[['福島市',4],['郡山市',4],['いわき市',5],['会津若松市',4],['白河市',4]],
+  '茨城県':[['水戸市',6],['つくば市',5],['日立市',6],['土浦市',6],['古河市',6],['大子町',5]],
+  '栃木県':[['宇都宮市',5],['小山市',5],['栃木市',5],['足利市',6],['那須塩原市',4],['日光市',4]],
+  '群馬県':[['前橋市',5],['高崎市',5],['太田市',6],['館林市',6],['草津町',2],['みなかみ町',3]],
+  '埼玉県':[['さいたま市',6],['川越市',6],['川口市',6],['熊谷市',6],['秩父市',5]],
+  '千葉県':[['千葉市',6],['船橋市',6],['柏市',6],['市川市',6],['木更津市',6],['銚子市',6]],
+  '東京都':[['23区',6],['八王子市',6],['立川市',6],['町田市',6],['青梅市',6],['奥多摩町',5],['八丈町',7],['小笠原村',8]],
+  '神奈川県':[['横浜市',6],['川崎市',6],['相模原市',6],['藤沢市',6],['小田原市',6],['箱根町',5]],
+  '新潟県':[['新潟市',5],['長岡市',5],['上越市',5],['三条市',5],['十日町市',4],['湯沢町',4]],
+  '富山県':[['富山市',5],['高岡市',5],['射水市',5],['黒部市',5],['南砺市',5]],
+  '石川県':[['金沢市',6],['小松市',6],['白山市',5],['七尾市',5],['輪島市',5]],
+  '福井県':[['福井市',6],['敦賀市',6],['坂井市',6],['大野市',5],['小浜市',6]],
+  '山梨県':[['甲府市',6],['甲斐市',6],['都留市',5],['富士吉田市',4],['北杜市',4],['富士河口湖町',4]],
+  '長野県':[['長野市',4],['松本市',4],['上田市',4],['佐久市',3],['諏訪市',4],['飯田市',5],['軽井沢町',3]],
+  '岐阜県':[['岐阜市',6],['大垣市',6],['多治見市',6],['中津川市',5],['高山市',4],['飛騨市',3]],
+  '静岡県':[['静岡市',6],['浜松市',6],['沼津市',6],['富士市',6],['御殿場市',5],['下田市',7]],
+  '愛知県':[['名古屋市',6],['豊田市',6],['岡崎市',6],['豊橋市',6],['一宮市',6],['春日井市',6]],
+  '三重県':[['津市',6],['四日市市',6],['鈴鹿市',6],['松阪市',6],['伊勢市',6],['名張市',6]],
+  '滋賀県':[['大津市',6],['草津市',6],['彦根市',5],['長浜市',5],['甲賀市',5]],
+  '京都府':[['京都市',6],['宇治市',6],['亀岡市',5],['舞鶴市',6],['福知山市',5]],
+  '大阪府':[['大阪市',6],['堺市',6],['豊中市',6],['枚方市',6],['東大阪市',6],['岸和田市',6]],
+  '兵庫県':[['神戸市',6],['姫路市',6],['西宮市',6],['尼崎市',6],['明石市',6],['豊岡市',5],['三田市',5]],
+  '奈良県':[['奈良市',6],['橿原市',6],['生駒市',6],['大和郡山市',6],['五條市',6],['天川村',5]],
+  '和歌山県':[['和歌山市',6],['橋本市',6],['田辺市',6],['新宮市',7],['串本町',7]],
+  '鳥取県':[['鳥取市',6],['米子市',6],['倉吉市',5],['境港市',6],['日南町',4]],
+  '島根県':[['松江市',6],['出雲市',6],['浜田市',6],['益田市',6],['奥出雲町',4]],
+  '岡山県':[['岡山市',6],['倉敷市',6],['津山市',5],['総社市',6],['新見市',5],['真庭市',4]],
+  '広島県':[['広島市',6],['福山市',6],['呉市',6],['尾道市',6],['東広島市',5],['庄原市',4]],
+  '山口県':[['山口市',6],['下関市',6],['宇部市',6],['周南市',6],['岩国市',6],['萩市',6]],
+  '徳島県':[['徳島市',6],['鳴門市',6],['阿南市',6],['三好市',5]],
+  '香川県':[['高松市',6],['丸亀市',6],['坂出市',6],['観音寺市',6],['さぬき市',6]],
+  '愛媛県':[['松山市',6],['今治市',6],['新居浜市',6],['西条市',6],['宇和島市',6],['大洲市',6],['久万高原町',4]],
+  '高知県':[['高知市',6],['南国市',6],['四万十市',7],['室戸市',7],['土佐清水市',7],['梼原町',4]],
+  '福岡県':[['福岡市',6],['北九州市',6],['久留米市',6],['飯塚市',6],['大牟田市',6],['糸島市',6]],
+  '佐賀県':[['佐賀市',6],['唐津市',6],['鳥栖市',6],['伊万里市',6],['武雄市',6]],
+  '長崎県':[['長崎市',7],['佐世保市',6],['諫早市',6],['大村市',6],['島原市',7],['五島市',7]],
+  '熊本県':[['熊本市',6],['八代市',6],['天草市',7],['玉名市',6],['人吉市',6],['阿蘇市',5]],
+  '大分県':[['大分市',6],['別府市',6],['中津市',6],['日田市',6],['佐伯市',6],['竹田市',5]],
+  '宮崎県':[['宮崎市',7],['都城市',6],['延岡市',7],['日南市',7],['小林市',6],['高千穂町',5]],
+  '鹿児島県':[['鹿児島市',7],['霧島市',7],['鹿屋市',7],['薩摩川内市',7],['伊佐市',6],['奄美市',8]],
+  '沖縄県':[['那覇市',8],['沖縄市',8],['うるま市',8],['名護市',8],['宮古島市',8],['石垣市',8]],
+};
+function buildLifeRegionSelects(){
+  var ps=document.getElementById('life-pref');if(!ps)return;
+  ps.innerHTML=PREFS.map(function(p){return '<option value="'+p+'"'+(p===S.lifePref?' selected':'')+'>'+p+'</option>';}).join('');
+  buildLifeCitySelect();
+}
+function buildLifeCitySelect(){
+  var cs=document.getElementById('life-city');if(!cs)return;
+  var list=LIFE_REGION[S.lifePref]||[];
+  cs.innerHTML=list.map(function(c){return '<option value="'+c[0]+'"'+(c[0]===S.lifeCity?' selected':'')+'>'+c[0]+'</option>';}).join('');
+}
+function lifeCityRegion(){
+  var list=LIFE_REGION[S.lifePref]||[];
+  for(var i=0;i<list.length;i++)if(list[i][0]===S.lifeCity)return list[i][1];
+  return 6;
+}
+function onLifePrefChange(v){
+  S.lifePref=v;
+  var list=LIFE_REGION[v]||[];
+  S.lifeCity=list.length?list[0][0]:'';
+  buildLifeCitySelect();
+  applyLifeRegion(lifeCityRegion(),true);
+}
+function onLifeCityChange(v){S.lifeCity=v;applyLifeRegion(lifeCityRegion(),true);}
+function onLifeRegionChange(v){applyLifeRegion(+v,false);}
+function applyLifeRegion(region,isAuto){
+  S.loRegion=region;
+  var rs=document.getElementById('life-region');if(rs)rs.value=String(region);
+  var note=document.getElementById('life-region-note');
+  if(note)note.textContent=isAuto?'（'+S.lifePref+' '+S.lifeCity+' から自動判定・手動変更可）':'（手動設定中）';
+  var linked=document.getElementById('lo-region-linked');
+  if(linked)linked.innerHTML='<b>'+region+'地域</b>（'+S.lifePref+' '+S.lifeCity+'）｜「月間 光熱費・水道代」パネルの建設地域選択と連動';
+  applyFamStyle();upLife();
+}
+// ═══ 断熱等級2商品の光熱費比較表 ═══
+function updUtilCmp(){
+  var box=document.getElementById('util-cmp');if(!box)return;
+  var g1=S.loMyGrade,g2=S.utilGrade2;
+  var delta=(hvacCost(S.loRegion,g2)-hvacCost(S.loRegion,g1))/12; // 商品②−商品①（万円/月）
+  var el2,gas2;
+  if(S.gas<=0){el2=Math.max(0.3,S.el+delta);gas2=0;}
+  else{el2=Math.max(0.3,S.el+delta*0.7);gas2=Math.max(0,S.gas+delta*0.3);}
+  var wat2=S.wat;
+  var s1=S.el+S.gas+S.wat,s2=el2+gas2+wat2,d=s2-s1;
+  var col=function(v){return v>0.001?'#c0392b':v<-0.001?'#1f9d63':'var(--mu)';};
+  var row=function(lbl,a,b){var df=b-a;return '<div class="uc-row"><span>'+lbl+'</span><b class="uc-a">'+a.toFixed(1)+'万</b><b class="uc-b">'+b.toFixed(1)+'万</b><b style="color:'+col(df)+'">'+(df>=0?'+':'')+df.toFixed(1)+'万</b></div>';};
+  box.innerHTML=
+    '<div class="uc-row uc-head"><span>月額（'+S.loRegion+'地域）</span><b style="color:#1D5FA8;">商品① 等級'+g1+'</b><b>商品② 等級'+g2+'</b><b>差（月）</b></div>'
+    +row('電気代',S.el,el2)
+    +row('ガス代',S.gas,gas2)
+    +row('水道代',S.wat,wat2)
+    +'<div class="uc-row uc-sum"><span>月合計</span><b class="uc-a">'+s1.toFixed(1)+'万</b><b class="uc-b">'+s2.toFixed(1)+'万</b><b style="color:'+col(d)+'">'+(d>=0?'+':'')+d.toFixed(1)+'万</b></div>'
+    +'<div style="font-size:9px;color:var(--mu);margin-top:5px;line-height:1.6;">年間差 <b style="color:'+col(d)+';font-family:\'DM Mono\',monospace;">'+(d*12>=0?'+':'')+(d*12).toFixed(1)+'万円</b>｜水道代は断熱等級の影響を受けません。生涯住居費の試算には<b>商品①（当社仕様）</b>を使用します</div>';
+}
 // ═══ 家族構成 × 生活スタイル → 光熱費・水道代の自動割り振り ═══
 const FAM_BASE={ // 月額基準値（万円）: el=電気 gas=ガス wat=水道 rent=想定家賃
   1:{n:'単身',el:1.2,gas:0.6,wat:0.4,rent:8},
@@ -2736,13 +2874,14 @@ function applyFamStyle(){
   const ne=document.getElementById('style-note');
   if(ne)ne.innerHTML='適用中: <b>'+b.n+'</b> × <b>'+ls.n+'</b> × <b>断熱等級'+S.loMyGrade+'</b>｜'+ls.d+'<br>電気 '+S.el.toFixed(1)+'万・ガス '+S.gas.toFixed(1)+'万・水道 '+S.wat.toFixed(1)+'万（スライダーで微調整できます）';
   const gn=document.getElementById('grade-note');
-  if(gn)gn.innerHTML='断熱等級'+S.loMyGrade+'×'+S.loRegion+'地域：等級4（省エネ基準）比で冷暖房費 <b style="color:'+(adjMo<0?'var(--gr)':'var(--mu)')+'">月'+(adjMo<=0?'▲'+Math.abs(adjMo).toFixed(2):'+'+adjMo.toFixed(2))+'万円</b>｜地域区分は「他社物件と比較」の建設地域と連動しています';
+  if(gn)gn.innerHTML='商品① 断熱等級'+S.loMyGrade+'×'+S.loRegion+'地域：等級4（省エネ基準）比で冷暖房費 <b style="color:'+(adjMo<0?'var(--gr)':'var(--mu)')+'">月'+(adjMo<=0?'▲'+Math.abs(adjMo).toFixed(2):'+'+adjMo.toFixed(2))+'万円</b>｜地域区分は上の都道府県・市区町村選択から自動判定（「他社物件と比較」とも連動）';
   updUtilSum();
 }
 function updUtilSum(){
   const sum=S.el+S.gas+S.wat;
   const e=document.getElementById('lbl-util-sum');if(e)e.textContent=sum.toFixed(1)+'万円';
   const y=document.getElementById('lbl-util-yr');if(y)y.textContent='年間 '+Math.round(sum*12)+'万円';
+  updUtilCmp();
 }
 const TAX=0.20315;
 
@@ -3236,11 +3375,12 @@ function upLife(){
       const loanPay2=y<=S.baseYr?bm2*12:0;
       rentCum+=loanPay2+(utilAnn+hvacDiff)*10000+fixedAnn2*10000;
     }else{
-      // 賃貸：家賃（上昇あり）＋共益費（固定）＋更新費（2年ごと）
+      // 賃貸：家賃（上昇あり）＋駐車場＋共益費（固定）＋更新費（2年ごと）
       const rentThisYr=S.rent*12*Math.pow(1+S.rr/100,y-1)*10000;
+      const pkThisYr=S.pkN*S.pkFee*12*10000;
       const commonThisYr=S.lcommon*12*10000;
       const renewThisYr=(y%2===0)?S.lrenew*10000:0;
-      rentCum+=rentThisYr+commonThisYr+renewThisYr;
+      rentCum+=rentThisYr+pkThisYr+commonThisYr+renewThisYr;
     }
     ownRows.push(Math.round(ownCum/10000));
     rentRows.push(Math.round(rentCum/10000));
@@ -4046,7 +4186,9 @@ const lls={
   'lc-tx':(v)=>{S.tx=+v;document.getElementById('lbl-ltx').textContent=v+'万円';},
   'lc-ins':(v)=>{S.ins=+v;document.getElementById('lbl-lins').textContent=v+'万円';},
   'lc-mg':(v)=>{S.mg=+v;document.getElementById('lbl-lmg').textContent=v+'万円';},
-  'lc-rent':(v)=>{S.rent=+v;document.getElementById('lbl-lrent').textContent=v+'万円';},
+  'lc-rent':(v)=>{S.rent=Math.max(0,+v||0);var l=document.getElementById('lbl-lrent');if(l)l.textContent=(+v||0).toFixed(1)+'万円';},
+  'lc-pkn':(v)=>{S.pkN=Math.max(0,Math.round(+v||0));updPkSum();},
+  'lc-pkfee':(v)=>{S.pkFee=Math.max(0,+v||0);updPkSum();},
   'lc-common':(v)=>{S.lcommon=+v;document.getElementById('lbl-lcommon').textContent=(+v).toFixed(1)+'万円';},
   'lc-renew':(v)=>{S.lrenew=+v;document.getElementById('lbl-lrenew').textContent=(+v).toFixed(1)+'万円';},
   'lc-rr':(v)=>{S.rr=+v;document.getElementById('lbl-lrr').textContent=v+'%';},
@@ -4054,6 +4196,17 @@ const lls={
   'lo-rp':(v)=>{S.loRp=+v;document.getElementById('lbl-lo-rp').textContent=(+v).toFixed(1)+'万円';},
 };
 Object.entries(lls).forEach(([id,fn])=>{const el=document.getElementById(id);if(el)el.addEventListener('input',function(){fn(this.value);upLife();});});
+function updPkSum(){
+  var e=document.getElementById('lbl-pk-sum');
+  if(e)e.textContent='駐車場代 月'+(S.pkN*S.pkFee).toFixed(1)+'万円（'+S.pkN+'台 × '+S.pkFee.toFixed(1)+'万円）';
+}
+// 商品②の断熱等級ボタン（比較用）
+document.getElementById('grade-row2').addEventListener('click',function(e){
+  const c=e.target.closest('[data-gr2]');if(!c)return;
+  S.utilGrade2=+c.dataset.gr2;
+  document.querySelectorAll('#grade-row2 .tg').forEach(function(b){b.classList.toggle('on',+b.dataset.gr2===S.utilGrade2);});
+  updUtilCmp();
+});
 
 // ── 他社物件比較の入力イベント（number / select）──
 (function(){
@@ -4232,6 +4385,9 @@ let rto;window.addEventListener('resize',()=>{clearTimeout(rto);rto=setTimeout((
 // INIT
 document.querySelector('[data-dir="SE"]').classList.add('on');
 buildLoanPresets();
+buildLifeRegionSelects();
+applyLifeRegion(lifeCityRegion(),true);
+updPkSum();
 applyFamStyle();
 renderCK();
 upPlan();upSolar();upLife();upInvest();estCalc();upRevSim();upGenzei();upToki();
