@@ -622,6 +622,22 @@ footer a{color:#2f6df0;text-decoration:none;}
 .del-row-btn:hover{background:rgba(192,57,43,.3);}
 
 /* ═══ 印刷（A3横・全ページ出力） ═══ */
+/* print-fit: 印刷準備中にbodyへ付与。縮尺計算と印刷レイアウトを一致させるための共通ルール。
+   左の入力パネル列を2段組にして高さを圧縮し、各タブが1枚のA3横に収まる縮小率を稼ぐ */
+body.print-fit{font-size:11px;}
+.print-fit .nav-miyauchi,.print-fit .est-actions,.print-fit .print-btn,.print-fit .print-side,
+.print-fit .fp-add-btn,.print-fit .add-row-btn,.print-fit .del-row-btn,.print-fit .cmp-switch{display:none!important;}
+.print-fit .print-btn-bar{display:none!important;}
+.print-fit #tab-plan .print-btn-bar{display:flex!important;border-bottom:2px solid #16284d;padding:0 0 8px;margin-bottom:12px;}
+.print-fit .l24{grid-template-columns:640px 1fr;}
+.print-fit .l24>div:first-child{column-count:2;column-gap:14px;}
+.print-fit .l24life{grid-template-columns:680px 1fr;}
+.print-fit .l24life>div:first-child{column-count:2;column-gap:14px;}
+.print-fit .l24inv{grid-template-columns:720px 1fr;}
+.print-fit .l24inv>div:first-child{column-count:2;column-gap:14px;}
+.print-fit .fp-layout{grid-template-columns:680px 1fr;}
+.print-fit .fp-layout>div:first-child{column-count:2;column-gap:14px;}
+.print-fit .panel{break-inside:avoid;page-break-inside:avoid;}
 @page{size:A3 landscape;margin:9mm 12mm;}
 @media print{
   html,body{background:#FFF!important;width:auto!important;overflow:visible!important;}
@@ -647,10 +663,6 @@ footer a{color:#2f6df0;text-decoration:none;}
   .rev-sim-card,.health-dash,.fp-kpi-row,.fp-alert{break-inside:avoid;page-break-inside:avoid;}
   tr{break-inside:avoid;page-break-inside:avoid;}
   thead{display:table-header-group;}
-  /* A3横の幅を活かして左パネルを少し圧縮 */
-  .l24{grid-template-columns:330px 1fr;}
-  .l24life{grid-template-columns:350px 1fr;}
-  .l24inv{grid-template-columns:360px 1fr;}
   /* リンク先URLの自動付与を抑止 */
   a[href]::after{content:none!important;}
 }
@@ -4093,17 +4105,45 @@ document.querySelectorAll('.tab-mi').forEach(btn=>{
   });
 });
 
-// ═══ 印刷（A3横・全ページ出力）: 印刷前に全タブを表示して各グラフを実寸で描画 ═══
+// ═══ 印刷（A3横・全ページ出力）: 各タブを縮尺調整して1枚のA3横に収める ═══
 function renderAllTabs(){
   upPlan();upSolar();upLife();upInvest();estCalc();upRevSim();upGenzei();upToki();
   fpRenderMembers();upFP();
 }
+// A3横の印字可能領域（CSS px換算・@page余白9mm/12mm差引＋安全マージン）
+var PRINT_PW=1490,PRINT_PH=1005;
+// タブごとに「レイアウト幅を広げて zoom で縮小」し、印刷高さが1枚に収まる縮尺を求める
+function fitTabsForPrint(){
+  var foot=document.querySelector('footer');
+  var footH=foot?foot.offsetHeight+24:0;
+  var pgs=document.querySelectorAll('.pg');
+  pgs.forEach(function(p,idx){
+    var target=PRINT_PH-(idx===pgs.length-1?footH:0);
+    p.style.zoom='';p.style.padding='0';
+    var L=PRINT_PW,h;
+    for(var i=0;i<6;i++){
+      p.style.width=L+'px';
+      h=p.scrollHeight;
+      var need=h*PRINT_PW/target; // このタブが1枚に収まるレイアウト幅
+      if(need<=L)break;
+      L=Math.min(PRINT_PW*3.5,need*1.02);
+    }
+    p.style.zoom=String(PRINT_PW/L);
+  });
+}
 window.addEventListener('beforeprint',function(){
+  document.body.classList.add('print-fit'); // 印刷と同じレイアウト条件で縮尺を計算
   document.querySelectorAll('.pg').forEach(function(p){p.classList.add('print-show');});
-  renderAllTabs();
+  renderAllTabs();   // 全タブを一旦描画（非表示タブのグラフを実体化）
+  fitTabsForPrint(); // 1枚に収まる縮尺を算出
+  renderAllTabs();   // 確定したレイアウト幅でグラフを描き直し
 });
 window.addEventListener('afterprint',function(){
-  document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('print-show');});
+  document.body.classList.remove('print-fit');
+  document.querySelectorAll('.pg').forEach(function(p){
+    p.classList.remove('print-show');
+    p.style.zoom='';p.style.width='';p.style.padding='';
+  });
   renderAllTabs();
 });
 
