@@ -252,6 +252,7 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
       <button class="nb" data-page="p4" onclick="show('p4')">④ 超耐震</button>
       <button class="nb" data-page="p5" onclick="show('p5')">⑤ 超ZEH</button>
       <button class="nb" data-page="p6" onclick="show('p6')">⑥ 最強コスパ</button>
+      <button class="nb" data-page="pProd" onclick="show('pProd')">🏠 商品プラン</button>
       <button class="nb" data-page="p7" onclick="show('p7')">⑦ 話題性</button>
       <button class="nb" data-page="p8" onclick="show('p8')">⑧ 全国展開</button>
       <button class="nb" data-page="p9" onclick="show('p9')">⑨ 体感</button>
@@ -788,8 +789,9 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
       </div>
     </div>
     <div style="text-align:center;margin-top:clamp(16px,1.6vw,36px)">
-      <button class="pgbtn" onclick="go('sB')">🏠 エリア別 価格シミュレーターで試算する</button>
-      <div class="note" style="margin-top:8px">全国平均・県別坪単価・寒冷地仕様（北海道）を選んで、あなたのエリアの相場との差額と月々換算をその場で表示します。</div>
+      <button class="pgbtn" onclick="go('pProd')">🏠 商品プラン（2階建て・平屋）の価格を見る</button>
+      <button class="pgbtn" style="background:#fff;color:var(--pg1);border:2px solid var(--pg1);box-shadow:none;margin-left:10px" onclick="go('sB')">🗾 エリア別 価格シミュレーター</button>
+      <div class="note" style="margin-top:8px">商品プランでは坪数別の参考価格から、そのまま月々返済の試算に進めます。</div>
     </div>
     <div class="subh">エビデンス① ─ 家の価格の構成（重要なのは透明性！）</div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,1vw,24px)" class="hurdle-grid">
@@ -847,6 +849,76 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
       キーワードは<b>「流通量」</b>。だから建材メーカーと原価交渉ができ、だから商品名がPGハウス。
       エリアシミュレーターは<b>お客様の地元を選んで</b>「同じ28坪でこの差」を見せてから、この構造こそYouTubeで取り上げられた背景 ── と言って ⑦話題性 へ。
       家の価格は<b>本体工事＋付帯工事＋諸費用</b>の3層で透明に説明する（「別途」の多い見積に注意、という他社比較の視点も渡す）。
+    </div>
+  </div>
+</div>
+
+<!-- MIX:PAGE pProd 商品プラン（2階建て・平屋） -->
+<div class="page" id="pProd">
+  <div>
+    <div class="lbl" style="color:var(--acc)">PRODUCT LINEUP ─ PGハウスの商品</div>
+    <div class="ttl">品質も価格も、欲張ってください。<br>『<span class="grad">超耐震 × 自由設計</span>』の2つのラインナップ。</div>
+
+    <div class="card" style="background:linear-gradient(135deg,rgba(26,86,160,.05),rgba(92,200,232,.09));border:2px solid #bfdbfe">
+      <div style="display:flex;align-items:baseline;gap:clamp(8px,.8vw,18px);flex-wrap:wrap">
+        <span style="font-size:clamp(13px,1.15vw,27px);font-weight:900">2階建て 28坪 本体価格</span>
+        <span class="bebas" style="font-size:clamp(48px,4.6vw,104px);line-height:1;color:var(--acc)">1,567</span>
+        <span style="font-size:clamp(15px,1.4vw,32px);font-weight:900">万円〜（税別）</span>
+        <span class="note">税込 約1,724万円〜｜3LDK〜4LDK｜全てを含んでこの価格</span>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:clamp(10px,1vw,22px)">
+        <span class="spec" style="padding:.3em .8em;font-size:clamp(10px,.85vw,19px);font-weight:900">耐震等級3（許容応力度計算）</span>
+        <span class="spec" style="padding:.3em .8em;font-size:clamp(10px,.85vw,19px);font-weight:900">制震ダンパー標準</span>
+        <span class="spec" style="padding:.3em .8em;font-size:clamp(10px,.85vw,19px);font-weight:900">100%建替地震保証</span>
+        <span class="spec" style="padding:.3em .8em;font-size:clamp(10px,.85vw,19px);font-weight:900">長期優良住宅仕様</span>
+        <span class="spec" style="padding:.3em .8em;font-size:clamp(10px,.85vw,19px);font-weight:900">断熱等級6・G2</span>
+        <span class="spec" style="padding:.3em .8em;font-size:clamp(10px,.85vw,19px);font-weight:900">C値0.5未満・全棟気密測定</span>
+        <span class="spec" style="padding:.3em .8em;font-size:clamp(10px,.85vw,19px);font-weight:900">熱交換型第一種換気</span>
+        <span class="spec" style="padding:.3em .8em;font-size:clamp(10px,.85vw,19px);font-weight:900">太陽光5kW標準</span>
+        <span class="spec" style="padding:.3em .8em;font-size:clamp(10px,.85vw,19px);font-weight:900">樹脂サッシ×トリプルガラス</span>
+        <span class="spec" style="padding:.3em .8em;font-size:clamp(10px,.85vw,19px);font-weight:900">オール電化・全室LED</span>
+        <span class="spec" style="padding:.3em .8em;font-size:clamp(10px,.85vw,19px);font-weight:900">最長60年保証</span>
+        <span class="spec" style="padding:.3em .8em;font-size:clamp(10px,.85vw,19px);font-weight:900;border-color:var(--acc);color:var(--acc)">完全自由設計</span>
+      </div>
+    </div>
+
+    <div class="subh">📐 プラン別 参考価格 ─ タイプと坪数を選んで、そのまま月々試算へ</div>
+    <div class="card">
+      <div style="display:flex;gap:8px;margin-bottom:clamp(10px,1vw,22px);flex-wrap:wrap">
+        <button class="nb" id="prodT2" style="font-size:clamp(12px,1.05vw,24px);padding:.5em 1.2em" onclick="prodType(0)">🏠 2階建て（3LDK〜4LDK）</button>
+        <button class="nb" id="prodT1" style="font-size:clamp(12px,1.05vw,24px);padding:.5em 1.2em" onclick="prodType(1)">🏡 平屋（ワンフロアの暮らし）</button>
+      </div>
+      <div id="prodGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(180px,16vw,320px),1fr));gap:clamp(10px,1vw,24px)"></div>
+      <div class="note" style="margin-top:10px" id="prodNote"></div>
+    </div>
+
+    <div class="two-col" style="align-items:start;margin-top:clamp(14px,1.4vw,32px)">
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🏠 2階建て ─ 家族の「ちょうどいい」を最強コスパで</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          PGハウスの基準となる28坪・3LDK〜4LDKの2階建て。<b style="color:var(--text)">超耐震×超ZEHの全部標準仕様のまま、完全自由設計</b>で
+          家族に合った間取りを実現します。全国の加盟店で共有される<b style="color:var(--text)">人気成約プラン</b>から選ぶことも可能です。<br>
+          <a href="https://hamamatsu.pg-house.jp/2ndfloor/" target="_blank" rel="noopener" style="color:var(--pg1);font-weight:900">▶ 2階建て商品の詳細ページ（PGハウス浜松）を見る</a>
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🏡 平屋 ─ ワンフロアで完結する、人気の暮らし</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          階段のないワンフロアの暮らしは、子育て世代からシニアまで年々人気が上昇。
+          PGハウスの平屋は<b style="color:var(--text)">2階建てと同じ標準仕様</b>のまま、
+          <b style="color:var(--text)">＋8万円/坪（税別）</b>のわかりやすい価格設定で叶います。
+          パーク型展示場では平屋＆2階建ての両方のモデルハウスを見比べられます（⑨体感へ）。<br>
+          <a href="https://hamamatsu.pg-house.jp/hiraya/" target="_blank" rel="noopener" style="color:var(--pg1);font-weight:900">▶ 平屋商品の詳細ページ（PGハウス浜松）を見る</a>
+        </div>
+      </div>
+    </div>
+    <div class="ans-band">プランを選んだら、そのまま<u>💰月々返済シミュレーター</u>へ。<br>
+      <span style="font-size:.8em;font-weight:700">※価格は2026年7月時点の全国目安（税別・オプション/付帯工事/諸費用別途）。地域・敷地条件・仕様により異なります。寒冷地（北海道等）は寒冷地仕様となります。</span></div>
+    <div class="talk-note"><span class="tn-tag">本部PR</span>
+      価格の組み立て（社内ルール・エンド画面では話さない）：<b>28坪が基準プラン</b>。27.99坪以下は28坪から30万円/坪を減算した偶数坪を基本プランとし坪数差×40万円を加算、28坪超は＋40万円/坪（36坪以上は一律40万/坪）。
+      <b>平屋は施工面積×8万円/坪（税別）を2階建て金額にプラス</b>。太陽光不要の場合は−60万円（税別）※ZEH相当ではなくなる旨説明。
+      下屋＋15万/坪、バルコニー増＋7万/坪、ガレージ＋35万/坪。諸費用は確認申請30万・地盤保証15万・安全対策20万・工事監理50万・諸検査20万・SSバリュー申請20万＝<b>合計155万円（税込170.5万円）</b>が目安。
+      1階にLDK以外の部屋を作る場合は下屋の可能性と別途料金を事前に案内する。
     </div>
   </div>
 </div>
@@ -1409,7 +1481,7 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
 /* ▼ マイホームシミュレーターのURLをここに設定（例:'./my_home_simulator.html' や本番URL） */
 const SIM_URL = '';
 
-const ORDER = ['p1','p2','p3','p4','p5','p6','p7','p8','p9','p10','p11','p12','p13','sA','sB','sC','sD','sE'];
+const ORDER = ['p1','p2','p3','p4','p5','p6','pProd','p7','p8','p9','p10','p11','p12','p13','sA','sB','sC','sD','sE'];
 function show(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
   document.getElementById(id).classList.add('show');
@@ -1515,6 +1587,50 @@ function price(){
   }
   document.getElementById('prNote').textContent = '※'+a.note+' 価格は2026年7月時点の目安・参考値です。';
 }
+/* ══════════ 商品プラン（2階建て・平屋） ══════════
+   28坪=1,567万円(税別)を基準に、PGハウス価格ルールで参考価格を算出。
+   2階建て: 28坪未満は−30万円/坪、28坪超は＋40万円/坪 ／ 平屋: ＋8万円/坪 */
+let PROD_TYPE = 0;  // 0=2階建て 1=平屋
+const PROD_TSUBO = [[24,26,28,30,32,34,36],[20,22,24,26,28,30]];
+const FUTAI = 353;  // 付帯工事の目安（万円・税別）
+function prodBase(t){ return t>=28 ? 1567+(t-28)*40 : 1567-(28-t)*30; }
+function prodPrice(t){ return PROD_TYPE===0 ? prodBase(t) : prodBase(t)+8*t; }
+function prodMadori(t){
+  if(PROD_TYPE===0) return t<=26?'3LDK〜':(t<=30?'3〜4LDK':(t<=32?'4LDK':'4〜5LDK'));
+  return t<=22?'2〜3LDK':(t<=26?'3LDK':'3〜4LDK');
+}
+function prodType(i){
+  PROD_TYPE=i;
+  document.getElementById('prodT2').classList.toggle('on', i===0);
+  document.getElementById('prodT1').classList.toggle('on', i===1);
+  renderProd();
+}
+function renderProd(){
+  const g=document.getElementById('prodGrid'); if(!g)return;
+  g.innerHTML = PROD_TSUBO[PROD_TYPE].map(t=>{
+    const p=prodPrice(t), pt=Math.round(p*1.1), m2=(t*3.3058).toFixed(1);
+    const loan=Math.round((p+FUTAI)*1.1);
+    const monthly=fmt(pay(loan*10000,0.8,35));
+    return `<div class="card" style="position:relative;text-align:center;padding:clamp(12px,1.2vw,26px)">
+      ${(PROD_TYPE===0&&t===28)?'<div style="position:absolute;top:-.8em;left:50%;transform:translateX(-50%);background:var(--acc);color:#fff;font-size:clamp(10px,.8vw,18px);font-weight:900;border-radius:999px;padding:.2em .9em;white-space:nowrap">基準プラン</div>':''}
+      <div style="font-size:clamp(14px,1.25vw,29px);font-weight:900">${t}坪プラン</div>
+      <div class="note">施工面積 約${m2}㎡｜${prodMadori(t)}</div>
+      <div class="bebas" style="font-size:clamp(30px,2.9vw,66px);line-height:1.15;color:var(--acc)">${p.toLocaleString('ja-JP')}<span style="font-family:'Noto Sans JP',sans-serif;font-size:.36em;font-weight:900;color:var(--text)"> 万円〜(税別)</span></div>
+      <div class="note">税込 約${pt.toLocaleString('ja-JP')}万円〜｜太陽光5kW標準</div>
+      <div class="note" style="font-weight:900;color:var(--pg1);margin-top:2px">月々目安 約${monthly}円〜<span style="font-weight:500">（付帯込・0.8%・35年）</span></div>
+      <button class="pgbtn" style="font-size:clamp(11px,.95vw,21px);padding:.5em 1.1em;margin-top:8px" onclick="applyPlan(${loan})">💰 この価格で月々試算</button>
+    </div>`;
+  }).join('');
+  document.getElementById('prodNote').innerHTML = PROD_TYPE===0
+    ? '※ 参考プランの価格です（28坪基準・3LDK〜4LDK）。家族構成やライフスタイルに合わせた間取りのアレンジも可能です。※ 月々目安は本体＋付帯工事目安353万円の税込額を全額借入した場合の試算。別途、諸費用・土地代がかかります。'
+    : '※ 平屋は2階建て価格＋8万円/坪（税別）のわかりやすい価格設定。標準仕様は2階建てと共通です。※ 月々目安は本体＋付帯工事目安353万円の税込額を全額借入した場合の試算。別途、諸費用・土地代がかかります。';
+}
+function applyPlan(loan){
+  const rP=document.getElementById('rP');
+  rP.value = Math.min(Math.max(loan,+rP.min),+rP.max);
+  calc(); go('sC');
+}
+
 function initAreas(){
   const e = document.getElementById('enArea');
   EN_AREAS.forEach(a=>{ const o=document.createElement('option'); o.textContent=a[0]; e.appendChild(o); });
@@ -1562,7 +1678,7 @@ function timing(){
   }
   document.getElementById('rDiff').textContent = '約'+man(totals['18']-totals['08']);
 }
-calc(); timing(); limit(); initAreas();
+calc(); timing(); limit(); initAreas(); prodType(0);
 
 /* ←→キー・スワイプでページ送り */
 function step(d){
