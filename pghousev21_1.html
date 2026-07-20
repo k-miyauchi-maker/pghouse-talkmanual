@@ -648,6 +648,16 @@ footer a{color:#2f6df0;text-decoration:none;}
 .del-row-btn{width:16px;height:16px;border-radius:50%;border:none;background:rgba(192,57,43,.15);color:#C0392B;font-size:10px;cursor:pointer;line-height:1;padding:0;flex-shrink:0;}
 .del-row-btn:hover{background:rgba(192,57,43,.3);}
 
+/* ─── FP: 保険商品リスト ─── */
+.fp-ins-list{display:flex;flex-direction:column;gap:4px;max-height:220px;overflow-y:auto;border:1px solid var(--bdr2);border-radius:8px;padding:6px;}
+.fp-ins-item{display:flex;align-items:center;gap:7px;font-size:10px;padding:5px 7px;border-radius:6px;cursor:pointer;border:1px solid transparent;transition:all .12s;}
+.fp-ins-item:hover{background:rgba(47,109,240,.05);}
+.fp-ins-item.on{background:rgba(201,106,26,.07);border-color:rgba(201,106,26,.35);}
+.fp-ins-item input{accent-color:#C96A1A;flex-shrink:0;}
+.fp-ins-cat{flex-shrink:0;font-size:8px;font-weight:700;background:var(--bg2);color:var(--mu);border-radius:4px;padding:1px 6px;white-space:nowrap;}
+.fp-ins-name{flex:1;line-height:1.4;}
+.fp-ins-item b{font-family:'DM Mono',monospace;font-size:10.5px;color:#9A4A0A;white-space:nowrap;}
+
 /* ─── FP: 手取り表示 ─── */
 .fp-net-note{font-size:9px;color:var(--mu);margin-top:2px;}
 .fp-net-note b{font-family:'DM Mono',monospace;color:#1f9d63;font-size:11px;}
@@ -1923,8 +1933,8 @@ body.print-fit{font-size:11px;}
     <div style="font-size:9px;color:var(--mu);margin:-6px 0 10px;line-height:1.7;">源泉徴収票の「支払金額」（額面年収）を入力してください。所得税・住民税・社会保険料を自動計算し、<b>手取りベース</b>で収支を試算します。</div>
     <div class="sl">
       <div class="sl-hd">本人 額面年収（源泉徴収票）<b id="lbl-fp-inc1">600万円</b></div>
-      <input type="range" id="fp-inc1" min="100" max="2000" step="10" value="600">
-      <div class="sl-hints"><span>100万</span><span>2,000万</span></div>
+      <input type="range" id="fp-inc1" min="100" max="3000" step="10" value="600">
+      <div class="sl-hints"><span>100万</span><span>3,000万</span></div>
       <div class="fp-net-note">手取り 約<b id="fp-net1">—</b></div>
     </div>
     <div id="fp-inc2-wrap">
@@ -1966,6 +1976,9 @@ body.print-fit{font-size:11px;}
     <div class="sec">児童手当（2024年10月改正・所得制限なし）</div>
     <label class="gz-check" style="margin-bottom:4px;"><input type="checkbox" id="fp-jido" checked onchange="FP.jido=this.checked;upFP()"> 児童手当を収入に自動加算する</label>
     <div style="font-size:9px;color:var(--mu);line-height:1.6;">0〜2歳: 月1.5万円／3歳〜高校生年代: 月1万円／第3子以降: 月3万円で自動計算します。</div>
+    <div class="sec">居住地の子育て支援（都道府県別・更新可能データ）</div>
+    <label class="gz-check" style="margin-bottom:4px;"><input type="checkbox" id="fp-kosodate" checked onchange="FP.kosodate=this.checked;upFP()"> 居住地の子育て支援給付を加算する（<span id="fp-kosodate-pref">—</span>）</label>
+    <div style="font-size:9px;color:var(--mu);line-height:1.7;" id="fp-kosodate-note">—</div>
   </div>
 
   <!-- 支出 -->
@@ -2003,11 +2016,14 @@ body.print-fit{font-size:11px;}
         <input type="range" id="fp-oldliving" min="10" max="50" step="1" value="20">
       </div>
     </div>
-    <div class="sec">保険・車・レジャー</div>
-    <div class="sl">
-      <div class="sl-hd">生命保険・医療保険（月・世帯）<b id="lbl-fp-ins">3万円</b></div>
+    <div class="sec">生命保険・医療保険（メジャー商品から複数選択・保険料は目安）<span class="preset-upd">毎日13時更新</span></div>
+    <div class="fp-ins-list" id="fp-ins-list"><!-- JS生成: INSURANCE_PRODUCTS --></div>
+    <div class="sl" style="margin-top:8px;">
+      <div class="sl-hd">その他保険・手動調整（月・世帯）<b id="lbl-fp-ins">3万円</b></div>
       <input type="range" id="fp-ins" min="0" max="15" step="0.5" value="3">
     </div>
+    <div class="fp-net-total" style="background:rgba(201,106,26,.07);border-color:rgba(201,106,26,.3);color:#9A4A0A;">保険料 合計（月・世帯）<b id="fp-ins-total">—</b></div>
+    <div class="sec">車・レジャー</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
       <div class="sl">
         <div class="sl-hd">車の買替費用（1回）<b id="lbl-fp-car">250万円</b></div>
@@ -2031,10 +2047,12 @@ body.print-fit{font-size:11px;}
       <input type="range" id="fp-savings" min="0" max="5000" step="100" value="500">
       <div class="sl-hints"><span>0万</span><span>5,000万</span></div>
     </div>
+    <label class="gz-check" style="margin-bottom:6px;"><input type="checkbox" id="fp-yield-link" checked onchange="FP.yieldLink=this.checked;upFP()"> 投資シミュレーションタブの想定利回りと連動する</label>
+    <div style="font-size:9px;color:var(--mu);line-height:1.7;margin-bottom:8px;" id="fp-yield-note">—</div>
     <div class="sl">
-      <div class="sl-hd">貯蓄の運用利回り（年）<b id="lbl-fp-yield">1.0%</b></div>
-      <input type="range" id="fp-yield" min="0" max="7" step="0.5" value="1.0">
-      <div class="sl-hints"><span>0%（普通預金）</span><span>7%（積極運用）</span></div>
+      <div class="sl-hd">貯蓄の運用利回り（年・手動設定）<b id="lbl-fp-yield">1.0%</b></div>
+      <input type="range" id="fp-yield" min="0" max="12" step="0.5" value="1.0">
+      <div class="sl-hints"><span>0%（普通預金）</span><span>12%（積極運用）</span></div>
     </div>
   </div>
 
@@ -2599,6 +2617,7 @@ body.print-fit{font-size:11px;}
       <tr><td class="v">v21.8</td><td class="d">2026年7月20日</td><td><span class="hist-badge">資金計画</span></td><td>組み込み全金融機関の全商品（変動・3年/5年/10年/20年固定・全期間固定）を選択可能に拡充。物件資金・内訳を「建物費用（本体・付帯・オプション）」「土地費用（土地代金・土地諸費用）」「諸費用（印紙代金等・融資関係）」の3分類アコーディオンに変更し、内訳合計から円グラフを自動生成。</td></tr>
       <tr><td class="v">v21.9</td><td class="d">2026年7月20日</td><td><span class="hist-badge">資金計画書</span></td><td>建物費用の内訳に「予備費用」を追加。資金計画書を実務フォーマットに刷新：仕上げ入力パネル（お客様名・建設地・仕様・キャンペーン・営業所・担当等）、支払スケジュール表（土地契約時〜引渡時）、借入計画のボーナス併用対応、予算取り費用・工程概要（予定）・補助金取得後総額を新設。全明細行の追加・削除に対応し、ブランドを「AIミヤウチ社長の資金計画書」に変更。</td></tr>
       <tr><td class="v">v21.10</td><td class="d">2026年7月20日</td><td><span class="hist-badge">FP</span></td><td>FPシミュレーションをトップFP品質に刷新。収入は源泉徴収票の支払金額（額面）で入力し、所得税・住民税・社会保険料を自動計算して手取りベースで試算。本人・配偶者それぞれの退職年齢・退職金、児童手当（2024年10月改正対応）の自動加算、生命保険・車の買替サイクル・旅行レジャー・住宅維持費（ライフサイクルコスト連動）・貯蓄の運用利回りを新設し、65歳時点の貯蓄（老後資金2,000万円目安）をKPIに追加。</td></tr>
+      <tr><td class="v">v21.11</td><td class="d">2026年7月20日</td><td><span class="hist-badge">FP</span></td><td>貯蓄の運用利回りを投資シミュレーションタブの選択ファンド（通常シナリオ利回り・毎日13時更新）と連動可能に（手動設定への切替も可）。生命保険・医療保険はメジャー10商品のプリセットから複数選択でき、商品・保険料はデータ更新可能。児童手当に加えて居住地（都道府県）別の子育て支援給付を自動加算（東京都018サポート等・更新可能データ）。額面年収の上限を本人3,000万円・配偶者2,000万円に拡大。</td></tr>
     </tbody>
   </table>
   <div style="font-size:9px;color:var(--mu);line-height:1.8;margin-top:12px;">※ 金利・利回りの数値データはバージョンに関わらず毎日13時に最新化されます。機能のご要望・不具合のご連絡はピュアグロース株式会社までお寄せください。</div>
@@ -4207,10 +4226,71 @@ var FP = {
   living:25, lraise:1.0,
   edu:1500, edupeak:18,
   pension:20, oldliving:20,
-  ins:3, car:250, carcycle:8, travel:20,    // 保険（月）・車買替（1回/周期）・旅行（年）
-  savings:500, yield:1.0,                   // 金融資産・運用利回り
+  ins:3, insSel:[],                         // 保険: 手動調整（月）＋選択商品インデックス
+  car:250, carcycle:8, travel:20,           // 車買替（1回/周期）・旅行（年）
+  savings:500, yield:1.0, yieldLink:true,   // 金融資産・運用利回り（投資タブ連動）
+  kosodate:true,                            // 居住地の子育て支援を加算
 };
+// 投資シミュレーションタブとの利回り連動
+var FP_FUND_NAMES={sp500:'S&P500',orcan:'オルカン（全世界株）',fang:'FANG+',nikkei:'日経225',custom:'カスタム'};
+function fpEffYield(){
+  if(FP.yieldLink){
+    var fr=FUND_RATES[S.fund];
+    if(fr&&typeof fr.mid==='number')return fr.mid;
+  }
+  return FP.yield;
+}
 var FP_YEARS = 35; // シミュレーション年数
+
+// ═══ 生命保険・医療保険 メジャー商品プリセット（月額目安・毎日13時更新） ═══
+// ※商品・保険料はここを書き換えるだけで更新できます（moは月額・万円）
+var INSURANCE_PRODUCTS=[
+  {n:'県民共済 総合保障2型',              mo:0.2,  cat:'共済'},
+  {n:'コープ共済 たすけあい V2000',        mo:0.2,  cat:'共済'},
+  {n:'ライフネット生命 かぞくへの保険（定期死亡3,000万）', mo:0.3, cat:'死亡保障'},
+  {n:'FWD収入保障（月15万円・65歳まで）',   mo:0.35, cat:'収入保障'},
+  {n:'オリックス生命 医療保険 CURE Next',   mo:0.35, cat:'医療'},
+  {n:'アフラック ちゃんと応える医療保険EVER', mo:0.4, cat:'医療'},
+  {n:'チューリッヒ 終身ガン治療保険プレミアムZ', mo:0.3, cat:'がん'},
+  {n:'明治安田生命 じぶんの積立',           mo:1.0,  cat:'貯蓄型'},
+  {n:'ソニー生命 変額保険（バリアブルライフ）', mo:1.5, cat:'変額'},
+  {n:'メットライフ生命 ドルスマートS（米ドル建終身）', mo:1.5, cat:'外貨建'},
+];
+function renderInsList(){
+  var box=document.getElementById('fp-ins-list');if(!box)return;
+  box.innerHTML=INSURANCE_PRODUCTS.map(function(p,i){
+    var on=FP.insSel.indexOf(i)>=0;
+    return '<label class="fp-ins-item'+(on?' on':'')+'"><input type="checkbox" '+(on?'checked':'')+' onchange="fpToggleIns('+i+',this.checked)">'
+      +'<span class="fp-ins-cat">'+p.cat+'</span><span class="fp-ins-name">'+p.n+'</span>'
+      +'<b>'+p.mo.toFixed(2).replace(/0$/,'')+'万/月</b></label>';
+  }).join('');
+}
+function fpToggleIns(i,on){
+  var ix=FP.insSel.indexOf(i);
+  if(on&&ix<0)FP.insSel.push(i);
+  if(!on&&ix>=0)FP.insSel.splice(ix,1);
+  renderInsList();upFP();
+}
+function fpInsMonthly(){ // 選択商品＋手動調整の月額合計（万円）
+  var sum=FP.ins;
+  FP.insSel.forEach(function(i){var p=INSURANCE_PRODUCTS[i];if(p)sum+=p.mo;});
+  return sum;
+}
+
+// ═══ 都道府県別 子育て支援給付（現金給付・年額万円/子・目安・更新可能） ═══
+// ※cash: 児童手当とは別の現金給付（年額・万円/子）。note: 制度の説明。
+//   市区町村独自の上乗せ給付がある場合はこの表を書き換えて更新してください。
+var PREF_KOSODATE_DEFAULT={cash:0,note:'こども医療費助成（現物給付）等あり。市区町村独自の現金給付があればデータを更新してください'};
+var PREF_KOSODATE={
+  '東京都':{cash:6,note:'018サポート（月5,000円×18歳まで・所得制限なし）'},
+  '大阪府':{cash:0,note:'塾代助成事業（大阪市 月1万円上限）等は市区町村単位。該当があれば金額を更新してください'},
+  '兵庫県':{cash:0,note:'高校生等までの医療費助成（現物給付）等。市区町村上乗せは要更新'},
+  '福井県':{cash:0,note:'ふく育応援（すみずみ子育てサポート等・サービス給付中心）'},
+  '愛媛県':{cash:0,note:'えひめ子育て応援券（紙おむつ等助成・現物給付）等'},
+};
+function kosodateInfo(){
+  return PREF_KOSODATE[S.lifePref]||PREF_KOSODATE_DEFAULT;
+}
 
 // ═══ 源泉徴収ベース → 手取り換算（給与所得者・概算） ═══
 function fpIncomeTax(taxable){ // 課税所得（円）→ 所得税（円・累進）
@@ -4328,9 +4408,15 @@ function fpCalcCF(){
     var retBonus = 0;
     if(myAge === FP.ret) retBonus += FP.retpay;
     if(spAge !== null && spAge === FP.ret2 && hasSpouseInc) retBonus += FP.retpay2;
-    // 児童手当
-    var jido = fpJidoTeate(kids.map(function(k){ return k.age + yr; }));
-    var totalInc = net1 + net2 + pension + retBonus + jido;
+    // 児童手当＋居住地の子育て支援（18歳以下の子1人あたり年額）
+    var kidAgesNow = kids.map(function(k){ return k.age + yr; });
+    var jido = fpJidoTeate(kidAgesNow);
+    var kosodate = 0;
+    if(FP.kosodate){
+      var ki = kosodateInfo();
+      kosodate = ki.cash * kidAgesNow.filter(function(a){ return a>=0 && a<=18; }).length;
+    }
+    var totalInc = net1 + net2 + pension + retBonus + jido + kosodate;
 
     // 住宅ローン（完済後0）
     var loanThisYr = (yr < lp.yA) ? loanAnn : 0;
@@ -4351,14 +4437,15 @@ function fpCalcCF(){
       }
     });
 
-    // その他支出: 保険（本人75歳まで）＋旅行＋車買替（周期年）＋住宅維持費
-    var insExp = myAge < 75 ? FP.ins * 12 : FP.ins * 6;
+    // その他支出: 保険（選択商品＋手動調整・本人75歳まで満額）＋旅行＋車買替（周期年）＋住宅維持費
+    var insMo = fpInsMonthly();
+    var insExp = myAge < 75 ? insMo * 12 : insMo * 6;
     var carExp = (FP.car > 0 && yr > 0 && yr % FP.carcycle === 0) ? FP.car : 0;
     var otherExp = insExp + FP.travel + carExp + upkeepAnn;
 
     var totalExp = loanThisYr + lifeExp + eduExp + otherExp;
     var balance  = totalInc - totalExp;
-    savings = savings * (1 + FP.yield/100) + balance; // 運用利回りを反映
+    savings = savings * (1 + fpEffYield()/100) + balance; // 運用利回り（投資タブ連動可）を反映
 
     rows.push({
       yr: yr + 1,
@@ -4384,6 +4471,28 @@ function upFP(){
   // 住宅維持費の連動表示
   var upNote=document.getElementById('fp-upkeep-note');
   if(upNote)upNote.innerHTML='修繕積立・固定資産税・火災保険・管理費を年間 <b>'+Math.round(S.rp*12+S.tx+S.ins+S.mg*12).toLocaleString()+'万円</b> として自動計上します（ライフサイクルコストタブの設定と連動）。';
+  // 保険料合計の表示
+  var insT=document.getElementById('fp-ins-total');
+  if(insT)insT.textContent=fpInsMonthly().toFixed(2).replace(/\.?0+$/,'')+'万円（選択'+FP.insSel.length+'商品＋調整'+FP.ins+'万円）';
+  // 運用利回り: 投資シミュレーション連動の表示
+  var eff=fpEffYield();
+  var yNote=document.getElementById('fp-yield-note');
+  if(yNote){
+    yNote.innerHTML=FP.yieldLink
+      ? '連動中: <b style="color:#1f9d63;">'+(FP_FUND_NAMES[S.fund]||S.fund)+'｜通常シナリオ 年'+eff.toFixed(1)+'%</b>（投資シミュレーションタブの選択ファンドと連動・毎日13時更新）'
+      : '手動設定中: 年'+eff.toFixed(1)+'%（チェックを入れると投資シミュレーションと連動します）';
+  }
+  var yLink=document.getElementById('fp-yield-link');if(yLink)yLink.checked=FP.yieldLink;
+  var ySl=document.getElementById('fp-yield');
+  if(ySl){ySl.disabled=FP.yieldLink;ySl.style.opacity=FP.yieldLink?0.4:1;if(FP.yieldLink)ySl.value=Math.min(12,eff);}
+  var yLbl=document.getElementById('lbl-fp-yield');if(yLbl)yLbl.textContent=eff.toFixed(1)+'%'+(FP.yieldLink?'（連動）':'');
+  // 居住地の子育て支援の表示
+  var kp=document.getElementById('fp-kosodate-pref');if(kp)kp.textContent=S.lifePref+' '+S.lifeCity;
+  var kn=document.getElementById('fp-kosodate-note');
+  if(kn){
+    var ki=kosodateInfo();
+    kn.innerHTML=(ki.cash>0?'<b style="color:#1f9d63;">年'+ki.cash+'万円/子（18歳まで）を加算</b>｜':'現金給付の自動加算なし｜')+ki.note+'（建設地の選択と連動・データは更新可能）';
+  }
 
   var rows = fpCalcCF();
   if(!rows.length) return;
@@ -4540,6 +4649,7 @@ document.addEventListener('DOMContentLoaded', function(){
     var el = document.getElementById(sl.id);
     if(!el) return;
     el.addEventListener('input', function(){
+      if(sl.id==='fp-yield')FP.yieldLink=false; // 手動で動かしたら連動を解除
       FP[sl.prop] = +this.value;
       var lbl = document.getElementById(sl.lbl);
       if(lbl) lbl.textContent = sl.fmt(this.value);
@@ -4550,6 +4660,7 @@ document.addEventListener('DOMContentLoaded', function(){
   if(addBtn) addBtn.addEventListener('click', fpAddMember);
 
   fpRenderMembers();
+  renderInsList();
   upFP();
 });
 // ════ 比較カード直接入力 → 左パネルのスライダーに逆反映 ════
