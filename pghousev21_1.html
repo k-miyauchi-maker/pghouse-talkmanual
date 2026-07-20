@@ -369,12 +369,14 @@ footer a{color:#2f6df0;text-decoration:none;}
 }
 .health-dash-title{font-size:11px;font-weight:800;color:#16284d;letter-spacing:.06em;margin-bottom:16px;}
 .health-items{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
-.health-item{text-align:center;position:relative;}
-.health-ring{width:72px;height:72px;margin:0 auto 8px;}
-.health-val{font-family:'DM Mono',monospace;font-size:17px;font-weight:700;color:#16284d;
-  position:absolute;top:22px;left:50%;transform:translateX(-50%);line-height:1;font-size:13px;}
-.health-lbl{font-size:10px;font-weight:700;color:var(--wh);margin-bottom:2px;}
-.health-hint{font-size:9px;color:var(--mu2);}
+.health-item{display:flex;align-items:center;gap:12px;text-align:left;}
+.health-ring-wrap{position:relative;flex-shrink:0;width:72px;height:72px;}
+.health-ring{width:72px;height:72px;display:block;}
+.health-val{font-family:'DM Mono',monospace;font-weight:700;color:#16284d;
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;line-height:1;font-size:13px;}
+.health-txt{min-width:0;}
+.health-lbl{font-size:11px;font-weight:700;color:var(--wh);margin-bottom:3px;}
+.health-desc{font-size:9px;color:var(--mu);line-height:1.65;}
 
 /* ④ プランA vs B 比較カード */
 .plan-cmp-wrap{
@@ -634,6 +636,14 @@ footer a{color:#2f6df0;text-decoration:none;}
 .del-row-btn{width:16px;height:16px;border-radius:50%;border:none;background:rgba(192,57,43,.15);color:#C0392B;font-size:10px;cursor:pointer;line-height:1;padding:0;flex-shrink:0;}
 .del-row-btn:hover{background:rgba(192,57,43,.3);}
 
+/* ─── 更新履歴タブ ─── */
+.hist-tbl{width:100%;border-collapse:collapse;font-size:11px;}
+.hist-tbl th{background:var(--bg2);color:var(--navy);font-size:10px;letter-spacing:.08em;text-align:left;padding:8px 10px;border-bottom:2px solid rgba(22,40,77,.18);white-space:nowrap;}
+.hist-tbl td{padding:10px;border-bottom:1px solid var(--bdr2);vertical-align:top;line-height:1.75;text-align:left!important;white-space:normal;font-family:'Noto Sans JP',sans-serif;}
+.hist-tbl td.v{font-family:'DM Mono',monospace;font-weight:700;color:#1D5FA8;white-space:nowrap;}
+.hist-tbl td.d{white-space:nowrap;color:var(--mu);font-size:10px;}
+.hist-badge{display:inline-block;padding:2px 9px;border-radius:9px;font-size:9px;font-weight:700;background:rgba(47,109,240,.12);color:#1D5FA8;white-space:nowrap;}
+
 /* ═══ 印刷（A3横・全ページ出力） ═══ */
 /* print-fit: 印刷準備中にbodyへ付与。縮尺計算と印刷レイアウトを一致させるための共通ルール。
    左の入力パネル列を2段組にして高さを圧縮し、各タブが1枚のA3横に収まる縮小率を稼ぐ */
@@ -802,6 +812,32 @@ body.print-fit{font-size:11px;}
   .cast-mi{gap:10px;}
   .cast-fig-mi img{width:68px;height:68px;}
 }
+
+/* ═══ スマホ最適化 ═══ */
+@media screen and (max-width:760px){
+  /* ナビ: 横スクロールをやめてタブを折り返し表示 */
+  .nav-miyauchi .nav-inner-mi{flex-wrap:wrap;height:auto;overflow-x:visible;padding:8px 10px 10px;gap:4px;}
+  .nav-miyauchi .brand-mi{width:100%;border-right:none;padding:4px 0 6px;margin-right:0;justify-content:center;}
+  .nav-miyauchi .tab-mi{padding:8px 10px;font-size:10.5px;border:1px solid rgba(255,255,255,.15);border-radius:7px;}
+  .nav-miyauchi .tab-mi.on{background:rgba(47,109,240,.35);border-color:#2f6df0;color:#fff;}
+  /* 入力フォーム: タッチ操作向けに拡大（16pxでiOSの自動ズームを防止） */
+  select{font-size:14px;padding:11px 12px;}
+  .nf input[type=number]{font-size:16px;padding:11px 10px;}
+  .nf-lbl,.nf-unit{font-size:11px;}
+  .tg{padding:10px 13px;font-size:12px;}
+  input[type=range]{height:6px;}
+  input[type=range]::-webkit-slider-thumb{width:22px;height:22px;}
+  .pcc-input{font-size:15px;}
+  .est-num-input{font-size:14px;}
+  /* レイアウト調整 */
+  .health-items{grid-template-columns:1fr;gap:10px;}
+  .plan-cmp-cards.three{grid-template-columns:1fr;gap:10px;}
+  .print-btn-bar{flex-direction:column;align-items:stretch;gap:8px;}
+  .print-side{align-items:stretch;}
+  .print-btn{justify-content:center;}
+  .hist-tbl td.d{white-space:normal;}
+  .uc-row{grid-template-columns:1fr 60px 60px 54px;}
+}
 </style>
 
 <nav class="nav-miyauchi">
@@ -818,6 +854,7 @@ body.print-fit{font-size:11px;}
     <button class="tab-mi" data-tab="fp">👨‍👩‍👧 FPシミュレーション</button>
     <button class="tab-mi" data-tab="estimate">📄 資金計画書</button>
     <button class="tab-mi" data-tab="shinsa">✅ 事前審査</button>
+    <button class="tab-mi" data-tab="history">🕘 更新履歴</button>
   </div>
 </nav>
 
@@ -1054,22 +1091,34 @@ body.print-fit{font-size:11px;}
   <div class="health-dash-title">📊 ローン健全性チェック</div>
   <div class="health-items">
     <div class="health-item">
-      <svg class="health-ring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="#eef0f4" stroke-width="5"/><circle id="ring-ratio" cx="28" cy="28" r="24" fill="none" stroke="#2f6df0" stroke-width="5" stroke-dasharray="150.8" stroke-dashoffset="150.8" stroke-linecap="round" transform="rotate(-90 28 28)"/></svg>
-      <div class="health-val" id="gv-ratio">—</div>
-      <div class="health-lbl">返済負担率</div>
-      <div class="health-hint">適正≤25%</div>
+      <div class="health-ring-wrap">
+        <svg class="health-ring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="#eef0f4" stroke-width="5"/><circle id="ring-ratio" cx="28" cy="28" r="24" fill="none" stroke="#2f6df0" stroke-width="5" stroke-dasharray="150.8" stroke-dashoffset="150.8" stroke-linecap="round" transform="rotate(-90 28 28)"/></svg>
+        <div class="health-val" id="gv-ratio">—</div>
+      </div>
+      <div class="health-txt">
+        <div class="health-lbl">返済負担率</div>
+        <div class="health-desc">世帯年収に占める年間ローン返済額の割合です。低いほど毎月の家計にゆとりが生まれ、教育費や貯蓄に回せます。</div>
+      </div>
     </div>
     <div class="health-item">
-      <svg class="health-ring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="#eef0f4" stroke-width="5"/><circle id="ring-eq" cx="28" cy="28" r="24" fill="none" stroke="#1f9d63" stroke-width="5" stroke-dasharray="150.8" stroke-dashoffset="150.8" stroke-linecap="round" transform="rotate(-90 28 28)"/></svg>
-      <div class="health-val" id="gv-eq">—</div>
-      <div class="health-lbl">自己資金比率</div>
-      <div class="health-hint">推奨10%+</div>
+      <div class="health-ring-wrap">
+        <svg class="health-ring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="#eef0f4" stroke-width="5"/><circle id="ring-eq" cx="28" cy="28" r="24" fill="none" stroke="#1f9d63" stroke-width="5" stroke-dasharray="150.8" stroke-dashoffset="150.8" stroke-linecap="round" transform="rotate(-90 28 28)"/></svg>
+        <div class="health-val" id="gv-eq">—</div>
+      </div>
+      <div class="health-txt">
+        <div class="health-lbl">自己資金比率</div>
+        <div class="health-desc">住宅取得費全体のうち、頭金など自己資金でまかなう割合です。高いほど借入額と利息負担を抑えられます。</div>
+      </div>
     </div>
     <div class="health-item">
-      <svg class="health-ring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="#eef0f4" stroke-width="5"/><circle id="ring-mult" cx="28" cy="28" r="24" fill="none" stroke="#b97400" stroke-width="5" stroke-dasharray="150.8" stroke-dashoffset="150.8" stroke-linecap="round" transform="rotate(-90 28 28)"/></svg>
-      <div class="health-val" id="gv-mult">—</div>
-      <div class="health-lbl">年収倍率</div>
-      <div class="health-hint">適正≤7倍</div>
+      <div class="health-ring-wrap">
+        <svg class="health-ring" viewBox="0 0 56 56"><circle cx="28" cy="28" r="24" fill="none" stroke="#eef0f4" stroke-width="5"/><circle id="ring-mult" cx="28" cy="28" r="24" fill="none" stroke="#b97400" stroke-width="5" stroke-dasharray="150.8" stroke-dashoffset="150.8" stroke-linecap="round" transform="rotate(-90 28 28)"/></svg>
+        <div class="health-val" id="gv-mult">—</div>
+      </div>
+      <div class="health-txt">
+        <div class="health-lbl">年収倍率</div>
+        <div class="health-desc">借入金額が世帯年収の何倍にあたるかを示します。銀行審査でも重視される、借りすぎ防止の目安です。</div>
+      </div>
     </div>
   </div>
 </div>
@@ -2307,6 +2356,31 @@ body.print-fit{font-size:11px;}
   <div class="case"><b>CASE 2</b>｜車のローン・キャッシングで合計500万円の借入があったが、事前審査に成功。</div>
   <div class="case"><b>CASE 3</b>｜他社申込では A銀行1,800万円・B銀行1,890万円・C銀行審査落ち → 当社にて申込み、D銀行3,200万円まで借入OK。</div>
   <div class="case"><b>CASE 4</b>｜勤続年数1年ジャスト・年収250万円だったが、審査の結果2,430万円まで借入OK。</div>
+</div>
+</div>
+
+<!-- ══════════════ TAB 10: 更新履歴 ══════════════ -->
+<div class="pg" id="tab-history">
+<div class="ph">
+  <div class="ph-ey">Version History — 更新履歴</div>
+  <h2>本シミュレーターの<em>アップデート履歴</em></h2>
+  <p>過去のセッションを通じて追加・変更された機能の一覧です。住宅ローン金利・投資信託利回りのデータは毎日13時に最新データへ更新されます。</p>
+</div>
+<div class="panel">
+  <table class="hist-tbl">
+    <thead><tr><th style="width:70px;">Ver</th><th style="width:110px;">時期</th><th style="width:110px;">区分</th><th>変更内容</th></tr></thead>
+    <tbody>
+      <tr><td class="v">v21.0</td><td class="d">2026年7月上旬</td><td><span class="hist-badge">初期リリース</span></td><td>9タブ構成のマイホームシミュレーターを公開（資金計画・ローン控除・太陽光/蓄電池・ライフサイクルコスト・投資・建てどき比較・FPシミュレーション・資金計画書・事前審査）。ローン比較は「年数で比較」「金利で比較」「希望額から逆算」の3モード。住宅ローン控除は令和8年度税制改正に対応。</td></tr>
+      <tr><td class="v">v21.1</td><td class="d">2026年7月中旬</td><td><span class="hist-badge">データ更新</span></td><td>金利・利回りデータの「毎日13時更新」運用を開始。メガバンク・都市銀行／ネット銀行／フラット35に加え、全47都道府県の主要地方銀行・第二地銀（変動金利）をプリセット化。投資信託（S&amp;P500・オルカン・FANG+・日経225）の実績利回りも同時更新。</td></tr>
+      <tr><td class="v">v21.2</td><td class="d">2026年7月19日</td><td><span class="hist-badge">ローン商品</span></td><td>10年固定金利の商品を追加。地方銀行・第二地銀（全47都道府県・約90行）に変動と10年固定を併記し、メガバンク5商品・ネット銀行5商品の10年固定も選択可能に。すべて毎日13時更新データに組み込み。</td></tr>
+      <tr><td class="v">v21.3</td><td class="d">2026年7月19日</td><td><span class="hist-badge">印刷・PDF</span></td><td>印刷/PDF保存をA3横に統一。印刷時は全タブを一括出力し、非表示タブのグラフも自動描画。印刷後は画面表示を自動復元。</td></tr>
+      <tr><td class="v">v21.4</td><td class="d">2026年7月19日</td><td><span class="hist-badge">印刷・PDF</span></td><td>タブごとに縮尺を自動調整し「1タブ＝1枚のA3横」で完結する仕様に変更。印刷時は入力パネルを2段組に組み替えて縮小しすぎを防止。</td></tr>
+      <tr><td class="v">v21.5</td><td class="d">2026年7月19日</td><td><span class="hist-badge">資金計画</span></td><td>住宅ローン商品を最大3つまで比較できるプランCを追加（金利比較モード・任意）。比較カードはA vs B vs Cの3枚表示、総返済額の内訳グラフも3本バーに対応。</td></tr>
+      <tr><td class="v">v21.6</td><td class="d">2026年7月20日</td><td><span class="hist-badge">生涯住居費</span></td><td>都道府県・市区町村の選択で省エネ地域区分（1〜8地域）を自動判定。断熱等級の異なる2商品の光熱費を電気・ガス・水道別に比較する表を追加。「賃貸の場合（比較用）」を「一生賃貸に暮らす場合」に改名し、想定家賃は0.1万円刻みの直接入力、駐車場（台数×月額/台）も追加。</td></tr>
+      <tr><td class="v">v21.7</td><td class="d">2026年7月20日</td><td><span class="hist-badge">UI改善</span></td><td>スマホ表示を最適化（ナビタブの折り返し表示・入力フォームのタッチ操作向け拡大）。ローン健全性チェックの各円グラフ横に指標の説明文を追加。更新履歴タブ（本ページ）を新設。</td></tr>
+    </tbody>
+  </table>
+  <div style="font-size:9px;color:var(--mu);line-height:1.8;margin-top:12px;">※ 金利・利回りの数値データはバージョンに関わらず毎日13時に最新化されます。機能のご要望・不具合のご連絡はピュアグロース株式会社までお寄せください。</div>
 </div>
 </div>
 
