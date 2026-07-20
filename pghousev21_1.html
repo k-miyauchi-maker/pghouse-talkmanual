@@ -648,6 +648,12 @@ footer a{color:#2f6df0;text-decoration:none;}
 .del-row-btn{width:16px;height:16px;border-radius:50%;border:none;background:rgba(192,57,43,.15);color:#C0392B;font-size:10px;cursor:pointer;line-height:1;padding:0;flex-shrink:0;}
 .del-row-btn:hover{background:rgba(192,57,43,.3);}
 
+/* ─── FP: 手取り表示 ─── */
+.fp-net-note{font-size:9px;color:var(--mu);margin-top:2px;}
+.fp-net-note b{font-family:'DM Mono',monospace;color:#1f9d63;font-size:11px;}
+.fp-net-total{display:flex;justify-content:space-between;align-items:center;background:rgba(31,157,99,.07);border:1px solid rgba(31,157,99,.3);border-radius:8px;padding:9px 12px;font-size:10.5px;font-weight:700;color:#1E7040;margin-bottom:12px;}
+.fp-net-total b{font-family:'DM Mono',monospace;font-size:14px;}
+
 /* ─── 資金計画書: 仕上げ入力パネル・フォーマットヘッダー・支払スケジュール ─── */
 .est-setup{background:#fff;border:1.5px dashed rgba(47,109,240,.45);border-radius:12px;padding:14px 16px;margin-bottom:16px;}
 .est-setup-title{font-size:10px;font-weight:700;color:#1D5FA8;letter-spacing:.06em;margin-bottom:10px;}
@@ -1893,7 +1899,7 @@ body.print-fit{font-size:11px;}
 <div class="ph">
   <div class="ph-ey">FP Simulation — ファイナンシャルプランニング</div>
   <h2>家族構成・年収から<em>生涯キャッシュフロー</em>を見える化</h2>
-  <p>年齢・家族・年収・支出を入力するだけで、住宅購入後の収支・貯蓄・教育費・老後資金を30年でシミュレーション。</p>
+  <p>収入は<b>源泉徴収票の支払金額（額面）</b>で入力すると、所得税・住民税・社会保険料を自動計算して<b>手取りベース</b>でシミュレーション。本人・配偶者それぞれの働き方・退職年齢・退職金に加え、児童手当・教育費・保険・車の買替・住宅維持費・資産運用利回りまで織り込んだ、トップFP品質の生涯キャッシュフローを作成します。</p>
   <p class="ph-support">・あなたのマイホーム計画を徹底サポート。ライフサイクルコスト、FP、投資計画までトータルライフをサポートします！</p>
 </div>
 
@@ -1911,30 +1917,34 @@ body.print-fit{font-size:11px;}
     <button class="fp-add-btn" id="fp-add-member">＋ 家族を追加</button>
   </div>
 
-  <!-- 収入 -->
+  <!-- 収入（源泉徴収ベース） -->
   <div class="panel">
-    <div class="ph2">💼 収入・キャリア</div>
+    <div class="ph2">💼 収入（源泉徴収ベース）・キャリア</div>
+    <div style="font-size:9px;color:var(--mu);margin:-6px 0 10px;line-height:1.7;">源泉徴収票の「支払金額」（額面年収）を入力してください。所得税・住民税・社会保険料を自動計算し、<b>手取りベース</b>で収支を試算します。</div>
     <div class="sl">
-      <div class="sl-hd">本人 現在年収<b id="lbl-fp-inc1">600万円</b></div>
-      <input type="range" id="fp-inc1" min="100" max="2000" step="50" value="600">
+      <div class="sl-hd">本人 額面年収（源泉徴収票）<b id="lbl-fp-inc1">600万円</b></div>
+      <input type="range" id="fp-inc1" min="100" max="2000" step="10" value="600">
       <div class="sl-hints"><span>100万</span><span>2,000万</span></div>
-    </div>
-    <div class="sl">
-      <div class="sl-hd">年収上昇率（年）<b id="lbl-fp-iraise">1.5%</b></div>
-      <input type="range" id="fp-iraise" min="0" max="5" step="0.5" value="1.5">
-      <div class="sl-hints"><span>0%（横ばい）</span><span>5%（高成長）</span></div>
+      <div class="fp-net-note">手取り 約<b id="fp-net1">—</b></div>
     </div>
     <div id="fp-inc2-wrap">
       <div class="sl">
-        <div class="sl-hd">配偶者 現在年収<b id="lbl-fp-inc2">300万円</b></div>
-        <input type="range" id="fp-inc2" min="0" max="1000" step="50" value="300">
-        <div class="sl-hints"><span>0万</span><span>1,000万</span></div>
+        <div class="sl-hd">配偶者 額面年収（源泉徴収票）<b id="lbl-fp-inc2">300万円</b></div>
+        <input type="range" id="fp-inc2" min="0" max="2000" step="10" value="300">
+        <div class="sl-hints"><span>0万（専業）</span><span>2,000万</span></div>
+        <div class="fp-net-note">手取り 約<b id="fp-net2">—</b></div>
       </div>
     </div>
-    <div class="sec">退職年齢・退職金</div>
+    <div class="fp-net-total">世帯 手取り年収（初年度）<b id="fp-net-total">—</b></div>
+    <div class="sl">
+      <div class="sl-hd">年収上昇率（年・世帯共通）<b id="lbl-fp-iraise">1.5%</b></div>
+      <input type="range" id="fp-iraise" min="0" max="5" step="0.5" value="1.5">
+      <div class="sl-hints"><span>0%（横ばい）</span><span>5%（高成長）</span></div>
+    </div>
+    <div class="sec">本人の退職年齢・退職金</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
       <div class="sl">
-        <div class="sl-hd">定年退職年齢<b id="lbl-fp-ret">65歳</b></div>
+        <div class="sl-hd">退職年齢<b id="lbl-fp-ret">65歳</b></div>
         <input type="range" id="fp-ret" min="55" max="75" step="1" value="65">
       </div>
       <div class="sl">
@@ -1942,6 +1952,20 @@ body.print-fit{font-size:11px;}
         <input type="range" id="fp-retpay" min="0" max="5000" step="100" value="1500">
       </div>
     </div>
+    <div class="sec">配偶者の退職年齢・退職金</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="sl">
+        <div class="sl-hd">退職年齢<b id="lbl-fp-ret2">65歳</b></div>
+        <input type="range" id="fp-ret2" min="55" max="75" step="1" value="65">
+      </div>
+      <div class="sl">
+        <div class="sl-hd">退職金<b id="lbl-fp-retpay2">500万円</b></div>
+        <input type="range" id="fp-retpay2" min="0" max="5000" step="100" value="500">
+      </div>
+    </div>
+    <div class="sec">児童手当（2024年10月改正・所得制限なし）</div>
+    <label class="gz-check" style="margin-bottom:4px;"><input type="checkbox" id="fp-jido" checked onchange="FP.jido=this.checked;upFP()"> 児童手当を収入に自動加算する</label>
+    <div style="font-size:9px;color:var(--mu);line-height:1.6;">0〜2歳: 月1.5万円／3歳〜高校生年代: 月1万円／第3子以降: 月3万円で自動計算します。</div>
   </div>
 
   <!-- 支出 -->
@@ -1979,11 +2003,38 @@ body.print-fit{font-size:11px;}
         <input type="range" id="fp-oldliving" min="10" max="50" step="1" value="20">
       </div>
     </div>
-    <div class="sec">現在の貯蓄残高</div>
+    <div class="sec">保険・車・レジャー</div>
+    <div class="sl">
+      <div class="sl-hd">生命保険・医療保険（月・世帯）<b id="lbl-fp-ins">3万円</b></div>
+      <input type="range" id="fp-ins" min="0" max="15" step="0.5" value="3">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="sl">
+        <div class="sl-hd">車の買替費用（1回）<b id="lbl-fp-car">250万円</b></div>
+        <input type="range" id="fp-car" min="0" max="800" step="50" value="250">
+        <div class="sl-hints"><span>0万=車なし</span><span>800万</span></div>
+      </div>
+      <div class="sl">
+        <div class="sl-hd">買替サイクル<b id="lbl-fp-carcycle">8年ごと</b></div>
+        <input type="range" id="fp-carcycle" min="4" max="15" step="1" value="8">
+      </div>
+    </div>
+    <div class="sl">
+      <div class="sl-hd">旅行・レジャー（年）<b id="lbl-fp-travel">20万円</b></div>
+      <input type="range" id="fp-travel" min="0" max="150" step="5" value="20">
+    </div>
+    <div class="sec">住宅維持費（ライフサイクルコストタブと連動）</div>
+    <div style="font-size:9px;color:var(--mu);line-height:1.7;margin-bottom:10px;" id="fp-upkeep-note">修繕積立・固定資産税・火災保険・管理費を年間 <b>—</b> として自動計上します。</div>
+    <div class="sec">現在の貯蓄残高・運用</div>
     <div class="sl">
       <div class="sl-hd">現在の金融資産<b id="lbl-fp-savings">500万円</b></div>
       <input type="range" id="fp-savings" min="0" max="5000" step="100" value="500">
       <div class="sl-hints"><span>0万</span><span>5,000万</span></div>
+    </div>
+    <div class="sl">
+      <div class="sl-hd">貯蓄の運用利回り（年）<b id="lbl-fp-yield">1.0%</b></div>
+      <input type="range" id="fp-yield" min="0" max="7" step="0.5" value="1.0">
+      <div class="sl-hints"><span>0%（普通預金）</span><span>7%（積極運用）</span></div>
     </div>
   </div>
 
@@ -2020,10 +2071,11 @@ body.print-fit{font-size:11px;}
         <tr>
           <th style="text-align:left">年</th>
           <th>本人年齢</th>
-          <th>年間収入</th>
+          <th>手取り収入</th>
           <th>住宅ローン</th>
           <th>生活費</th>
           <th>教育費</th>
+          <th>その他支出</th>
           <th>年間収支</th>
           <th>貯蓄残高</th>
         </tr>
@@ -2546,6 +2598,7 @@ body.print-fit{font-size:11px;}
       <tr><td class="v">v21.7</td><td class="d">2026年7月20日</td><td><span class="hist-badge">UI改善</span></td><td>スマホ表示を最適化（ナビタブの折り返し表示・入力フォームのタッチ操作向け拡大）。ローン健全性チェックの各円グラフ横に指標の説明文を追加。更新履歴タブ（本ページ）を新設。</td></tr>
       <tr><td class="v">v21.8</td><td class="d">2026年7月20日</td><td><span class="hist-badge">資金計画</span></td><td>組み込み全金融機関の全商品（変動・3年/5年/10年/20年固定・全期間固定）を選択可能に拡充。物件資金・内訳を「建物費用（本体・付帯・オプション）」「土地費用（土地代金・土地諸費用）」「諸費用（印紙代金等・融資関係）」の3分類アコーディオンに変更し、内訳合計から円グラフを自動生成。</td></tr>
       <tr><td class="v">v21.9</td><td class="d">2026年7月20日</td><td><span class="hist-badge">資金計画書</span></td><td>建物費用の内訳に「予備費用」を追加。資金計画書を実務フォーマットに刷新：仕上げ入力パネル（お客様名・建設地・仕様・キャンペーン・営業所・担当等）、支払スケジュール表（土地契約時〜引渡時）、借入計画のボーナス併用対応、予算取り費用・工程概要（予定）・補助金取得後総額を新設。全明細行の追加・削除に対応し、ブランドを「AIミヤウチ社長の資金計画書」に変更。</td></tr>
+      <tr><td class="v">v21.10</td><td class="d">2026年7月20日</td><td><span class="hist-badge">FP</span></td><td>FPシミュレーションをトップFP品質に刷新。収入は源泉徴収票の支払金額（額面）で入力し、所得税・住民税・社会保険料を自動計算して手取りベースで試算。本人・配偶者それぞれの退職年齢・退職金、児童手当（2024年10月改正対応）の自動加算、生命保険・車の買替サイクル・旅行レジャー・住宅維持費（ライフサイクルコスト連動）・貯蓄の運用利回りを新設し、65歳時点の貯蓄（老後資金2,000万円目安）をKPIに追加。</td></tr>
     </tbody>
   </table>
   <div style="font-size:9px;color:var(--mu);line-height:1.8;margin-top:12px;">※ 金利・利回りの数値データはバージョンに関わらず毎日13時に最新化されます。機能のご要望・不具合のご連絡はピュアグロース株式会社までお寄せください。</div>
@@ -4147,14 +4200,59 @@ var FP = {
     {role:'配偶者', icon:'👩', age:33},
     {role:'子①',  icon:'🧒', age:5},
   ],
-  inc1:600, iraise:1.5, inc2:300,
-  ret:65, retpay:1500,
+  inc1:600, iraise:1.5, inc2:300,          // 額面年収（源泉徴収票の支払金額・万円）
+  ret:65, retpay:1500,                      // 本人 退職年齢・退職金
+  ret2:65, retpay2:500,                     // 配偶者 退職年齢・退職金
+  jido:true,                                // 児童手当を自動加算
   living:25, lraise:1.0,
   edu:1500, edupeak:18,
   pension:20, oldliving:20,
-  savings:500,
+  ins:3, car:250, carcycle:8, travel:20,    // 保険（月）・車買替（1回/周期）・旅行（年）
+  savings:500, yield:1.0,                   // 金融資産・運用利回り
 };
 var FP_YEARS = 35; // シミュレーション年数
+
+// ═══ 源泉徴収ベース → 手取り換算（給与所得者・概算） ═══
+function fpIncomeTax(taxable){ // 課税所得（円）→ 所得税（円・累進）
+  var br=[[1950000,.05,0],[3300000,.10,97500],[6950000,.20,427500],[9000000,.23,636000],
+          [18000000,.33,1536000],[40000000,.40,2796000],[Infinity,.45,4796000]];
+  for(var i=0;i<br.length;i++){if(taxable<=br[i][0])return Math.max(0,taxable*br[i][1]-br[i][2]);}
+  return 0;
+}
+function fpNetIncome(gMan){ // 額面年収（万円）→ 手取り年収（万円）
+  if(gMan<=0)return 0;
+  var g=gMan*10000;
+  var shakai=Math.min(g*0.145,2400000); // 社会保険料 概算14.5%（上限考慮）
+  var kj; // 給与所得控除
+  if(g<=1900000)kj=650000;
+  else if(g<=3600000)kj=g*0.30+80000;
+  else if(g<=6600000)kj=g*0.20+440000;
+  else if(g<=8500000)kj=g*0.10+1100000;
+  else kj=1950000;
+  var taxableIt=Math.max(0,g-kj-shakai-580000);   // 基礎控除58万（所得税）
+  var it=fpIncomeTax(taxableIt)*1.021;             // 復興特別所得税込
+  var taxableJu=Math.max(0,g-kj-shakai-430000);   // 基礎控除43万（住民税）
+  var ju=taxableJu*0.10+5000;
+  return Math.max(0,Math.round((g-shakai-it-ju)/10000));
+}
+// 手取り表示の更新
+function fpUpdateNetLabels(){
+  var n1=fpNetIncome(FP.inc1),n2=fpNetIncome(FP.inc2);
+  var e1=document.getElementById('fp-net1');if(e1)e1.textContent=n1.toLocaleString()+'万円（額面'+FP.inc1.toLocaleString()+'万円）';
+  var e2=document.getElementById('fp-net2');if(e2)e2.textContent=FP.inc2>0?n2.toLocaleString()+'万円（額面'+FP.inc2.toLocaleString()+'万円）':'—（収入なし）';
+  var et=document.getElementById('fp-net-total');if(et)et.textContent=(n1+n2).toLocaleString()+'万円';
+}
+// 児童手当（年額・万円）: 0〜2歳 月1.5万 / 3歳〜18歳年代 月1万 / 第3子以降 月3万
+function fpJidoTeate(kidAges){
+  if(!FP.jido)return 0;
+  var total=0;
+  kidAges.forEach(function(a,idx){
+    if(a<0||a>18)return;
+    var mo=idx>=2?3:(a<3?1.5:1);
+    total+=mo*12;
+  });
+  return total;
+}
 
 function fpRenderMembers(){
   var grid = document.getElementById('fp-member-grid');
@@ -4185,12 +4283,10 @@ function fpAddMember(){
   upFP();
 }
 
-// ── キャッシュフロー計算 ──
+// ── キャッシュフロー計算（源泉徴収ベース→手取り換算・本人/配偶者 個別キャリア） ──
 function fpCalcCF(){
   var rows = [];
   var savings = FP.savings;            // 万円
-  var baseInc1 = FP.inc1;
-  var baseInc2 = FP.inc2;
   var baseLife  = FP.living * 12;      // 万円/年
 
   // ローン年返済（資金計画タブから引継ぎ）
@@ -4199,28 +4295,48 @@ function fpCalcCF(){
   var loanMo = B > 0 ? mo(B, lp.rA, lp.yA) : 0; // 円/月
   var loanAnn = loanMo * 12 / 10000;  // 万円/年
 
-  // 本人の現在年齢（membersの最初=本人）
+  // 住宅維持費（ライフサイクルコストタブと連動・万円/年）
+  var upkeepAnn = S.rp*12 + S.tx + S.ins + S.mg*12;
+
+  // 本人・配偶者の現在年齢
   var myAge0 = FP.members.length > 0 ? FP.members[0].age : 35;
+  var spouse = FP.members.find(function(m){ return m.role.indexOf('配偶者')>=0; });
+  var spAge0 = spouse ? spouse.age : null;
+  var hasSpouseInc = FP.inc2 > 0 && spAge0 !== null;
 
   // 子供リスト（role に「子」含む）
   var kids = FP.members.filter(function(m){ return m.role.indexOf('子')>=0; });
 
+  // 年金按分（配偶者がいる場合 本人60%／配偶者40%、単身は100%）
+  var pensionShare1 = spAge0 !== null ? 0.6 : 1.0;
+  var pensionShare2 = spAge0 !== null ? 0.4 : 0.0;
+
   for(var yr = 0; yr < FP_YEARS; yr++){
     var myAge = myAge0 + yr;
-    var retired = myAge >= FP.ret;
+    var spAge = spAge0 !== null ? spAge0 + yr : null;
+    var retired1 = myAge >= FP.ret;
+    var retired2 = spAge !== null ? spAge >= FP.ret2 : true;
 
-    // 収入
-    var inc1 = retired ? 0 : Math.round(baseInc1 * Math.pow(1 + FP.iraise/100, yr));
-    var inc2 = retired ? 0 : baseInc2;
-    var pension = retired ? FP.pension * 12 : 0;
-    var retBonus = (myAge === FP.ret) ? FP.retpay : 0;
-    var totalInc = inc1 + inc2 + pension + retBonus;
+    // 収入（額面×上昇率 → 手取り換算・本人/配偶者それぞれの退職年齢まで）
+    var net1 = retired1 ? 0 : fpNetIncome(FP.inc1 * Math.pow(1 + FP.iraise/100, yr));
+    var net2 = (!hasSpouseInc || retired2) ? 0 : fpNetIncome(FP.inc2 * Math.pow(1 + FP.iraise/100, yr));
+    // 年金（本人・配偶者それぞれ65歳から）
+    var pension = 0;
+    if(myAge >= 65) pension += FP.pension * 12 * pensionShare1;
+    if(spAge !== null && spAge >= 65) pension += FP.pension * 12 * pensionShare2;
+    // 退職金（それぞれの退職年齢の年に一括・退職所得控除により概ね非課税と仮定）
+    var retBonus = 0;
+    if(myAge === FP.ret) retBonus += FP.retpay;
+    if(spAge !== null && spAge === FP.ret2 && hasSpouseInc) retBonus += FP.retpay2;
+    // 児童手当
+    var jido = fpJidoTeate(kids.map(function(k){ return k.age + yr; }));
+    var totalInc = net1 + net2 + pension + retBonus + jido;
 
     // 住宅ローン（完済後0）
     var loanThisYr = (yr < lp.yA) ? loanAnn : 0;
 
-    // 生活費
-    var lifeExp = retired
+    // 生活費（本人退職後は老後生活費に切替）
+    var lifeExp = retired1
       ? FP.oldliving * 12
       : Math.round(baseLife * Math.pow(1 + FP.lraise/100, yr));
 
@@ -4228,7 +4344,6 @@ function fpCalcCF(){
     var eduExp = 0;
     kids.forEach(function(k){
       var kidAge = k.age + yr;
-      // 教育費はpeak±8年に分散（正規分布的に簡易分配）
       var dist = Math.abs(kidAge - FP.edupeak);
       if(dist <= 8){
         var factor = Math.max(0, 1 - dist/10);
@@ -4236,9 +4351,14 @@ function fpCalcCF(){
       }
     });
 
-    var totalExp = loanThisYr + lifeExp + eduExp;
+    // その他支出: 保険（本人75歳まで）＋旅行＋車買替（周期年）＋住宅維持費
+    var insExp = myAge < 75 ? FP.ins * 12 : FP.ins * 6;
+    var carExp = (FP.car > 0 && yr > 0 && yr % FP.carcycle === 0) ? FP.car : 0;
+    var otherExp = insExp + FP.travel + carExp + upkeepAnn;
+
+    var totalExp = loanThisYr + lifeExp + eduExp + otherExp;
     var balance  = totalInc - totalExp;
-    savings += balance;
+    savings = savings * (1 + FP.yield/100) + balance; // 運用利回りを反映
 
     rows.push({
       yr: yr + 1,
@@ -4247,6 +4367,11 @@ function fpCalcCF(){
       loan: loanThisYr,
       life: lifeExp,
       edu: eduExp,
+      other: otherExp,
+      ins: insExp,
+      car: carExp,
+      upkeep: upkeepAnn,
+      travel: FP.travel,
       balance: balance,
       savings: savings,
     });
@@ -4255,22 +4380,28 @@ function fpCalcCF(){
 }
 
 function upFP(){
+  fpUpdateNetLabels();
+  // 住宅維持費の連動表示
+  var upNote=document.getElementById('fp-upkeep-note');
+  if(upNote)upNote.innerHTML='修繕積立・固定資産税・火災保険・管理費を年間 <b>'+Math.round(S.rp*12+S.tx+S.ins+S.mg*12).toLocaleString()+'万円</b> として自動計上します（ライフサイクルコストタブの設定と連動）。';
+
   var rows = fpCalcCF();
   if(!rows.length) return;
 
   // ── KPI ──
   var minSavings = Math.min.apply(null, rows.map(function(r){return r.savings;}));
   var finalSavings = rows[rows.length-1].savings;
-  var incTotal = rows.reduce(function(a,r){return a+r.inc;},0);
-  var expTotal = rows.reduce(function(a,r){return a+r.loan+r.life+r.edu;},0);
   var redYears = rows.filter(function(r){return r.balance<0;}).length;
+  // 65歳時点の貯蓄（老後資金の入口）
+  var at65 = rows.find(function(r){return r.age===65;});
+  var sav65 = at65 ? at65.savings : finalSavings;
 
   var kpiData = [
     {l:'最終貯蓄残高', v:(finalSavings>=0?'+':'')+Math.round(finalSavings).toLocaleString()+'万円',
       s: FP_YEARS+'年後', cls: finalSavings>=0?'c-gr':'c-rd'},
     {l:'最低貯蓄残高', v:(minSavings>=0?'+':'')+Math.round(minSavings).toLocaleString()+'万円',
       s:'シミュレーション期間中', cls: minSavings>=0?'c-bl':'c-rd'},
-    {l:'総収入合計', v:Math.round(incTotal).toLocaleString()+'万円', s:FP_YEARS+'年累計', cls:'c-bl'},
+    {l:'65歳時点の貯蓄', v:Math.round(sav65).toLocaleString()+'万円', s:'老後資金の目安2,000万円', cls:sav65>=2000?'c-gr':'c-or'},
     {l:'赤字年数', v:redYears+'年', s:'収支マイナスの年', cls:redYears>0?'c-rd':'c-gr'},
   ];
 
@@ -4316,6 +4447,7 @@ function upFP(){
         +'<td>'+Math.round(r.loan).toLocaleString()+'万</td>'
         +'<td>'+Math.round(r.life).toLocaleString()+'万</td>'
         +'<td>'+Math.round(r.edu).toLocaleString()+'万</td>'
+        +'<td>'+Math.round(r.other).toLocaleString()+'万</td>'
         +'<td class="'+(r.balance>=0?'pos':'neg')+'">'+( r.balance>=0?'+':'')+Math.round(r.balance).toLocaleString()+'万</td>'
         +'<td class="'+(r.savings>=0?'pos':'neg')+'" style="font-weight:700">'+Math.round(r.savings).toLocaleString()+'万</td>'
         +'</tr>';
@@ -4328,6 +4460,9 @@ function upFP(){
     {label:'住宅ローン', v:r0.loan, c:'#2f6df0'},
     {label:'生活費',     v:r0.life, c:'#1f9d63'},
     {label:'教育費',     v:r0.edu,  c:'#b97400'},
+    {label:'住宅維持費', v:r0.upkeep, c:'#6C3FA8'},
+    {label:'保険',       v:r0.ins,  c:'#C96A1A'},
+    {label:'旅行・車',   v:r0.travel + r0.car, c:'#C0392B'},
   ].filter(function(s){return s.v>0;});
   drawPie('fp-pie','fp-pie-legend', expSegs.map(function(s){
     return {label:s.label, v:s.v, c:s.c, val:Math.round(s.v).toLocaleString()+'万円'};
@@ -4343,7 +4478,7 @@ function drawFPChart(rows){
   var n=rows.length;
 
   var incArr  = rows.map(function(r){return r.inc;});
-  var expArr  = rows.map(function(r){return r.loan+r.life+r.edu;});
+  var expArr  = rows.map(function(r){return r.loan+r.life+r.edu+r.other;});
   var savArr  = rows.map(function(r){return r.savings;});
   var allVals = incArr.concat(expArr).concat(savArr);
   var maxV = Math.max.apply(null, allVals)*1.05;
@@ -4386,6 +4521,13 @@ document.addEventListener('DOMContentLoaded', function(){
     {id:'fp-inc2',      prop:'inc2',      lbl:'lbl-fp-inc2',    fmt:function(v){return v+'万円';}},
     {id:'fp-ret',       prop:'ret',       lbl:'lbl-fp-ret',     fmt:function(v){return v+'歳';}},
     {id:'fp-retpay',    prop:'retpay',    lbl:'lbl-fp-retpay',  fmt:function(v){return (+v).toLocaleString()+'万円';}},
+    {id:'fp-ret2',      prop:'ret2',      lbl:'lbl-fp-ret2',    fmt:function(v){return v+'歳';}},
+    {id:'fp-retpay2',   prop:'retpay2',   lbl:'lbl-fp-retpay2', fmt:function(v){return (+v).toLocaleString()+'万円';}},
+    {id:'fp-ins',       prop:'ins',       lbl:'lbl-fp-ins',     fmt:function(v){return v+'万円';}},
+    {id:'fp-car',       prop:'car',       lbl:'lbl-fp-car',     fmt:function(v){return (+v)>0?(+v).toLocaleString()+'万円':'車なし';}},
+    {id:'fp-carcycle',  prop:'carcycle',  lbl:'lbl-fp-carcycle',fmt:function(v){return v+'年ごと';}},
+    {id:'fp-travel',    prop:'travel',    lbl:'lbl-fp-travel',  fmt:function(v){return v+'万円';}},
+    {id:'fp-yield',     prop:'yield',     lbl:'lbl-fp-yield',   fmt:function(v){return (+v).toFixed(1)+'%';}},
     {id:'fp-living',    prop:'living',    lbl:'lbl-fp-living',  fmt:function(v){return v+'万円';}},
     {id:'fp-lraise',    prop:'lraise',    lbl:'lbl-fp-lraise',  fmt:function(v){return v+'%';}},
     {id:'fp-edu',       prop:'edu',       lbl:'lbl-fp-edu',     fmt:function(v){return (+v).toLocaleString()+'万円';}},
