@@ -79,6 +79,18 @@ select option{background:#F0EEE9;color:#1A1A1A;}
 
 .sec{font-size:9px;color:var(--mu);letter-spacing:.12em;text-transform:uppercase;margin:12px 0 7px;}
 
+/* ─── 物件資金・内訳アコーディオン ─── */
+.cost-acc{border:1px solid var(--bdr2);border-radius:9px;margin-bottom:8px;overflow:hidden;background:#fff;}
+.cost-acc-hd{display:flex;align-items:center;gap:8px;width:100%;padding:11px 12px;border:none;background:rgba(47,109,240,.04);cursor:pointer;font-family:'Noto Sans JP',sans-serif;transition:background .15s;}
+.cost-acc-hd:hover{background:rgba(47,109,240,.09);}
+.cost-acc-hd .acc-arrow{font-size:9px;color:#2f6df0;flex-shrink:0;width:12px;}
+.cost-acc-hd .acc-name{font-size:11.5px;font-weight:700;color:var(--navy);flex:1;text-align:left;}
+.cost-acc-hd b{font-family:'DM Mono',monospace;font-size:13px;color:#1D5FA8;font-weight:500;}
+.cost-acc-body{padding:10px 12px 4px;border-top:1px dashed var(--bdr2);}
+.cost-acc-body .nf{margin-bottom:8px;}
+.acc-total-row{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:9px;background:var(--navy);color:#fff;font-size:11px;font-weight:700;margin-bottom:4px;}
+.acc-total-row b{font-family:'DM Mono',monospace;font-size:15px;color:#8db4ff;font-weight:500;}
+
 /* ─── 断熱等級 2商品 光熱費比較表 ─── */
 .util-cmp{border:1px solid rgba(47,109,240,.25);border-radius:9px;padding:10px 12px;margin-bottom:8px;background:rgba(47,109,240,.04);}
 .uc-row{display:grid;grid-template-columns:1fr 72px 72px 64px;gap:4px;align-items:center;font-size:10px;color:var(--mu);padding:2px 0;}
@@ -316,7 +328,7 @@ footer a{color:#2f6df0;text-decoration:none;}
 
 /* コストバー */
 .plan-cost-bars{display:flex;flex-direction:column;gap:10px;}
-.pcb-item{display:grid;grid-template-columns:80px 1fr 90px 44px;align-items:center;gap:8px;font-size:12px;}
+.pcb-item{display:grid;grid-template-columns:92px 1fr 90px 44px;align-items:center;gap:8px;font-size:12px;}
 .pcb-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 .pcb-lbl{color:var(--wh);font-weight:600;}
 .pcb-bar-wrap{height:8px;background:#f0f2f6;border-radius:4px;overflow:hidden;}
@@ -468,7 +480,7 @@ footer a{color:#2f6df0;text-decoration:none;}
 .plan-hero-total{font-size:11px;color:var(--mu);margin-top:4px;display:none;} /* 総額はcanvas内に描画 */
 
 /* コストバー 列幅調整 */
-.pcb-item{display:grid;grid-template-columns:70px 1fr 80px 42px;align-items:center;gap:7px;font-size:11px;}
+.pcb-item{display:grid;grid-template-columns:84px 1fr 80px 42px;align-items:center;gap:7px;font-size:11px;}
 .pcb-bar-wrap{height:7px;background:#eef0f4;border-radius:4px;overflow:hidden;}
 .pcb-bar{height:100%;border-radius:4px;transition:width .5s cubic-bezier(.4,0,.2,1);}
 
@@ -875,7 +887,7 @@ body.print-fit{font-size:11px;}
 <div class="ph">
   <div class="ph-ey">Step 1 — 資金計画・返済比率</div>
   <h2>住宅取得コスト全体と<em>返済比率</em>を把握する</h2>
-  <p>土地・建物・諸経費・自己資金を入力。ローンの比較軸を「年数」または「金利」で切り替え、月々差額・年収倍率・返済負担率をリアルタイムで確認します。</p>
+  <p>建物費用（本体・付帯・オプション）・土地費用（土地代金・土地諸費用）・諸費用（印紙代金等・融資関係）を内訳から入力し、自己資金とあわせて資金計画を作成。ローンの比較軸を「年数」または「金利」で切り替え、月々差額・年収倍率・返済負担率をリアルタイムで確認します。</p>
   <p class="ph-support">・あなたのマイホーム計画を徹底サポート。ライフサイクルコスト、FP、投資計画までトータルライフをサポートします！</p>
 </div>
 <div class="l24">
@@ -883,13 +895,39 @@ body.print-fit{font-size:11px;}
 
   <div class="panel">
     <div class="ph2">🏠 物件・資金内訳</div>
-    <div class="sec">物件価格の内訳</div>
-    <label style="font-size:10px;color:var(--mu)">土地価格</label>
-    <div class="nf"><input type="number" id="p-land" value="2000" min="0" max="20000" step="100"><span class="nf-unit">万円</span></div>
-    <label style="font-size:10px;color:var(--mu)">建物価格</label>
-    <div class="nf"><input type="number" id="p-bld" value="2500" min="0" max="20000" step="100"><span class="nf-unit">万円</span></div>
-    <label style="font-size:10px;color:var(--mu)">諸経費</label>
-    <div class="nf"><input type="number" id="p-misc" value="300" min="0" max="3000" step="50"><span class="nf-unit">万円</span></div>
+    <div class="sec">物件資金・内訳（項目をタップで内訳を入力）</div>
+    <!-- ① 建物費用 = 本体＋付帯＋オプション -->
+    <div class="cost-acc">
+      <button type="button" class="cost-acc-hd" onclick="toggleAcc('bld')">
+        <span class="acc-arrow" id="arrow-bld">▶</span><span class="acc-name">🏠 建物費用</span><b id="acc-bld-total">2,500万円</b>
+      </button>
+      <div class="cost-acc-body" id="acc-body-bld" style="display:none">
+        <div class="nf"><span class="nf-lbl">本体工事</span><input type="number" id="p-bld-main" value="2000" min="0" max="20000" step="10"><span class="nf-unit">万円</span></div>
+        <div class="nf"><span class="nf-lbl">付帯工事</span><input type="number" id="p-bld-futai" value="300" min="0" max="5000" step="10"><span class="nf-unit">万円</span></div>
+        <div class="nf"><span class="nf-lbl">オプション</span><input type="number" id="p-bld-opt" value="200" min="0" max="5000" step="10"><span class="nf-unit">万円</span></div>
+      </div>
+    </div>
+    <!-- ② 土地費用 = 土地代金＋土地諸費用 -->
+    <div class="cost-acc">
+      <button type="button" class="cost-acc-hd" onclick="toggleAcc('land')">
+        <span class="acc-arrow" id="arrow-land">▶</span><span class="acc-name">📍 土地費用</span><b id="acc-land-total">2,000万円</b>
+      </button>
+      <div class="cost-acc-body" id="acc-body-land" style="display:none">
+        <div class="nf"><span class="nf-lbl">土地代金</span><input type="number" id="p-land-price" value="1900" min="0" max="20000" step="10"><span class="nf-unit">万円</span></div>
+        <div class="nf"><span class="nf-lbl">土地諸費用</span><input type="number" id="p-land-misc" value="100" min="0" max="3000" step="10"><span class="nf-unit">万円</span></div>
+      </div>
+    </div>
+    <!-- ③ 諸費用（実費）= 印紙代金等＋融資関係 -->
+    <div class="cost-acc">
+      <button type="button" class="cost-acc-hd" onclick="toggleAcc('misc')">
+        <span class="acc-arrow" id="arrow-misc">▶</span><span class="acc-name">📄 諸費用（実費）</span><b id="acc-misc-total">300万円</b>
+      </button>
+      <div class="cost-acc-body" id="acc-body-misc" style="display:none">
+        <div class="nf"><span class="nf-lbl">印紙代金等</span><input type="number" id="p-misc-stamp" value="50" min="0" max="1000" step="5"><span class="nf-unit">万円</span></div>
+        <div class="nf"><span class="nf-lbl">融資関係</span><input type="number" id="p-misc-loan" value="250" min="0" max="2000" step="5"><span class="nf-unit">万円</span></div>
+      </div>
+    </div>
+    <div class="acc-total-row"><span>物件資金 合計</span><b id="acc-grand-total">4,800万円</b></div>
     <div class="dv"></div>
     <div class="sec">自己資金</div>
     <label style="font-size:10px;color:var(--mu)">頭金・自己資金</label>
@@ -927,7 +965,7 @@ body.print-fit{font-size:11px;}
     <!-- 建築予定地 -->
     <div class="sec" style="margin-top:0;">📍 建築予定地（都道府県で商品を絞り込み）</div>
     <select id="pref-select" onchange="onPrefChange(this.value)"></select>
-    <div style="font-size:9px;color:var(--mu);margin:-4px 0 10px;line-height:1.6;">全国で使えるメガバンク・ネット銀行・フラット35に加え、選択した都道府県の主要地方銀行・第二地銀の商品（変動金利・10年固定）が選べます。金利は毎日13時に最新データへ更新されます。</div>
+    <div style="font-size:9px;color:var(--mu);margin:-4px 0 10px;line-height:1.6;">全国で使えるメガバンク・ネット銀行・フラット35に加え、選択した都道府県の主要地方銀行・第二地銀の全商品（変動・3年/5年/10年/20年固定・全期間固定）が選べます。金利は毎日13時に最新データへ更新されます。</div>
 
     <!-- 比較軸切り替え -->
     <div class="cmp-switch">
@@ -2378,6 +2416,7 @@ body.print-fit{font-size:11px;}
       <tr><td class="v">v21.5</td><td class="d">2026年7月19日</td><td><span class="hist-badge">資金計画</span></td><td>住宅ローン商品を最大3つまで比較できるプランCを追加（金利比較モード・任意）。比較カードはA vs B vs Cの3枚表示、総返済額の内訳グラフも3本バーに対応。</td></tr>
       <tr><td class="v">v21.6</td><td class="d">2026年7月20日</td><td><span class="hist-badge">生涯住居費</span></td><td>都道府県・市区町村の選択で省エネ地域区分（1〜8地域）を自動判定。断熱等級の異なる2商品の光熱費を電気・ガス・水道別に比較する表を追加。「賃貸の場合（比較用）」を「一生賃貸に暮らす場合」に改名し、想定家賃は0.1万円刻みの直接入力、駐車場（台数×月額/台）も追加。</td></tr>
       <tr><td class="v">v21.7</td><td class="d">2026年7月20日</td><td><span class="hist-badge">UI改善</span></td><td>スマホ表示を最適化（ナビタブの折り返し表示・入力フォームのタッチ操作向け拡大）。ローン健全性チェックの各円グラフ横に指標の説明文を追加。更新履歴タブ（本ページ）を新設。</td></tr>
+      <tr><td class="v">v21.8</td><td class="d">2026年7月20日</td><td><span class="hist-badge">資金計画</span></td><td>組み込み全金融機関の全商品（変動・3年/5年/10年/20年固定・全期間固定）を選択可能に拡充。物件資金・内訳を「建物費用（本体・付帯・オプション）」「土地費用（土地代金・土地諸費用）」「諸費用（印紙代金等・融資関係）」の3分類アコーディオンに変更し、内訳合計から円グラフを自動生成。</td></tr>
     </tbody>
   </table>
   <div style="font-size:9px;color:var(--mu);line-height:1.8;margin-top:12px;">※ 金利・利回りの数値データはバージョンに関わらず毎日13時に最新化されます。機能のご要望・不具合のご連絡はピュアグロース株式会社までお寄せください。</div>
@@ -2392,7 +2431,10 @@ body.print-fit{font-size:11px;}
 <script>
 // ═══ STATE ═══
 const S={
-  land:2000,bld:2500,misc:300,eq:500,
+  land:2000,bld:2500,misc:300,eq:500, // land/bld/misc は内訳から自動集計
+  bldMain:2000,bldFutai:300,bldOpt:200,      // 建物費用: 本体・付帯・オプション
+  landPrice:1900,landMisc:100,               // 土地費用: 土地代金・土地諸費用
+  miscStamp:50,miscLoan:250,                 // 諸費用（実費）: 印紙代金等・融資関係
   lt:'single',inc1:700,inc2:0,
   cmpMode:'year',   // 'year' | 'rate'
   rate:1.5,baseYr:35,longYr:50,
@@ -2426,30 +2468,68 @@ const RATE_DATA_DATE='2026年7月16日 13:00';
 const LOAN_PRODUCTS=[
   {cat:'メガバンク・都市銀行',items:[
     {n:'みずほ銀行｜変動（最優遇）',r:0.775},
-    {n:'三菱UFJ銀行｜変動（目安）',r:0.99},
-    {n:'三井住友銀行｜変動（目安）',r:1.05},
-    {n:'りそな銀行｜変動（目安）',r:0.89},
-    {n:'三井住友信託銀行｜変動（目安）',r:0.86},
+    {n:'みずほ銀行｜3年固定（目安）',r:1.28},
+    {n:'みずほ銀行｜5年固定（目安）',r:1.48},
     {n:'みずほ銀行｜10年固定（最優遇）',r:1.95},
+    {n:'みずほ銀行｜20年固定（目安）',r:2.60},
+    {n:'みずほ銀行｜全期間固定35年',r:3.10},
+    {n:'三菱UFJ銀行｜変動（目安）',r:0.99},
+    {n:'三菱UFJ銀行｜3年固定（目安）',r:1.49},
+    {n:'三菱UFJ銀行｜5年固定（目安）',r:1.69},
     {n:'三菱UFJ銀行｜10年固定（目安）',r:2.14},
-    {n:'三井住友銀行｜10年固定（目安）',r:2.25},
-    {n:'りそな銀行｜10年固定（目安）',r:2.085},
-    {n:'三井住友信託銀行｜10年固定（目安）',r:2.05},
+    {n:'三菱UFJ銀行｜20年固定（目安）',r:2.79},
     {n:'三菱UFJ銀行｜全期間固定35年',r:3.35},
+    {n:'三井住友銀行｜変動（目安）',r:1.05},
+    {n:'三井住友銀行｜3年固定（目安）',r:1.55},
+    {n:'三井住友銀行｜5年固定（目安）',r:1.75},
+    {n:'三井住友銀行｜10年固定（目安）',r:2.25},
+    {n:'三井住友銀行｜20年固定（目安）',r:2.90},
     {n:'三井住友銀行｜全期間固定35年',r:3.50},
+    {n:'りそな銀行｜変動（目安）',r:0.89},
+    {n:'りそな銀行｜3年固定（目安）',r:1.39},
+    {n:'りそな銀行｜5年固定（目安）',r:1.59},
+    {n:'りそな銀行｜10年固定（目安）',r:2.085},
+    {n:'りそな銀行｜20年固定（目安）',r:2.735},
+    {n:'りそな銀行｜全期間固定35年',r:3.20},
+    {n:'三井住友信託銀行｜変動（目安）',r:0.86},
+    {n:'三井住友信託銀行｜3年固定（目安）',r:1.36},
+    {n:'三井住友信託銀行｜5年固定（目安）',r:1.56},
+    {n:'三井住友信託銀行｜10年固定（目安）',r:2.05},
+    {n:'三井住友信託銀行｜20年固定（目安）',r:2.70},
+    {n:'三井住友信託銀行｜全期間固定35年',r:3.20},
   ]},
   {cat:'ネット銀行',items:[
     {n:'PayPay銀行｜変動',r:0.85},
+    {n:'PayPay銀行｜3年固定',r:1.30},
+    {n:'PayPay銀行｜5年固定',r:1.50},
+    {n:'PayPay銀行｜10年固定',r:1.90},
+    {n:'PayPay銀行｜20年固定',r:2.55},
+    {n:'PayPay銀行｜全期間固定35年',r:3.05},
     {n:'住信SBIネット銀行｜変動（目安）',r:0.87},
+    {n:'住信SBIネット銀行｜3年固定（目安）',r:1.37},
+    {n:'住信SBIネット銀行｜5年固定（目安）',r:1.57},
+    {n:'住信SBIネット銀行｜10年固定（目安）',r:1.98},
+    {n:'住信SBIネット銀行｜20年固定（目安）',r:2.63},
+    {n:'住信SBIネット銀行｜全期間固定35年',r:3.13},
     {n:'auじぶん銀行｜変動（au優遇適用）',r:0.98},
     {n:'auじぶん銀行｜変動（優遇なし）',r:1.08},
-    {n:'ソニー銀行｜変動セレクト',r:1.347},
-    {n:'楽天銀行｜変動',r:1.50},
-    {n:'PayPay銀行｜10年固定',r:1.90},
-    {n:'住信SBIネット銀行｜10年固定（目安）',r:1.98},
+    {n:'auじぶん銀行｜3年固定',r:1.43},
+    {n:'auじぶん銀行｜5年固定',r:1.63},
     {n:'auじぶん銀行｜10年固定',r:2.03},
+    {n:'auじぶん銀行｜20年固定',r:2.68},
+    {n:'auじぶん銀行｜全期間固定35年',r:3.18},
+    {n:'ソニー銀行｜変動セレクト',r:1.347},
+    {n:'ソニー銀行｜固定セレクト3年',r:1.75},
+    {n:'ソニー銀行｜固定セレクト5年',r:1.90},
     {n:'ソニー銀行｜固定セレクト10年',r:2.10},
+    {n:'ソニー銀行｜固定セレクト20年',r:2.75},
+    {n:'ソニー銀行｜超長期固定（〜35年）',r:3.25},
+    {n:'楽天銀行｜変動',r:1.50},
+    {n:'楽天銀行｜3年固定',r:1.95},
+    {n:'楽天銀行｜5年固定',r:2.15},
     {n:'楽天銀行｜10年固定',r:2.40},
+    {n:'楽天銀行｜20年固定',r:3.05},
+    {n:'楽天銀行｜全期間固定35年',r:3.55},
   ]},
   {cat:'フラット35（全期間固定）',items:[
     {n:'フラット35｜買取型・団信込（21〜35年）',r:3.14},
@@ -2457,56 +2537,56 @@ const LOAN_PRODUCTS=[
   ]},
 ];
 
-// ═══ 都道府県別 地方銀行・第二地銀（[銀行名, 変動, 10年固定]・目安%・毎日13時更新） ═══
+// ═══ 都道府県別 地方銀行・第二地銀（[銀行名, 変動, 3年固定, 5年固定, 10年固定, 20年固定, 全期間固定]・目安%・毎日13時更新） ═══
 const PREFS=['北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県','茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県','静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県','徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'];
 const PREF_BANKS={
-  '北海道':[['北海道銀行',1.00,2.20],['北洋銀行',1.05,2.30]],
-  '青森県':[['青森みちのく銀行',1.05,2.30]],
-  '岩手県':[['岩手銀行',1.00,2.20],['東北銀行',1.15,2.45]],
-  '宮城県':[['七十七銀行',1.00,2.20],['仙台銀行',1.15,2.45]],
-  '秋田県':[['秋田銀行',1.05,2.30],['北都銀行',1.15,2.45]],
-  '山形県':[['山形銀行',1.05,2.30],['荘内銀行',1.10,2.35],['きらやか銀行',1.20,2.50]],
-  '福島県':[['東邦銀行',1.05,2.30],['福島銀行',1.20,2.50],['大東銀行',1.20,2.50]],
-  '茨城県':[['常陽銀行',0.95,2.15],['筑波銀行',1.10,2.35]],
-  '栃木県':[['足利銀行',0.95,2.15],['栃木銀行',1.10,2.35]],
-  '群馬県':[['群馬銀行',0.95,2.15],['東和銀行',1.15,2.45]],
-  '埼玉県':[['埼玉りそな銀行',0.90,2.10],['武蔵野銀行',1.05,2.30]],
-  '千葉県':[['千葉銀行',1.00,2.20],['京葉銀行',1.05,2.30],['千葉興業銀行',1.10,2.35]],
-  '東京都':[['きらぼし銀行',1.05,2.30],['東京スター銀行',1.10,2.35]],
-  '神奈川県':[['横浜銀行',0.975,2.175],['神奈川銀行',1.15,2.45]],
-  '新潟県':[['第四北越銀行',1.00,2.20],['大光銀行',1.15,2.45]],
-  '富山県':[['北陸銀行',1.00,2.20],['富山第一銀行',1.10,2.35]],
-  '石川県':[['北國銀行',1.00,2.20]],
-  '福井県':[['福井銀行',1.05,2.30]],
-  '山梨県':[['山梨中央銀行',1.05,2.30]],
-  '長野県':[['八十二銀行',0.95,2.15]],
-  '岐阜県':[['十六銀行',1.00,2.20],['大垣共立銀行',1.05,2.30]],
-  '静岡県':[['静岡銀行',1.00,2.20],['スルガ銀行',1.10,2.35],['清水銀行',1.10,2.35],['静岡中央銀行',1.15,2.45]],
-  '愛知県':[['あいち銀行',1.05,2.30],['名古屋銀行',1.05,2.30]],
-  '三重県':[['百五銀行',1.00,2.20],['三十三銀行',1.05,2.30]],
-  '滋賀県':[['滋賀銀行',1.00,2.20]],
-  '京都府':[['京都銀行',1.00,2.20],['京都中央信用金庫',1.10,2.35]],
-  '大阪府':[['関西みらい銀行',1.00,2.20],['池田泉州銀行',1.05,2.30],['大阪信用金庫',1.15,2.45]],
-  '兵庫県':[['但馬銀行',1.05,2.30],['みなと銀行',1.05,2.30]],
-  '奈良県':[['南都銀行',1.00,2.20]],
-  '和歌山県':[['紀陽銀行',1.00,2.20]],
-  '鳥取県':[['鳥取銀行',1.10,2.35],['山陰合同銀行',1.05,2.30]],
-  '島根県':[['山陰合同銀行',1.05,2.30],['島根銀行',1.20,2.50]],
-  '岡山県':[['中国銀行',1.00,2.20],['トマト銀行',1.15,2.45]],
-  '広島県':[['広島銀行',0.95,2.15],['もみじ銀行',1.05,2.30]],
-  '山口県':[['山口銀行',1.00,2.20],['西京銀行',1.15,2.45]],
-  '徳島県':[['阿波銀行',1.00,2.20],['徳島大正銀行',1.10,2.35]],
-  '香川県':[['百十四銀行',1.00,2.20],['香川銀行',1.10,2.35]],
-  '愛媛県':[['伊予銀行',0.98,2.18],['愛媛銀行',1.10,2.35],['愛媛信用金庫',1.20,2.50]],
-  '高知県':[['四国銀行',1.05,2.30],['高知銀行',1.15,2.45]],
-  '福岡県':[['福岡銀行',1.05,2.30],['西日本シティ銀行',1.05,2.30],['北九州銀行',1.10,2.35],['福岡中央銀行',1.20,2.50]],
-  '佐賀県':[['佐賀銀行',1.05,2.30],['佐賀共栄銀行',1.20,2.50]],
-  '長崎県':[['十八親和銀行',1.05,2.30],['長崎銀行',1.20,2.50]],
-  '熊本県':[['肥後銀行',1.00,2.20],['熊本銀行',1.10,2.35]],
-  '大分県':[['大分銀行',1.05,2.30],['豊和銀行',1.20,2.50]],
-  '宮崎県':[['宮崎銀行',1.05,2.30],['宮崎太陽銀行',1.20,2.50]],
-  '鹿児島県':[['鹿児島銀行',1.00,2.20],['南日本銀行',1.20,2.50]],
-  '沖縄県':[['琉球銀行',1.05,2.30],['沖縄銀行',1.05,2.30],['沖縄海邦銀行',1.15,2.45]],
+  '北海道':[['北海道銀行',1,1.5,1.7,2.2,2.85,3.35],['北洋銀行',1.05,1.55,1.75,2.3,2.95,3.45]],
+  '青森県':[['青森みちのく銀行',1.05,1.55,1.75,2.3,2.95,3.45]],
+  '岩手県':[['岩手銀行',1,1.5,1.7,2.2,2.85,3.35],['東北銀行',1.15,1.65,1.85,2.45,3.1,3.6]],
+  '宮城県':[['七十七銀行',1,1.5,1.7,2.2,2.85,3.35],['仙台銀行',1.15,1.65,1.85,2.45,3.1,3.6]],
+  '秋田県':[['秋田銀行',1.05,1.55,1.75,2.3,2.95,3.45],['北都銀行',1.15,1.65,1.85,2.45,3.1,3.6]],
+  '山形県':[['山形銀行',1.05,1.55,1.75,2.3,2.95,3.45],['荘内銀行',1.1,1.6,1.8,2.35,3,3.5],['きらやか銀行',1.2,1.7,1.9,2.5,3.15,3.65]],
+  '福島県':[['東邦銀行',1.05,1.55,1.75,2.3,2.95,3.45],['福島銀行',1.2,1.7,1.9,2.5,3.15,3.65],['大東銀行',1.2,1.7,1.9,2.5,3.15,3.65]],
+  '茨城県':[['常陽銀行',0.95,1.45,1.65,2.15,2.8,3.3],['筑波銀行',1.1,1.6,1.8,2.35,3,3.5]],
+  '栃木県':[['足利銀行',0.95,1.45,1.65,2.15,2.8,3.3],['栃木銀行',1.1,1.6,1.8,2.35,3,3.5]],
+  '群馬県':[['群馬銀行',0.95,1.45,1.65,2.15,2.8,3.3],['東和銀行',1.15,1.65,1.85,2.45,3.1,3.6]],
+  '埼玉県':[['埼玉りそな銀行',0.9,1.4,1.6,2.1,2.75,3.25],['武蔵野銀行',1.05,1.55,1.75,2.3,2.95,3.45]],
+  '千葉県':[['千葉銀行',1,1.5,1.7,2.2,2.85,3.35],['京葉銀行',1.05,1.55,1.75,2.3,2.95,3.45],['千葉興業銀行',1.1,1.6,1.8,2.35,3,3.5]],
+  '東京都':[['きらぼし銀行',1.05,1.55,1.75,2.3,2.95,3.45],['東京スター銀行',1.1,1.6,1.8,2.35,3,3.5]],
+  '神奈川県':[['横浜銀行',0.975,1.475,1.675,2.175,2.825,3.325],['神奈川銀行',1.15,1.65,1.85,2.45,3.1,3.6]],
+  '新潟県':[['第四北越銀行',1,1.5,1.7,2.2,2.85,3.35],['大光銀行',1.15,1.65,1.85,2.45,3.1,3.6]],
+  '富山県':[['北陸銀行',1,1.5,1.7,2.2,2.85,3.35],['富山第一銀行',1.1,1.6,1.8,2.35,3,3.5]],
+  '石川県':[['北國銀行',1,1.5,1.7,2.2,2.85,3.35]],
+  '福井県':[['福井銀行',1.05,1.55,1.75,2.3,2.95,3.45]],
+  '山梨県':[['山梨中央銀行',1.05,1.55,1.75,2.3,2.95,3.45]],
+  '長野県':[['八十二銀行',0.95,1.45,1.65,2.15,2.8,3.3]],
+  '岐阜県':[['十六銀行',1,1.5,1.7,2.2,2.85,3.35],['大垣共立銀行',1.05,1.55,1.75,2.3,2.95,3.45]],
+  '静岡県':[['静岡銀行',1,1.5,1.7,2.2,2.85,3.35],['スルガ銀行',1.1,1.6,1.8,2.35,3,3.5],['清水銀行',1.1,1.6,1.8,2.35,3,3.5],['静岡中央銀行',1.15,1.65,1.85,2.45,3.1,3.6]],
+  '愛知県':[['あいち銀行',1.05,1.55,1.75,2.3,2.95,3.45],['名古屋銀行',1.05,1.55,1.75,2.3,2.95,3.45]],
+  '三重県':[['百五銀行',1,1.5,1.7,2.2,2.85,3.35],['三十三銀行',1.05,1.55,1.75,2.3,2.95,3.45]],
+  '滋賀県':[['滋賀銀行',1,1.5,1.7,2.2,2.85,3.35]],
+  '京都府':[['京都銀行',1,1.5,1.7,2.2,2.85,3.35],['京都中央信用金庫',1.1,1.6,1.8,2.35,3,3.5]],
+  '大阪府':[['関西みらい銀行',1,1.5,1.7,2.2,2.85,3.35],['池田泉州銀行',1.05,1.55,1.75,2.3,2.95,3.45],['大阪信用金庫',1.15,1.65,1.85,2.45,3.1,3.6]],
+  '兵庫県':[['但馬銀行',1.05,1.55,1.75,2.3,2.95,3.45],['みなと銀行',1.05,1.55,1.75,2.3,2.95,3.45]],
+  '奈良県':[['南都銀行',1,1.5,1.7,2.2,2.85,3.35]],
+  '和歌山県':[['紀陽銀行',1,1.5,1.7,2.2,2.85,3.35]],
+  '鳥取県':[['鳥取銀行',1.1,1.6,1.8,2.35,3,3.5],['山陰合同銀行',1.05,1.55,1.75,2.3,2.95,3.45]],
+  '島根県':[['山陰合同銀行',1.05,1.55,1.75,2.3,2.95,3.45],['島根銀行',1.2,1.7,1.9,2.5,3.15,3.65]],
+  '岡山県':[['中国銀行',1,1.5,1.7,2.2,2.85,3.35],['トマト銀行',1.15,1.65,1.85,2.45,3.1,3.6]],
+  '広島県':[['広島銀行',0.95,1.45,1.65,2.15,2.8,3.3],['もみじ銀行',1.05,1.55,1.75,2.3,2.95,3.45]],
+  '山口県':[['山口銀行',1,1.5,1.7,2.2,2.85,3.35],['西京銀行',1.15,1.65,1.85,2.45,3.1,3.6]],
+  '徳島県':[['阿波銀行',1,1.5,1.7,2.2,2.85,3.35],['徳島大正銀行',1.1,1.6,1.8,2.35,3,3.5]],
+  '香川県':[['百十四銀行',1,1.5,1.7,2.2,2.85,3.35],['香川銀行',1.1,1.6,1.8,2.35,3,3.5]],
+  '愛媛県':[['伊予銀行',0.98,1.48,1.68,2.18,2.83,3.33],['愛媛銀行',1.1,1.6,1.8,2.35,3,3.5],['愛媛信用金庫',1.2,1.7,1.9,2.5,3.15,3.65]],
+  '高知県':[['四国銀行',1.05,1.55,1.75,2.3,2.95,3.45],['高知銀行',1.15,1.65,1.85,2.45,3.1,3.6]],
+  '福岡県':[['福岡銀行',1.05,1.55,1.75,2.3,2.95,3.45],['西日本シティ銀行',1.05,1.55,1.75,2.3,2.95,3.45],['北九州銀行',1.1,1.6,1.8,2.35,3,3.5],['福岡中央銀行',1.2,1.7,1.9,2.5,3.15,3.65]],
+  '佐賀県':[['佐賀銀行',1.05,1.55,1.75,2.3,2.95,3.45],['佐賀共栄銀行',1.2,1.7,1.9,2.5,3.15,3.65]],
+  '長崎県':[['十八親和銀行',1.05,1.55,1.75,2.3,2.95,3.45],['長崎銀行',1.2,1.7,1.9,2.5,3.15,3.65]],
+  '熊本県':[['肥後銀行',1,1.5,1.7,2.2,2.85,3.35],['熊本銀行',1.1,1.6,1.8,2.35,3,3.5]],
+  '大分県':[['大分銀行',1.05,1.55,1.75,2.3,2.95,3.45],['豊和銀行',1.2,1.7,1.9,2.5,3.15,3.65]],
+  '宮崎県':[['宮崎銀行',1.05,1.55,1.75,2.3,2.95,3.45],['宮崎太陽銀行',1.2,1.7,1.9,2.5,3.15,3.65]],
+  '鹿児島県':[['鹿児島銀行',1,1.5,1.7,2.2,2.85,3.35],['南日本銀行',1.2,1.7,1.9,2.5,3.15,3.65]],
+  '沖縄県':[['琉球銀行',1.05,1.55,1.75,2.3,2.95,3.45],['沖縄銀行',1.05,1.55,1.75,2.3,2.95,3.45],['沖縄海邦銀行',1.15,1.65,1.85,2.45,3.1,3.6]],
 };
 let selPref='愛媛県';
 // 全国共通商品＋選択都道府県の地銀（変動・10年固定）で商品グループを構成
@@ -2514,9 +2594,11 @@ function currentLoanGroups(){
   var groups=[];
   groups.push(LOAN_PRODUCTS[0]); // メガバンク・都市銀行
   var pb=PREF_BANKS[selPref]||[];
+  var PROD_DEFS=[['変動',1],['3年固定',2],['5年固定',3],['10年固定',4],['20年固定',5],['全期間固定',6]];
   groups.push({cat:'地方銀行・第二地銀（'+selPref+'）',items:pb.reduce(function(acc,b){
-    acc.push({n:b[0]+'｜変動（目安）',r:b[1]});
-    if(b[2]!=null)acc.push({n:b[0]+'｜10年固定（目安）',r:b[2]});
+    PROD_DEFS.forEach(function(d){
+      if(b[d[1]]!=null)acc.push({n:b[0]+'｜'+d[0]+'（目安）',r:b[d[1]]});
+    });
     return acc;
   },[])});
   groups.push(LOAN_PRODUCTS[1]); // ネット銀行
@@ -3139,9 +3221,9 @@ function upPlan(){
   const selfPay=Math.min(S.eq,T);  // 自己資金充当分（T超えない）
   const loanPay=Math.max(0,T-S.eq); // 借入充当分
   const segs=[
-    {label:'土地',v:S.land,c:'#2B72B8'},
-    {label:'建物',v:S.bld,c:'#2f6df0'},
-    {label:'諸経費',v:S.misc,c:'#b97400'},
+    {label:'建物費用',v:S.bld,c:'#2f6df0'},
+    {label:'土地費用',v:S.land,c:'#2B72B8'},
+    {label:'諸費用（実費）',v:S.misc,c:'#b97400'},
   ].filter(s=>s.v>0);
   // 調達内訳（右バー用）
   const fundSegs=[
@@ -4188,9 +4270,29 @@ function onCmpCardInput(side){
 }
 
 // ═══ EVENT BINDINGS ═══
-[['p-land','land'],['p-bld','bld'],['p-misc','misc'],['p-eq','eq']].forEach(([id,key])=>{
-  document.getElementById(id).addEventListener('input',function(){S[key]=+this.value||0;upPlan();upLife();upInvest();upRevSim();});
+// ═══ 物件資金・内訳（建物・土地・諸費用の3分類を集計） ═══
+function toggleAcc(k){
+  var b=document.getElementById('acc-body-'+k),a=document.getElementById('arrow-'+k);
+  if(!b)return;
+  var open=b.style.display==='none';
+  b.style.display=open?'':'none';
+  if(a)a.textContent=open?'▼':'▶';
+}
+function recalcCosts(){
+  S.bld=S.bldMain+S.bldFutai+S.bldOpt;
+  S.land=S.landPrice+S.landMisc;
+  S.misc=S.miscStamp+S.miscLoan;
+  var f=function(v){return v.toLocaleString()+'万円';};
+  var t=function(id,v){var e=document.getElementById(id);if(e)e.textContent=f(v);};
+  t('acc-bld-total',S.bld);t('acc-land-total',S.land);t('acc-misc-total',S.misc);
+  t('acc-grand-total',S.bld+S.land+S.misc);
+}
+[['p-bld-main','bldMain'],['p-bld-futai','bldFutai'],['p-bld-opt','bldOpt'],
+ ['p-land-price','landPrice'],['p-land-misc','landMisc'],
+ ['p-misc-stamp','miscStamp'],['p-misc-loan','miscLoan']].forEach(([id,key])=>{
+  document.getElementById(id).addEventListener('input',function(){S[key]=+this.value||0;recalcCosts();upPlan();upLife();upInvest();upRevSim();});
 });
+document.getElementById('p-eq').addEventListener('input',function(){S.eq=+this.value||0;upPlan();upLife();upInvest();upRevSim();});
 document.getElementById('p-inc1').addEventListener('input',function(){S.inc1=+this.value||0;upPlan();});
 document.getElementById('p-inc1p').addEventListener('input',function(){S.inc1=+this.value||0;upPlan();});
 document.getElementById('p-inc2p').addEventListener('input',function(){S.inc2=+this.value||0;upPlan();});
@@ -4462,6 +4564,7 @@ buildLoanPresets();
 buildLifeRegionSelects();
 applyLifeRegion(lifeCityRegion(),true);
 updPkSum();
+recalcCosts();
 applyFamStyle();
 renderCK();
 upPlan();upSolar();upLife();upInvest();estCalc();upRevSim();upGenzei();upToki();
