@@ -648,6 +648,29 @@ footer a{color:#2f6df0;text-decoration:none;}
 .del-row-btn{width:16px;height:16px;border-radius:50%;border:none;background:rgba(192,57,43,.15);color:#C0392B;font-size:10px;cursor:pointer;line-height:1;padding:0;flex-shrink:0;}
 .del-row-btn:hover{background:rgba(192,57,43,.3);}
 
+/* ─── お客様カルテ ─── */
+.kr-card{border:2px solid rgba(47,109,240,.45)!important;background:linear-gradient(180deg,rgba(47,109,240,.04),#fff 60px)!important;}
+.kr-progress-wrap{margin-bottom:6px;}
+.kr-progress-hd{display:flex;justify-content:space-between;font-size:9px;font-weight:700;color:var(--mu);margin-bottom:4px;}
+.kr-progress-hd b{font-family:'DM Mono',monospace;font-size:12px;color:#2f6df0;}
+.kr-bar{height:7px;background:var(--bg2);border-radius:4px;overflow:hidden;}
+.kr-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,#2f6df0,#1f9d63);border-radius:4px;transition:width .4s ease;}
+.kr-guide{font-size:9.5px;color:#1D5FA8;font-weight:700;line-height:1.7;margin-top:7px;background:rgba(47,109,240,.06);border-radius:7px;padding:7px 10px;}
+.kr-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px;}
+.kr-grid label{font-size:9px;color:var(--mu);font-weight:700;display:flex;flex-direction:column;gap:3px;}
+.kr-grid input,.kr-unit-wrap input{border:1px solid rgba(0,0,0,.15);border-radius:6px;padding:7px 9px;font-size:12px;font-family:'Noto Sans JP',sans-serif;outline:none;background:#fff;width:100%;}
+.kr-grid input:focus{border-color:#2f6df0;}
+.kr-unit-wrap{display:flex;align-items:center;gap:5px;}
+.kr-unit-wrap span{font-size:10px;color:var(--mu);white-space:nowrap;}
+.kr-credit{margin-top:12px;border:2px solid rgba(31,157,99,.4);border-radius:10px;padding:12px 14px;background:rgba(31,157,99,.05);}
+.kr-credit-hd{font-size:11px;font-weight:900;color:#1E7040;margin-bottom:8px;}
+.kr-credit-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
+.kr-credit-grid>div{display:flex;flex-direction:column;gap:1px;}
+.kr-credit-grid span{font-size:8.5px;color:var(--mu);font-weight:700;}
+.kr-credit-grid b{font-family:'DM Mono',monospace;font-size:17px;color:#16284d;}
+.kr-credit-grid small{font-size:8px;color:var(--mu2);}
+.kr-credit-note{font-size:9px;color:var(--mu);line-height:1.7;border-top:1px dashed rgba(31,157,99,.3);padding-top:7px;}
+
 /* ─── FP: 保険商品リスト ─── */
 .fp-ins-list{display:flex;flex-direction:column;gap:4px;max-height:220px;overflow-y:auto;border:1px solid var(--bdr2);border-radius:8px;padding:6px;}
 .fp-ins-item{display:flex;align-items:center;gap:7px;font-size:10px;padding:5px 7px;border-radius:6px;cursor:pointer;border:1px solid transparent;transition:all .12s;}
@@ -953,6 +976,49 @@ body.print-fit{font-size:11px;}
 </div>
 <div class="l24">
 <div><!-- LEFT -->
+
+  <!-- ═══ お客様カルテ（最初に記入 → 全タブへ自動反映） ═══ -->
+  <div class="panel kr-card">
+    <div class="ph2" style="border-bottom-color:#2f6df0;">🩺 お客様カルテ<span class="preset-upd">最初にご記入ください</span></div>
+    <div class="kr-progress-wrap">
+      <div class="kr-progress-hd"><span>カルテ完成度</span><b id="kr-pct">0%</b></div>
+      <div class="kr-bar"><div class="kr-bar-fill" id="kr-bar-fill"></div></div>
+      <div class="kr-guide" id="kr-guide">まずはお名前からご記入ください。入力内容はすべてのタブに自動反映されます。</div>
+    </div>
+    <div class="sec" style="margin-top:10px;">👤 ご本人さま</div>
+    <div class="kr-grid">
+      <label>お名前<input id="kr-name" type="text" placeholder="例: 山田 太郎" oninput="onKarte()"></label>
+      <label>年齢<input id="kr-age" type="number" min="18" max="70" placeholder="35" oninput="onKarte()"></label>
+      <label>年収（源泉徴収ベース）<div class="kr-unit-wrap"><input id="kr-inc1" type="number" min="0" max="3000" step="10" placeholder="600" oninput="onKarte()"><span>万円</span></div></label>
+      <label>勤務先<input id="kr-emp" type="text" placeholder="例: ○○株式会社" oninput="onKarte()"></label>
+      <label>雇用形態<select id="kr-emptype" style="margin:0;" onchange="onKarte()">
+        <option value="seishain" selected>正社員</option>
+        <option value="koumuin">公務員</option>
+        <option value="keiyaku">契約・派遣</option>
+        <option value="jiei">自営業・法人役員</option>
+      </select></label>
+      <label>勤続年数<div class="kr-unit-wrap"><input id="kr-tenure" type="number" min="0" max="50" placeholder="5" oninput="onKarte()"><span>年</span></div></label>
+    </div>
+    <div class="sec">👥 配偶者さま（いらっしゃる場合）</div>
+    <div class="kr-grid">
+      <label>配偶者 年齢<input id="kr-age2" type="number" min="18" max="70" placeholder="33" oninput="onKarte()"></label>
+      <label>配偶者 年収（源泉徴収ベース）<div class="kr-unit-wrap"><input id="kr-inc2" type="number" min="0" max="2000" step="10" placeholder="0" oninput="onKarte()"><span>万円</span></div></label>
+    </div>
+    <div class="sec">📍 現居／建築予定地（地域・ローン商品・光熱費がすべて連動します）</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <select id="kr-pref" onchange="onKartePref(this.value)"><option value="">都道府県を選択…</option></select>
+      <select id="kr-city" onchange="onKarteCity(this.value)"><option value="">市区町村を選択…</option></select>
+    </div>
+    <!-- 与信の目安 -->
+    <div class="kr-credit" id="kr-credit" style="display:none">
+      <div class="kr-credit-hd">🎉 与信の目安が算出されました</div>
+      <div class="kr-credit-grid">
+        <div><span>借入可能額の目安</span><b id="kr-credit-max">—</b><small>審査金利3.0%・負担率35%・35年</small></div>
+        <div><span>無理なく返せる目安</span><b id="kr-credit-safe" style="color:#1f9d63;">—</b><small>返済負担率25%換算</small></div>
+      </div>
+      <div class="kr-credit-note" id="kr-credit-note">—</div>
+    </div>
+  </div>
 
   <div class="panel">
     <div class="ph2">🏠 物件・資金内訳</div>
@@ -2618,6 +2684,7 @@ body.print-fit{font-size:11px;}
       <tr><td class="v">v21.9</td><td class="d">2026年7月20日</td><td><span class="hist-badge">資金計画書</span></td><td>建物費用の内訳に「予備費用」を追加。資金計画書を実務フォーマットに刷新：仕上げ入力パネル（お客様名・建設地・仕様・キャンペーン・営業所・担当等）、支払スケジュール表（土地契約時〜引渡時）、借入計画のボーナス併用対応、予算取り費用・工程概要（予定）・補助金取得後総額を新設。全明細行の追加・削除に対応し、ブランドを「AIミヤウチ社長の資金計画書」に変更。</td></tr>
       <tr><td class="v">v21.10</td><td class="d">2026年7月20日</td><td><span class="hist-badge">FP</span></td><td>FPシミュレーションをトップFP品質に刷新。収入は源泉徴収票の支払金額（額面）で入力し、所得税・住民税・社会保険料を自動計算して手取りベースで試算。本人・配偶者それぞれの退職年齢・退職金、児童手当（2024年10月改正対応）の自動加算、生命保険・車の買替サイクル・旅行レジャー・住宅維持費（ライフサイクルコスト連動）・貯蓄の運用利回りを新設し、65歳時点の貯蓄（老後資金2,000万円目安）をKPIに追加。</td></tr>
       <tr><td class="v">v21.11</td><td class="d">2026年7月20日</td><td><span class="hist-badge">FP</span></td><td>貯蓄の運用利回りを投資シミュレーションタブの選択ファンド（通常シナリオ利回り・毎日13時更新）と連動可能に（手動設定への切替も可）。生命保険・医療保険はメジャー10商品のプリセットから複数選択でき、商品・保険料はデータ更新可能。児童手当に加えて居住地（都道府県）別の子育て支援給付を自動加算（東京都018サポート等・更新可能データ）。額面年収の上限を本人3,000万円・配偶者2,000万円に拡大。</td></tr>
+      <tr><td class="v">v21.12</td><td class="d">2026年7月20日</td><td><span class="hist-badge">カルテ</span></td><td>資金計画タブ左上に「お客様カルテ」を新設。お名前・年齢・年収（源泉徴収ベース）・勤務先・雇用形態・勤続年数・配偶者情報・現居/建築予定地を最初に記入すると、借入可能額の与信目安（審査金利3.0%・完済年齢80歳ルール・雇用形態/勤続補正付き）をその場で表示。入力内容は収入・ローン種別（ペアローン自動切替）・ローン商品の都道府県絞り込み・省エネ地域区分・FPシミュレーション・資金計画書ヘッダーへ自動反映。カルテ完成度バーと記入ガイドで入力完了率を高める設計。</td></tr>
     </tbody>
   </table>
   <div style="font-size:9px;color:var(--mu);line-height:1.8;margin-top:12px;">※ 金利・利回りの数値データはバージョンに関わらず毎日13時に最新化されます。機能のご要望・不具合のご連絡はピュアグロース株式会社までお寄せください。</div>
@@ -4720,6 +4787,144 @@ function onCmpCardInput(side){
 }
 
 // ═══ EVENT BINDINGS ═══
+// ═══ お客様カルテ: 与信の目安算出＋全タブへの自動反映 ═══
+var KR={name:'',age:null,age2:null,inc1:0,inc2:0,emp:'',emptype:'seishain',tenure:null,pref:'',city:''};
+function krBuildSelects(){
+  var ps=document.getElementById('kr-pref');if(!ps)return;
+  ps.innerHTML='<option value="">都道府県を選択…</option>'+PREFS.map(function(p){return '<option value="'+p+'">'+p+'</option>';}).join('');
+}
+function onKartePref(v){
+  KR.pref=v;KR.city='';
+  var cs=document.getElementById('kr-city');
+  if(cs){
+    var list=LIFE_REGION[v]||[];
+    cs.innerHTML='<option value="">市区町村を選択…</option>'+list.map(function(c){return '<option value="'+c[0]+'">'+c[0]+'</option>';}).join('');
+  }
+  if(v){
+    // ローン商品の絞り込み・地域区分・資金計画書の建設地に連動
+    selPref=v;buildLoanPresets();
+    var psel=document.getElementById('pref-select');if(psel)psel.value=v;
+    S.lifePref=v;
+    var list2=LIFE_REGION[v]||[];
+    S.lifeCity=list2.length?list2[0][0]:'';
+    buildLifeCitySelect();
+    applyLifeRegion(lifeCityRegion(),true);
+  }
+  onKarte();
+}
+function onKarteCity(v){
+  KR.city=v;
+  if(v){
+    S.lifeCity=v;
+    var cs2=document.getElementById('life-city');if(cs2)cs2.value=v;
+    applyLifeRegion(lifeCityRegion(),true);
+  }
+  onKarte();
+}
+function krCredit(){
+  var inc=(KR.inc1||0)+(KR.inc2||0);
+  if(inc<=0||!KR.age)return null;
+  var ratio=inc>=400?0.35:0.30;
+  var typeF={seishain:1.0,koumuin:1.05,keiyaku:0.8,jiei:0.7}[KR.emptype]||1.0;
+  var tenureF=(KR.tenure!==null&&KR.tenure<1)?0.9:1.0;
+  var perMan=mo(100,3.0,35); // 審査金利3.0%・35年で100万円あたりの月返済（円）
+  var maxLoan=Math.round((inc*10000*ratio/12)/perMan*100*typeF*tenureF/10)*10;
+  var safeLoan=Math.min(maxLoan,Math.round((inc*10000*0.25/12)/perMan*100*typeF*tenureF/10)*10);
+  return {max:maxLoan,safe:safeLoan,ratio:ratio,typeF:typeF,tenureF:tenureF};
+}
+function onKarte(){
+  var g=function(id){return document.getElementById(id);};
+  KR.name=(g('kr-name')?.value||'').trim();
+  KR.age=parseFloat(g('kr-age')?.value)||null;
+  KR.age2=parseFloat(g('kr-age2')?.value)||null;
+  KR.inc1=parseFloat(g('kr-inc1')?.value)||0;
+  KR.inc2=parseFloat(g('kr-inc2')?.value)||0;
+  KR.emp=(g('kr-emp')?.value||'').trim();
+  KR.emptype=g('kr-emptype')?.value||'seishain';
+  KR.tenure=g('kr-tenure')?.value!==''?parseFloat(g('kr-tenure')?.value):null;
+
+  // ── 完成度と記入ガイド ──
+  var checks=[
+    ['お名前',!!KR.name],['年齢',!!KR.age],['年収',KR.inc1>0],['勤務先',!!KR.emp],
+    ['勤続年数',KR.tenure!==null],['建築予定地（都道府県）',!!KR.pref],['市区町村',!!KR.city],
+  ];
+  var done=checks.filter(function(c){return c[1];}).length;
+  var pct=Math.round(done/checks.length*100);
+  var pctEl=g('kr-pct');if(pctEl)pctEl.textContent=pct+'%';
+  var bar=g('kr-bar-fill');if(bar)bar.style.width=pct+'%';
+  var guide=g('kr-guide');
+  if(guide){
+    var missing=checks.filter(function(c){return !c[1];}).map(function(c){return c[0];});
+    if(pct===100){
+      guide.innerHTML='✅ カルテ完成！入力内容は資金計画・生涯住居費・FPシミュレーション・資金計画書に自動反映されました。右上の「印刷 / PDF保存」でカルテごと保存いただけます。';
+      guide.style.color='#1E7040';
+    }else if(KR.inc1>0&&KR.age){
+      guide.innerHTML='💡 与信の目安を表示しました。あと'+missing.length+'項目（'+missing.slice(0,3).join('・')+(missing.length>3?' など':'')+'）のご記入で全タブのシミュレーションが完成します！';
+      guide.style.color='#1D5FA8';
+    }else{
+      guide.innerHTML='✍️ まずは<b>年齢と年収（源泉徴収ベース）</b>をご記入ください。入力するとその場で<b>借入可能額の目安（与信）</b>が表示されます。';
+      guide.style.color='#1D5FA8';
+    }
+  }
+
+  // ── 与信の目安 ──
+  var credit=krCredit();
+  var box=g('kr-credit');
+  if(box){
+    box.style.display=credit?'':'none';
+    if(credit){
+      g('kr-credit-max').textContent=credit.max.toLocaleString()+'万円';
+      g('kr-credit-safe').textContent=credit.safe.toLocaleString()+'万円';
+      var notes=[];
+      var maxYrs=KR.age?Math.max(10,Math.min(50,80-Math.round(KR.age))):35;
+      notes.push('完済年齢80歳まで最長<b>'+maxYrs+'年ローン</b>が選択できます');
+      if(KR.inc2>0)notes.push('配偶者年収'+KR.inc2+'万円を合算（ペアローン・収入合算前提）');
+      if(credit.typeF<1)notes.push('雇用形態により審査目安を'+Math.round(credit.typeF*100)+'%で計算しています');
+      if(credit.tenureF<1)notes.push('勤続1年未満のため目安を控えめにしています（1年経過後の申込が有利）');
+      notes.push('※ 実際の与信は金融機関・既存借入等により変動します。事前審査タブもご活用ください');
+      g('kr-credit-note').innerHTML=notes.join('<br>');
+    }
+  }
+
+  // ── 各タブへの自動反映 ──
+  if(KR.inc1>0){
+    S.inc1=KR.inc1;
+    var p1=g('p-inc1');if(p1)p1.value=KR.inc1;
+    var p1p=g('p-inc1p');if(p1p)p1p.value=KR.inc1;
+    FP.inc1=Math.min(3000,KR.inc1);
+    var f1=g('fp-inc1');if(f1)f1.value=FP.inc1;
+    var fl1=g('lbl-fp-inc1');if(fl1)fl1.textContent=FP.inc1+'万円';
+  }
+  // 配偶者年収はカルテに入力があった場合のみ反映（未入力なら既存設定を維持）
+  var inc2Raw=g('kr-inc2')?.value;
+  if(inc2Raw!==''&&inc2Raw!=null){
+    S.inc2=KR.inc2||0;
+    var p2p=g('p-inc2p');if(p2p)p2p.value=KR.inc2||0;
+    FP.inc2=Math.min(2000,KR.inc2||0);
+    var f2=g('fp-inc2');if(f2)f2.value=FP.inc2;
+    var fl2=g('lbl-fp-inc2');if(fl2)fl2.textContent=FP.inc2+'万円';
+    // ローン種別: 配偶者収入があればペアローンへ自動切替
+    var newLt=KR.inc2>0?'pair':'single';
+    if(S.lt!==newLt){
+      S.lt=newLt;
+      document.querySelectorAll('[data-lt]').forEach(function(x){x.classList.toggle('on',x.dataset.lt===newLt);});
+      var ws=g('w-single'),wp=g('w-pair');
+      if(ws)ws.style.display=newLt==='single'?'':'none';
+      if(wp)wp.style.display=newLt==='pair'?'':'none';
+    }
+  }
+  // 年齢 → FP家族構成
+  if(KR.age){var m0=FP.members[0];if(m0)m0.age=Math.round(KR.age);}
+  if(KR.age2){var m1=FP.members.find(function(m){return m.role.indexOf('配偶者')>=0;});if(m1)m1.age=Math.round(KR.age2);}
+  fpRenderMembers();
+  // 資金計画書ヘッダーへ
+  var esn=g('es-name');if(esn&&KR.name)esn.value=KR.name;
+  var esa=g('es-addr');if(esa&&KR.pref)esa.value=KR.pref+(KR.city?' '+KR.city:'');
+  estHeaderSync();
+
+  upPlan();upFP();
+}
+
 // ═══ 物件資金・内訳（建物・土地・諸費用の3分類を集計） ═══
 function toggleAcc(k){
   var b=document.getElementById('acc-body-'+k),a=document.getElementById('arrow-'+k);
@@ -5012,6 +5217,7 @@ let rto;window.addEventListener('resize',()=>{clearTimeout(rto);rto=setTimeout((
 document.querySelector('[data-dir="SE"]').classList.add('on');
 buildLoanPresets();
 buildLifeRegionSelects();
+krBuildSelects();
 applyLifeRegion(lifeCityRegion(),true);
 updPkSum();
 recalcCosts();
