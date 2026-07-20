@@ -648,6 +648,45 @@ footer a{color:#2f6df0;text-decoration:none;}
 .del-row-btn{width:16px;height:16px;border-radius:50%;border:none;background:rgba(192,57,43,.15);color:#C0392B;font-size:10px;cursor:pointer;line-height:1;padding:0;flex-shrink:0;}
 .del-row-btn:hover{background:rgba(192,57,43,.3);}
 
+/* ─── 資金計画書: 仕上げ入力パネル・フォーマットヘッダー・支払スケジュール ─── */
+.est-setup{background:#fff;border:1.5px dashed rgba(47,109,240,.45);border-radius:12px;padding:14px 16px;margin-bottom:16px;}
+.est-setup-title{font-size:10px;font-weight:700;color:#1D5FA8;letter-spacing:.06em;margin-bottom:10px;}
+.est-setup-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 12px;}
+@media screen and (max-width:960px){.est-setup-grid{grid-template-columns:repeat(2,1fr);}}
+.est-setup-grid label{font-size:9px;color:var(--mu);font-weight:700;display:flex;flex-direction:column;gap:3px;}
+.est-setup-grid input{border:1px solid rgba(0,0,0,.15);border-radius:6px;padding:7px 9px;font-size:12px;font-family:'Noto Sans JP',sans-serif;outline:none;background:#fff;}
+.est-setup-grid input:focus{border-color:#2f6df0;}
+@media print{.est-setup{display:none!important;}}
+.print-fit .est-setup{display:none!important;}
+
+.est-fmt-header{margin-bottom:18px;padding-bottom:14px;border-bottom:3px double #16284d;display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap;}
+.est-fmt-title{font-size:20px;font-weight:900;color:#16284d;display:flex;align-items:baseline;gap:10px;white-space:nowrap;}
+.est-fmt-name{border-bottom:1.5px solid #16284d;min-width:140px;display:inline-block;text-align:center;}
+.est-fmt-suffix{font-size:13px;font-weight:700;}
+.est-fmt-doc{margin-left:14px;letter-spacing:.25em;}
+.est-meta-tbl{border-collapse:collapse;font-size:10px;}
+.est-meta-tbl th{background:var(--bg2);color:var(--navy);font-weight:700;padding:4px 9px;border:1px solid var(--bdr2);white-space:nowrap;text-align:left;}
+.est-meta-tbl td{padding:4px 10px;border:1px solid var(--bdr2);min-width:90px;font-family:'Noto Sans JP',sans-serif;}
+
+.ps-tbl{width:100%;border-collapse:collapse;font-size:9.5px;}
+.ps-tbl th{background:#16284d;color:#fff;font-size:8.5px;font-weight:700;padding:5px 6px;text-align:center;white-space:nowrap;border:1px solid rgba(255,255,255,.15);}
+.ps-tbl tr.ps-sub th{background:#2c4470;font-weight:500;}
+.ps-tbl td{border:1px solid var(--bdr2);padding:3px 5px;text-align:right;font-family:'DM Mono',monospace;white-space:nowrap;}
+.ps-tbl td:first-child{text-align:left;font-family:'Noto Sans JP',sans-serif;font-weight:700;color:var(--navy);white-space:nowrap;}
+.ps-tbl .ps-amt{background:rgba(47,109,240,.06);font-weight:700;color:#1D5FA8;}
+.ps-in{width:88px;border:none;background:transparent;text-align:right;font-family:'DM Mono',monospace;font-size:10px;outline:none;color:var(--wh);}
+.ps-in:focus{background:rgba(47,109,240,.08);}
+.ps-tbl tr.ps-total td{background:var(--bg2);font-weight:700;color:#16284d;}
+.ps-tbl tr.ps-fund td:first-child{color:#1E7040;}
+
+.est-3col{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:20px;margin-bottom:20px;}
+@media screen and (max-width:960px){.est-3col{grid-template-columns:1fr;}}
+.kt-in{border:none;border-bottom:1px dashed var(--bdr2);background:transparent;font-size:10.5px;font-family:'Noto Sans JP',sans-serif;text-align:right;width:130px;outline:none;padding:2px 4px;}
+.est-brand{display:flex;align-items:center;gap:10px;justify-content:flex-end;margin:10px 12px 12px;padding:10px 14px;background:linear-gradient(135deg,#16284d,#1f3a6b);border-radius:9px;color:#fff;}
+.est-brand-logo{font-size:26px;}
+.est-brand-main{font-size:13px;font-weight:900;letter-spacing:.04em;}
+.est-brand-sub{font-size:8.5px;color:#b9c8e8;margin-top:2px;}
+
 /* ─── 更新履歴タブ ─── */
 .hist-tbl{width:100%;border-collapse:collapse;font-size:11px;}
 .hist-tbl th{background:var(--bg2);color:var(--navy);font-size:10px;letter-spacing:.08em;text-align:left;padding:8px 10px;border-bottom:2px solid rgba(22,40,77,.18);white-space:nowrap;}
@@ -673,6 +712,12 @@ body.print-fit{font-size:11px;}
 .print-fit .fp-layout{grid-template-columns:680px 1fr;}
 .print-fit .fp-layout>div:first-child{column-count:2;column-gap:14px;}
 .print-fit .panel{break-inside:avoid;page-break-inside:avoid;}
+/* 資金計画書: 印刷時はA3横のフル幅で4カラム展開 */
+.print-fit .est-wrap{max-width:none;}
+.print-fit .est-doc{padding:18px 22px;}
+.print-fit .est-blocks{grid-template-columns:repeat(4,1fr);gap:12px;}
+.print-fit .est-3col{gap:12px;}
+.print-fit .est-block{break-inside:avoid;page-break-inside:avoid;}
 @page{size:A3 landscape;margin:9mm 12mm;}
 @media print{
   html,body{background:#FFF!important;width:auto!important;overflow:visible!important;}
@@ -887,7 +932,7 @@ body.print-fit{font-size:11px;}
 <div class="ph">
   <div class="ph-ey">Step 1 — 資金計画・返済比率</div>
   <h2>住宅取得コスト全体と<em>返済比率</em>を把握する</h2>
-  <p>建物費用（本体・付帯・オプション）・土地費用（土地代金・土地諸費用）・諸費用（印紙代金等・融資関係）を内訳から入力し、自己資金とあわせて資金計画を作成。ローンの比較軸を「年数」または「金利」で切り替え、月々差額・年収倍率・返済負担率をリアルタイムで確認します。</p>
+  <p>建物費用（本体・付帯・オプション・予備費用）・土地費用（土地代金・土地諸費用）・諸費用（印紙代金等・融資関係）を内訳から入力し、自己資金とあわせて資金計画を作成。ローンの比較軸を「年数」または「金利」で切り替え、月々差額・年収倍率・返済負担率をリアルタイムで確認します。</p>
   <p class="ph-support">・あなたのマイホーム計画を徹底サポート。ライフサイクルコスト、FP、投資計画までトータルライフをサポートします！</p>
 </div>
 <div class="l24">
@@ -905,6 +950,7 @@ body.print-fit{font-size:11px;}
         <div class="nf"><span class="nf-lbl">本体工事</span><input type="number" id="p-bld-main" value="2000" min="0" max="20000" step="10"><span class="nf-unit">万円</span></div>
         <div class="nf"><span class="nf-lbl">付帯工事</span><input type="number" id="p-bld-futai" value="300" min="0" max="5000" step="10"><span class="nf-unit">万円</span></div>
         <div class="nf"><span class="nf-lbl">オプション</span><input type="number" id="p-bld-opt" value="200" min="0" max="5000" step="10"><span class="nf-unit">万円</span></div>
+        <div class="nf"><span class="nf-lbl">予備費用</span><input type="number" id="p-bld-yobi" value="0" min="0" max="5000" step="10"><span class="nf-unit">万円</span></div>
       </div>
     </div>
     <!-- ② 土地費用 = 土地代金＋土地諸費用 -->
@@ -2011,30 +2057,35 @@ body.print-fit{font-size:11px;}
     <button class="est-btn primary" onclick="window.print()">🖨️ 印刷 / PDF保存</button>
   </div>
 
+  <!-- 仕上げ入力パネル（印刷には表示されない。ここに入力すると下の資金計画書に反映） -->
+  <div class="est-setup">
+    <div class="est-setup-title">✍️ 資金計画書の仕上げ入力（ここに入力すると下の帳票に反映されます・印刷には出ません）</div>
+    <div class="est-setup-grid">
+      <label>お客様名<input id="es-name" type="text" placeholder="例: 山田 太郎" oninput="estHeaderSync()"></label>
+      <label>建設地<input id="es-addr" type="text" placeholder="例: 愛媛県松山市○○1-2-3" oninput="estHeaderSync()"></label>
+      <label>ご提案日<input id="es-date" type="date" oninput="estHeaderSync()"></label>
+      <label>プランNo<input id="es-plan" type="text" placeholder="例: PG-2026-001" oninput="estHeaderSync()"></label>
+      <label>施工面積（㎡）<input id="es-area" type="number" step="0.01" placeholder="例: 124.20" oninput="estHeaderSync()"></label>
+      <label>仕様<input id="es-spec" type="text" placeholder="例: HUG-S" oninput="estHeaderSync()"></label>
+      <label>キャンペーン<input id="es-cp" type="text" placeholder="例: 適用" oninput="estHeaderSync()"></label>
+      <label>営業所<input id="es-office" type="text" placeholder="例: 松山営業所" oninput="estHeaderSync()"></label>
+      <label>担当<input id="es-staff" type="text" placeholder="例: 担当者名" oninput="estHeaderSync()"></label>
+      <label>銀行名（借入計画）<input id="es-bank" type="text" placeholder="例: 伊予銀行" oninput="estHeaderSync()"></label>
+      <label>補助金（取得見込・円）<input id="es-hojo" type="number" step="10000" value="0" oninput="estHeaderSync();estCalc()"></label>
+    </div>
+  </div>
+
   <!-- 資金計画書本体 -->
   <div class="est-doc" id="est-doc">
 
-    <!-- ヘッダー -->
-    <div class="est-header">
-      <div class="est-title-block">
-        <div class="est-title">資 金 計 画 書</div>
-        <div class="est-client-row">
-          <input class="est-client-input" id="ec-name" type="text" placeholder="お客様名を入力" value="">
-          <span class="est-client-suffix">様邸</span>
-        </div>
-        <div style="margin-top:10px;display:flex;gap:16px;font-size:11px;color:var(--mu);">
-          <div>建設地：<input id="ec-addr" type="text" placeholder="都道府県" style="border:none;border-bottom:1px solid var(--bdr2);width:120px;font-size:11px;font-family:'Noto Sans JP',sans-serif;background:transparent;" /></div>
-          <div>施工面積：<input id="ec-area" type="number" placeholder="109.30" style="border:none;border-bottom:1px solid var(--bdr2);width:70px;text-align:right;font-family:'DM Mono',monospace;font-size:11px;background:transparent;" /> ㎡</div>
-        </div>
-      </div>
-      <div class="est-meta">
-        <div class="est-meta-row">提案日：<input id="ec-date" type="date" /></div>
-        <div class="est-meta-row">プランNo：<input id="ec-plan" type="text" placeholder="PG-2026-001" style="width:130px;" /></div>
-        <div class="est-meta-row">担当：<input id="ec-staff" type="text" placeholder="担当者名" style="width:130px;" /></div>
-        <div class="est-meta-row" style="margin-top:8px;">
-          <img src="https://puregrowth.jp/wp-content/uploads/2021/04/logo.png" alt="PG" style="height:32px;object-fit:contain;" onerror="this.style.display='none'">
-        </div>
-      </div>
+    <!-- ヘッダー（添付フォーマット準拠） -->
+    <div class="est-fmt-header">
+      <div class="est-fmt-title"><span class="est-fmt-name" id="dsp-name">　　　　</span><span class="est-fmt-suffix">様邸</span><span class="est-fmt-doc">資 金 計 画 書</span></div>
+      <table class="est-meta-tbl">
+        <tr><th>建設地</th><td id="dsp-addr" colspan="3">—</td><th>ご提案日</th><td id="dsp-date">—</td></tr>
+        <tr><th>プランNo</th><td id="dsp-plan">—</td><th>施工面積</th><td><span id="dsp-area">—</span> ㎡</td><th>営業所</th><td id="dsp-office">—</td></tr>
+        <tr><th>仕様</th><td id="dsp-spec">—</td><th>キャンペーン</th><td id="dsp-cp">—</td><th>担当</th><td id="dsp-staff">—</td></tr>
+      </table>
     </div>
 
     <!-- メイングリッド -->
@@ -2153,9 +2204,13 @@ body.print-fit{font-size:11px;}
 
         <!-- 総予算 -->
         <div style="padding:16px 12px 10px;border-top:1px solid var(--bdr);margin-top:6px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;margin-bottom:6px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;margin-bottom:6px;border:2px solid #16284d;border-radius:6px;padding:10px 12px;">
             <span>総予算③＋④＋⑤＋⑥</span>
-            <span class="est-val" id="sub-grand-total" style="color:#2f6df0;font-size:16px;">—</span>
+            <span class="est-val" id="sub-grand-total" style="color:#16284d;font-size:16px;">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:11.5px;font-weight:900;background:#fff23e;border:2px solid #16284d;border-radius:6px;padding:10px 12px;">
+            <span>補助金取得後総額 <span id="dsp-hojo-note" style="font-size:9px;font-weight:700;color:#555;"></span></span>
+            <span class="est-val" id="sub-after-hojo" style="font-size:15px;color:#16284d;">—</span>
           </div>
         </div>
 
@@ -2170,16 +2225,20 @@ body.print-fit{font-size:11px;}
 
         <!-- 借入計画 -->
         <div style="padding:0 12px 14px;border-top:1px solid var(--bdr);">
-          <div style="font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--mu);margin:10px 0 8px;">借入計画</div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--mu);margin:10px 0 8px;">借入計画 <span style="font-weight:500;letter-spacing:0;">（あくまでもご提案日の金利にてシミュレーションをしております）</span></div>
           <table class="est-tbl">
             <tbody>
+              <tr><td>金融機関</td><td class="est-val" id="dsp-bank">—</td></tr>
+              <tr><td>金利タイプ</td><td class="est-val" style="padding-right:8px;"><select id="ec-loan-type" style="width:auto;margin:0;padding:3px 8px;font-size:11px;" onchange="estCalc()"><option value="変動" selected>変動</option><option value="固定">固定</option><option value="当初固定">当初固定</option></select></td></tr>
               <tr class="highlight-row">
                 <td>借入金額</td>
                 <td class="est-val"><input class="est-num-input" data-key="loan_amt" id="ec-loan-amt" type="number" value="52768002" onchange="estCalc()">円</td>
               </tr>
+              <tr><td>内、ボーナス返済分</td><td class="est-val"><input class="est-num-input" data-key="loan_bonus" id="ec-loan-bonus" type="number" value="0" onchange="estCalc()">円</td></tr>
               <tr><td>返済期間</td><td class="est-val"><input class="est-num-input" data-key="loan_yrs" id="ec-loan-yrs" type="number" value="40" onchange="estCalc()">年</td></tr>
               <tr><td>金利（年率）</td><td class="est-val"><input class="est-num-input" data-key="loan_rate" id="ec-loan-rate" type="number" value="1.025" step="0.001" onchange="estCalc()">%</td></tr>
               <tr class="subtotal"><td>月々返済額（試算）</td><td class="est-val c-bl" id="disp-monthly">—</td></tr>
+              <tr><td>ボーナス返済額（年2回・1回あたり）</td><td class="est-val" id="disp-bonus">—</td></tr>
               <tr><td>年間返済額</td><td class="est-val" id="disp-annual">—</td></tr>
               <tr><td>総返済額</td><td class="est-val" id="disp-total-repay">—</td></tr>
             </tbody>
@@ -2189,19 +2248,88 @@ body.print-fit{font-size:11px;}
       </div>
     </div><!-- /est-blocks -->
 
-    <!-- 備考 -->
-    <div class="est-note">
-      <div style="font-size:9px;font-weight:700;letter-spacing:.12em;color:var(--mu);margin-bottom:6px;">📝 特記事項 / 備考</div>
-      <textarea id="ec-note" placeholder="ご契約後、敷地調査を実施させていただきます。その結果、建築確認申請以外に申請等が必要となった場合、別途費用が発生する可能性があります。&#10;配置確定後の地盤調査の結果、改良が必要と認められる場合にはデータに基づき改良工事を施工していただく可能性がございます。&#10;※ 本書は概算見積です。実際の金額は仕様・仕上げ・地域により変動します。"></textarea>
+    <!-- 支払スケジュール（添付フォーマット準拠） -->
+    <div class="est-block" style="margin-bottom:20px;">
+      <div class="est-block-head gold">📆 支払スケジュール</div>
+      <div style="overflow-x:auto;">
+      <table class="ps-tbl" id="ps-tbl">
+        <thead>
+          <tr><th style="text-align:left;">項目</th><th>金額</th><th>土地契約時</th><th>建物契約時</th><th>土地決済時</th><th>着工時</th><th>上棟時</th><th>引渡時</th></tr>
+          <tr class="ps-sub"><th></th><th></th><th>契約金</th><th>契約金</th><th>決済金</th><th>着工金</th><th>中間金</th><th>最終金</th></tr>
+        </thead>
+        <tbody>
+          <tr class="ps-cost"><td>土地代金</td><td class="ps-amt" id="ps-amt-land">—</td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td></tr>
+          <tr class="ps-cost"><td>土地諸費用</td><td class="ps-amt" id="ps-amt-landmisc">—</td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td></tr>
+          <tr class="ps-cost"><td>請負契約金額</td><td class="ps-amt" id="ps-amt-contract">—</td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td></tr>
+          <tr class="ps-cost"><td>預り金（印紙代）</td><td class="ps-amt"><input class="ps-in" id="ps-amt-deposit" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td></tr>
+          <tr class="ps-cost"><td>その他予備費用</td><td class="ps-amt" id="ps-amt-other">—</td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td></tr>
+          <tr class="ps-cost"><td>融資関係費用</td><td class="ps-amt" id="ps-amt-loanmisc">—</td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td></tr>
+          <tr class="ps-total"><td>資金合計</td><td class="ps-amt" id="ps-cost-amt">—</td><td id="ps-cost-c0">—</td><td id="ps-cost-c1">—</td><td id="ps-cost-c2">—</td><td id="ps-cost-c3">—</td><td id="ps-cost-c4">—</td><td id="ps-cost-c5">—</td></tr>
+          <tr class="ps-fund"><td>自己資金</td><td class="ps-amt"><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td></tr>
+          <tr class="ps-fund"><td>銀行融資</td><td class="ps-amt"><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td></tr>
+          <tr class="ps-fund"><td>つなぎ融資</td><td class="ps-amt"><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td></tr>
+          <tr class="ps-fund"><td>援助資金</td><td class="ps-amt"><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td><td><input class="ps-in" type="number" value="0" onchange="estCalc()"></td></tr>
+          <tr class="ps-total"><td>資金合計（調達）</td><td class="ps-amt" id="ps-fund-amt">—</td><td id="ps-fund-c0">—</td><td id="ps-fund-c1">—</td><td id="ps-fund-c2">—</td><td id="ps-fund-c3">—</td><td id="ps-fund-c4">—</td><td id="ps-fund-c5">—</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div style="font-size:9px;color:var(--mu);padding:6px 12px 10px;line-height:1.6;">※ 金額列の「土地代金・土地諸費用・請負契約金額・その他予備費用・融資関係費用」は各表の小計から自動反映。時期ごとの配分と調達（自己資金・銀行融資等）は円単位で入力してください。</div>
     </div>
 
-    <!-- フッター -->
-    <div style="margin-top:20px;padding-top:14px;border-top:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:center;">
-      <div style="font-size:9px;color:var(--mu);line-height:1.9;">
-        ピュアグロース株式会社 ／ ピュアグロースクラブ<br>
-        <a href="https://puregrowth.jp" style="color:#2f6df0">puregrowth.jp</a>
+    <!-- 予算取り費用・工程概要 -->
+    <div class="est-3col">
+      <div class="est-block">
+        <div class="est-block-head orange">🧾 予算取り費用（参考）</div>
+        <table class="est-tbl" id="tbl-budget">
+          <tbody>
+            <tr><td class="est-input-cell"><input class="est-row-input" value="カップボード"></td><td class="est-val"><input class="est-num-input est-ref" data-key="bg1" type="number" value="400000" onchange="estCalc()">円</td></tr>
+            <tr><td class="est-input-cell"><input class="est-row-input" value="タンクレストイレ"></td><td class="est-val"><input class="est-num-input est-ref" data-key="bg2" type="number" value="125000" onchange="estCalc()">円</td></tr>
+            <tr><td class="est-input-cell"><input class="est-row-input" value="浴室乾燥機"></td><td class="est-val"><input class="est-num-input est-ref" data-key="bg3" type="number" value="84000" onchange="estCalc()">円</td></tr>
+            <tr><td class="est-input-cell"><input class="est-row-input" value="造作洗面"></td><td class="est-val"><input class="est-num-input est-ref" data-key="bg4" type="number" value="600000" onchange="estCalc()">円</td></tr>
+            <tr><td class="est-input-cell"><input class="est-row-input" value="電気予備費"></td><td class="est-val"><input class="est-num-input est-ref" data-key="bg5" type="number" value="100000" onchange="estCalc()">円</td></tr>
+          </tbody>
+          <tfoot>
+            <tr><td colspan="2"><button class="add-row-btn" onclick="addRow('tbl-budget','bg')">＋ 行を追加</button></td></tr>
+            <tr class="subtotal"><td>合計</td><td class="est-val" id="sub-budget">—</td></tr>
+          </tfoot>
+        </table>
+        <div style="font-size:8.5px;color:var(--mu);padding:4px 12px 10px;">※ 参考予算。総予算には含みません。</div>
       </div>
-      <img src="https://puregrowth.jp/wp-content/uploads/2021/04/logo.png" alt="PG" style="height:36px;object-fit:contain;opacity:.7;" onerror="this.style.display='none'">
+      <div class="est-block">
+        <div class="est-block-head green">🗓️ 工程概要（予定）</div>
+        <table class="est-tbl kt-tbl">
+          <tbody>
+            <tr><td>設計業務依頼日</td><td class="est-val"><input class="kt-in" type="text" placeholder="—"></td></tr>
+            <tr><td>請負契約日</td><td class="est-val"><input class="kt-in" type="text" placeholder="—"></td></tr>
+            <tr><td>契約後打合せ開始日</td><td class="est-val"><input class="kt-in" type="text" placeholder="—"></td></tr>
+            <tr><td>確認申請提出日</td><td class="est-val"><input class="kt-in" type="text" placeholder="—"></td></tr>
+            <tr><td>確認許可日</td><td class="est-val"><input class="kt-in" type="text" placeholder="—"></td></tr>
+            <tr><td>事前工事着手日</td><td class="est-val"><input class="kt-in" type="text" placeholder="—"></td></tr>
+            <tr><td>地鎮祭</td><td class="est-val"><input class="kt-in" type="text" placeholder="—"></td></tr>
+            <tr><td>基礎着工日</td><td class="est-val"><input class="kt-in" type="text" placeholder="—"></td></tr>
+            <tr><td>上棟日</td><td class="est-val"><input class="kt-in" type="text" placeholder="—"></td></tr>
+            <tr><td>竣工日</td><td class="est-val"><input class="kt-in" type="text" placeholder="—"></td></tr>
+            <tr><td>お引渡し日</td><td class="est-val"><input class="kt-in" type="text" placeholder="—"></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="est-block" style="display:flex;flex-direction:column;">
+        <div class="est-block-head">📝 特記事項 / 備考</div>
+        <textarea id="ec-note" style="flex:1;border:none;padding:10px 12px;font-family:'Noto Sans JP',sans-serif;font-size:10px;color:var(--mu);line-height:1.8;resize:vertical;min-height:180px;background:transparent;" placeholder="＊ご契約後に敷地調査を実施させて頂きます。その結果、行政の指導により別途申請等が必要となった場合には別途費用が発生する可能性があります。&#10;＊地盤調査の結果、改良工事が必要となった場合には別途費用が必要となります。&#10;＊各金利・手数料等はご提案時のものを記載しております。ご参考値としてご覧下さい。&#10;※ 本書は概算見積です。実際の金額は仕様・仕上げ・地域により変動します。"></textarea>
+        <!-- 右下ブランド -->
+        <div class="est-brand">
+          <div class="est-brand-logo">🤖</div>
+          <div class="est-brand-txt">
+            <div class="est-brand-main">AIミヤウチ社長の資金計画書</div>
+            <div class="est-brand-sub">Powered by ピュアグロース株式会社 ｜ ピュアグロースクラブ</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- フッター注記 -->
+    <div style="margin-top:14px;padding-top:10px;border-top:1px solid var(--bdr);font-size:8.5px;color:var(--mu);line-height:1.8;">
+      ◆本書類に掲載の数字、図画、文章その他記載内容について、複製、改変、転載その他Web上やSNS上へのアップロード等 第三者への開示は一切禁止とさせていただきます。©ピュアグロース株式会社（AIミヤウチ社長の資金計画書）
     </div>
 
   </div><!-- /est-doc -->
@@ -2417,6 +2545,7 @@ body.print-fit{font-size:11px;}
       <tr><td class="v">v21.6</td><td class="d">2026年7月20日</td><td><span class="hist-badge">生涯住居費</span></td><td>都道府県・市区町村の選択で省エネ地域区分（1〜8地域）を自動判定。断熱等級の異なる2商品の光熱費を電気・ガス・水道別に比較する表を追加。「賃貸の場合（比較用）」を「一生賃貸に暮らす場合」に改名し、想定家賃は0.1万円刻みの直接入力、駐車場（台数×月額/台）も追加。</td></tr>
       <tr><td class="v">v21.7</td><td class="d">2026年7月20日</td><td><span class="hist-badge">UI改善</span></td><td>スマホ表示を最適化（ナビタブの折り返し表示・入力フォームのタッチ操作向け拡大）。ローン健全性チェックの各円グラフ横に指標の説明文を追加。更新履歴タブ（本ページ）を新設。</td></tr>
       <tr><td class="v">v21.8</td><td class="d">2026年7月20日</td><td><span class="hist-badge">資金計画</span></td><td>組み込み全金融機関の全商品（変動・3年/5年/10年/20年固定・全期間固定）を選択可能に拡充。物件資金・内訳を「建物費用（本体・付帯・オプション）」「土地費用（土地代金・土地諸費用）」「諸費用（印紙代金等・融資関係）」の3分類アコーディオンに変更し、内訳合計から円グラフを自動生成。</td></tr>
+      <tr><td class="v">v21.9</td><td class="d">2026年7月20日</td><td><span class="hist-badge">資金計画書</span></td><td>建物費用の内訳に「予備費用」を追加。資金計画書を実務フォーマットに刷新：仕上げ入力パネル（お客様名・建設地・仕様・キャンペーン・営業所・担当等）、支払スケジュール表（土地契約時〜引渡時）、借入計画のボーナス併用対応、予算取り費用・工程概要（予定）・補助金取得後総額を新設。全明細行の追加・削除に対応し、ブランドを「AIミヤウチ社長の資金計画書」に変更。</td></tr>
     </tbody>
   </table>
   <div style="font-size:9px;color:var(--mu);line-height:1.8;margin-top:12px;">※ 金利・利回りの数値データはバージョンに関わらず毎日13時に最新化されます。機能のご要望・不具合のご連絡はピュアグロース株式会社までお寄せください。</div>
@@ -2432,7 +2561,7 @@ body.print-fit{font-size:11px;}
 // ═══ STATE ═══
 const S={
   land:2000,bld:2500,misc:300,eq:500, // land/bld/misc は内訳から自動集計
-  bldMain:2000,bldFutai:300,bldOpt:200,      // 建物費用: 本体・付帯・オプション
+  bldMain:2000,bldFutai:300,bldOpt:200,bldYobi:0, // 建物費用: 本体・付帯・オプション・予備費用
   landPrice:1900,landMisc:100,               // 土地費用: 土地代金・土地諸費用
   miscStamp:50,miscLoan:250,                 // 諸費用（実費）: 印紙代金等・融資関係
   lt:'single',inc1:700,inc2:0,
@@ -3822,31 +3951,88 @@ function estCalc(){
   const grand=contract+sub4+sub5+sub6;
   setText('sub-grand-total',fmt(grand));
 
-  // 借入計画
+  // 補助金取得後総額
+  const hojo=parseFloat(document.getElementById('es-hojo')?.value)||0;
+  setText('sub-after-hojo',fmt(grand-hojo));
+  setText('dsp-hojo-note',hojo>0?'（補助金 '+hojo.toLocaleString()+'円 差引後）':'');
+
+  // 借入計画（ボーナス併用対応）
   const loanAmt=parseFloat(document.getElementById('ec-loan-amt')?.value)||0;
   const loanYrs=parseFloat(document.getElementById('ec-loan-yrs')?.value)||35;
   const loanRate=parseFloat(document.getElementById('ec-loan-rate')?.value)||1.5;
-  const monthly=loanAmt>0?mo(loanAmt/10000,loanRate,loanYrs):0;
+  const bonusPart=Math.min(loanAmt,Math.max(0,parseFloat(document.getElementById('ec-loan-bonus')?.value)||0));
+  const monthly=loanAmt-bonusPart>0?mo((loanAmt-bonusPart)/10000,loanRate,loanYrs):0;
+  const bonusMoEq=bonusPart>0?mo(bonusPart/10000,loanRate,loanYrs):0; // ボーナス分の月割相当
+  const bonusPer=bonusMoEq*6; // 年2回 → 1回あたり6ヶ月分
   setText('disp-monthly',Math.round(monthly).toLocaleString()+'円');
-  setText('disp-annual',Math.round(monthly*12).toLocaleString()+'円');
-  setText('disp-total-repay',Math.round(monthly*12*loanYrs).toLocaleString()+'円');
+  setText('disp-bonus',bonusPart>0?Math.round(bonusPer).toLocaleString()+'円':'—');
+  const annual=monthly*12+bonusMoEq*12;
+  setText('disp-annual',Math.round(annual).toLocaleString()+'円');
+  setText('disp-total-repay',Math.round(annual*loanYrs).toLocaleString()+'円');
 
   // 自己資金・融資
   const jiko=grand-loanAmt;
   setText('disp-jiko',fmt(jiko));
   setText('disp-ginko',loanAmt.toLocaleString()+'円');
+
+  // ── 支払スケジュール ──
+  const landVal=parseFloat(document.querySelector('input[data-key="l1"]')?.value)||0;
+  const deposit=parseFloat(document.getElementById('ps-amt-deposit')?.value)||0;
+  setText('ps-amt-land',landVal.toLocaleString());
+  setText('ps-amt-landmisc',(sub6-landVal).toLocaleString());
+  setText('ps-amt-contract',contract.toLocaleString());
+  setText('ps-amt-other',sub4.toLocaleString());
+  setText('ps-amt-loanmisc',sub5.toLocaleString());
+  setText('ps-cost-amt',(sub6+contract+sub4+sub5+deposit).toLocaleString());
+  // 時期別の列合計（費用側・調達側）
+  const colSum=(rowSel)=>{
+    const sums=[0,0,0,0,0,0];
+    document.querySelectorAll('#ps-tbl tr'+rowSel).forEach(tr=>{
+      const cells=tr.querySelectorAll('td:not(.ps-amt) input.ps-in');
+      cells.forEach((inp,i)=>{if(i<6)sums[i]+=parseFloat(inp.value)||0;});
+    });
+    return sums;
+  };
+  colSum('.ps-cost').forEach((v,i)=>setText('ps-cost-c'+i,v?v.toLocaleString():'—'));
+  const fundSums=colSum('.ps-fund');
+  fundSums.forEach((v,i)=>setText('ps-fund-c'+i,v?v.toLocaleString():'—'));
+  let fundAmt=0;
+  document.querySelectorAll('#ps-tbl tr.ps-fund td.ps-amt input.ps-in').forEach(inp=>{fundAmt+=parseFloat(inp.value)||0;});
+  setText('ps-fund-amt',fundAmt?fundAmt.toLocaleString():'—');
+
+  // 予算取り費用（参考・総予算に含めない）
+  setText('sub-budget',fmt(sumTableRaw('tbl-budget')));
+}
+
+// ═══ 資金計画書: 仕上げ入力 → 帳票ヘッダーへ反映 ═══
+function estHeaderSync(){
+  const g=id=>document.getElementById(id);
+  const v=id=>(g(id)?.value||'').trim();
+  const put=(id,val,fallback)=>{const e=g(id);if(e)e.textContent=val||fallback||'—';};
+  put('dsp-name',v('es-name'),'　　　　');
+  put('dsp-addr',v('es-addr'));
+  put('dsp-plan',v('es-plan'));
+  put('dsp-area',v('es-area'));
+  put('dsp-spec',v('es-spec'));
+  put('dsp-cp',v('es-cp'));
+  put('dsp-office',v('es-office'));
+  put('dsp-staff',v('es-staff'));
+  put('dsp-bank',v('es-bank'));
+  const d=v('es-date');
+  put('dsp-date',d?d.replace(/-/g,'/'):'');
 }
 
 function setText(id,val){const el=document.getElementById(id);if(el)el.textContent=val;}
 
 function estReset(){
   if(!confirm('リセットしますか？入力内容がすべて初期値に戻ります。'))return;
-  document.querySelectorAll('.est-doc input[type=number]').forEach(el=>{
+  document.querySelectorAll('.est-doc input[type=number],.est-setup input[type=number]').forEach(el=>{
     el.value=el.defaultValue;
   });
-  document.querySelectorAll('.est-doc input[type=text]').forEach(el=>{
+  document.querySelectorAll('.est-doc input[type=text],.est-setup input[type=text]').forEach(el=>{
     el.value=el.defaultValue;
   });
+  estHeaderSync();
   estCalc();
 }
 
@@ -3871,10 +4057,21 @@ function estImport(){
   alert('シミュレーターの建物価格・土地価格・借入条件を反映しました。');
 }
 
-// 今日付けを初期セット
+// 今日付けを初期セット＋既存明細行に削除ボタンを付与（行の増減対応）
 document.addEventListener('DOMContentLoaded',()=>{
-  const d=document.getElementById('ec-date');
+  const d=document.getElementById('es-date');
   if(d)d.valueAsDate=new Date();
+  document.querySelectorAll('.est-tbl tbody tr').forEach(tr=>{
+    const cell=tr.querySelector('.est-input-cell');
+    if(cell&&!cell.querySelector('.del-row-btn')){
+      cell.style.display='flex';cell.style.alignItems='center';cell.style.gap='4px';
+      const b=document.createElement('button');
+      b.className='del-row-btn';b.textContent='×';b.title='この行を削除';
+      b.onclick=function(){if(confirm('この行を削除しますか？')){tr.remove();estCalc();}};
+      cell.appendChild(b);
+    }
+  });
+  estHeaderSync();
   estCalc();
 });
 
@@ -4279,7 +4476,7 @@ function toggleAcc(k){
   if(a)a.textContent=open?'▼':'▶';
 }
 function recalcCosts(){
-  S.bld=S.bldMain+S.bldFutai+S.bldOpt;
+  S.bld=S.bldMain+S.bldFutai+S.bldOpt+S.bldYobi;
   S.land=S.landPrice+S.landMisc;
   S.misc=S.miscStamp+S.miscLoan;
   var f=function(v){return v.toLocaleString()+'万円';};
@@ -4287,7 +4484,7 @@ function recalcCosts(){
   t('acc-bld-total',S.bld);t('acc-land-total',S.land);t('acc-misc-total',S.misc);
   t('acc-grand-total',S.bld+S.land+S.misc);
 }
-[['p-bld-main','bldMain'],['p-bld-futai','bldFutai'],['p-bld-opt','bldOpt'],
+[['p-bld-main','bldMain'],['p-bld-futai','bldFutai'],['p-bld-opt','bldOpt'],['p-bld-yobi','bldYobi'],
  ['p-land-price','landPrice'],['p-land-misc','landMisc'],
  ['p-misc-stamp','miscStamp'],['p-misc-loan','miscLoan']].forEach(([id,key])=>{
   document.getElementById(id).addEventListener('input',function(){S[key]=+this.value||0;recalcCosts();upPlan();upLife();upInvest();upRevSim();});
