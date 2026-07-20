@@ -184,6 +184,12 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
 .tk .th{font-size:clamp(12px,1.05vw,24px);font-weight:900;margin-top:8px}
 .tk .tb{font-size:clamp(10px,.85vw,19px);color:var(--muted);line-height:1.6;margin-top:2px}
 
+/* ============ きっかけチェック ============ */
+.kk{display:flex;align-items:flex-start;gap:6px;font-size:clamp(10px,.9vw,20px);color:var(--muted);
+  line-height:1.5;padding:3px 0;cursor:pointer;user-select:none}
+.kk input{accent-color:var(--pg1);width:1.1em;height:1.1em;margin-top:.15em;flex:0 0 auto;cursor:pointer}
+.kk:has(input:checked){color:var(--pg1);font-weight:900}
+
 /* ============ STEP ============ */
 .step-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(10px,1vw,24px)}
 .stepc{background:var(--panel);border:1.5px solid var(--border);border-radius:clamp(10px,1vw,20px);
@@ -231,7 +237,9 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
     <button class="nb" onclick="show('p8',this)">⑧ 全国展開</button>
     <button class="nb" onclick="show('p9',this)">⑨ 体感</button>
     <button class="nb" onclick="show('p10',this)">⑩ 建て時</button>
-    <button class="nb" onclick="show('p11',this)">⑪ 資金計画</button>
+    <button class="nb" onclick="show('p11',this)">⑪ 予算・資金</button>
+    <button class="nb" onclick="show('p12',this)">⑫ 4STEP</button>
+    <button class="nb" onclick="show('p13',this)">⑬ 土地・プラン</button>
     <button class="nb talk-btn" onclick="toggleTalk(this)">🎤 トークメモ</button>
   </div>
 </nav>
@@ -249,6 +257,12 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
   <div>
     <div class="lbl" style="color:var(--pg1)">WELCOME ─ 家族が幸せになる家づくりの方法</div>
     <div class="ttl">本日はご来場ありがとうございます。<br>まず、家づくりの<span class="grad">8つのハードル</span>を一緒に確認させてください。</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(8px,.8vw,18px);margin-bottom:clamp(14px,1.4vw,32px)" class="hurdle-grid">
+      <div class="card" style="padding:clamp(10px,1vw,22px)"><div style="font-size:clamp(10px,.85vw,19px);font-weight:700;color:var(--pg1)">Q1</div><div style="font-size:clamp(12px,1.05vw,24px);font-weight:900;line-height:1.5">家づくりの「きっかけ」を教えてください</div></div>
+      <div class="card" style="padding:clamp(10px,1vw,22px)"><div style="font-size:clamp(10px,.85vw,19px);font-weight:700;color:var(--pg1)">Q2</div><div style="font-size:clamp(12px,1.05vw,24px);font-weight:900;line-height:1.5">いつまでに新しいお家に住み始めたいですか？</div></div>
+      <div class="card" style="padding:clamp(10px,1vw,22px)"><div style="font-size:clamp(10px,.85vw,19px);font-weight:700;color:var(--pg1)">Q3</div><div style="font-size:clamp(12px,1.05vw,24px);font-weight:900;line-height:1.5">これまでにどのような住宅会社に行かれましたか？</div></div>
+      <div class="card" style="padding:clamp(10px,1vw,22px)"><div style="font-size:clamp(10px,.85vw,19px);font-weight:700;color:var(--pg1)">Q4</div><div style="font-size:clamp(12px,1.05vw,24px);font-weight:900;line-height:1.5">住宅会社選びの判断基準は何ですか？</div></div>
+    </div>
     <div class="hurdle-grid">
       <div class="hurdle" onclick="this.classList.toggle('done');hurdleCount()"><div class="chk">✓</div><div class="hn">01</div><div class="hh">失敗しない建て時</div><div class="hb">金利・物価・家族のタイミング。いつ建てるのがベスト？</div></div>
       <div class="hurdle" onclick="this.classList.toggle('done');hurdleCount()"><div class="chk">✓</div><div class="hn">02</div><div class="hh">家づくりの目的</div><div class="hb">なぜ建てるのか。家族の暮らしのゴールを明確に。</div></div>
@@ -318,10 +332,26 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
         <div class="fb">全部標準仕様で、この価格。年間20,000棟のスケールメリットが生んだ、他の追随を許さない価格競争力。</div>
         <div class="fmore">▶ 詳しく見る</div></div>
     </div>
-    <div class="ans-band">性能・保証・価格。<u>3つ全部をあきらめない</u>のがPGハウスです。<br>さらに ── 間取りは完全自由設計。長期優良住宅仕様で寿命75〜90年へ。</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.3vw,30px);margin-top:clamp(14px,1.4vw,32px)" class="two-col">
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.15vw,27px);margin-bottom:8px">🏠 一般住宅 vs 長期優良住宅の寿命</div>
+        <div class="bar-row"><div class="bn">一般住宅</div><div class="bt"><div class="bf" style="width:38%;background:#94a3b8"></div></div><div class="bv">約32年</div></div>
+        <div class="bar-row"><div class="bn grad" style="font-weight:900">長期優良住宅</div><div class="bt"><div class="bf" style="width:100%;background:linear-gradient(90deg,var(--pg1),var(--pg2))"></div></div><div class="bv grad">75〜90年</div></div>
+        <div class="note" style="margin-top:8px">※滅失住宅の平均築年数（国土交通省推計）と長期優良住宅の想定耐用年数。</div>
+      </div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.15vw,27px);margin-bottom:8px">📜 長期優良住宅「仕様」が全棟標準</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          国の厳格な基準（耐震性・省エネ性・劣化対策・維持管理など8項目）をクリアした住宅だけが認定される制度。
+          取得できているのは<b style="color:var(--text)">新築住宅の約39%だけ</b>。
+          PGハウスは全棟が長期優良住宅仕様 ─ <b style="color:var(--text)">税金・住宅ローン金利・地震保険料もお得</b>になります。
+        </div>
+      </div>
+    </div>
+    <div class="ans-band">性能・保証・価格。<u>3つ全部をあきらめない</u>のがPGハウスです。<br>さらに ── 間取りは完全自由設計。</div>
     <div class="talk-note"><span class="tn-tag">トーク</span>
-      「家の寿命32年」（滅失住宅の平均築年数・国際比較）から入ると刺さる。長期優良住宅の取得率は新築の約3割しかないこと、
-      PGハウスは<b>長期優良住宅仕様が標準</b>（税金・ローン金利・地震保険料もお得）を必ず添える。
+      「家の寿命、ご存じですか？」→「日本は約32年」（国際比較で米国・英国より大幅に短い）から入ると刺さる。
+      長期優良住宅は「国のお墨付き」であり、<b>取得率約39%＝過半数の新築は取れていない</b>ことを対比で見せる。
     </div>
   </div>
 </div>
@@ -395,6 +425,13 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
             <b style="color:var(--text)">断熱（Ua値）×気密（C値）＝実質Ua値</b>で比べるのが正解。だからPGハウスは全棟で気密を実測します。
           </div>
         </div>
+        <div class="card" style="margin-top:clamp(12px,1.2vw,26px)">
+          <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🪟 窓の温度実験（冬場・室内側の表面温度）</div>
+          <div class="bar-row"><div class="bn">アルミサッシ<br><small style="font-weight:500;color:var(--muted)">建売・ローコスト</small></div><div class="bt"><div class="bf" style="width:64%;background:#94a3b8"></div></div><div class="bv">19.1℃</div></div>
+          <div class="bar-row"><div class="bn">半樹脂サッシ<br><small style="font-weight:500;color:var(--muted)">他社の約9割</small></div><div class="bt"><div class="bf" style="width:72%;background:#94a3b8"></div></div><div class="bv">21.3℃</div></div>
+          <div class="bar-row"><div class="bn grad" style="font-weight:900">PG オール樹脂<br><small style="font-weight:700;color:var(--pg1)">トリプルガラス</small></div><div class="bt"><div class="bf" style="width:100%;background:linear-gradient(90deg,var(--pg1),var(--pg2))"></div></div><div class="bv grad">29.6℃</div></div>
+          <div class="note" style="margin-top:6px">アルミ窓との差は<b>＋10.5℃</b>（夏は−16.2℃涼しい）。結露も抑制。断熱材はウレタン吹付で他社比約2倍の厚み。</div>
+        </div>
       </div>
       <div class="card">
         <div style="font-weight:900;font-size:clamp(13px,1.15vw,27px);margin-bottom:10px">50年間の光熱費比較<span class="note">（実質Ua値×換気システム試算）</span></div>
@@ -403,6 +440,15 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
         <div class="bar-row"><div class="bn">鉄骨系メーカー</div><div class="bt"><div class="bf" style="width:100%;background:#94a3b8"></div></div><div class="bv">1,153万円</div></div>
         <div class="ans-band" style="margin-top:clamp(12px,1.2vw,26px);font-size:clamp(13px,1.2vw,28px)">その差、50年で<u>約460万円</u>。<br>家は「建物価格×光熱費」のトータルで選ぶ時代です。</div>
         <div class="note" style="margin-top:8px">※実質Ua値0.48（Ua0.46×C0.5）・第一種熱交換換気の場合と、実質Ua値0.71〜0.85・全館空調/第三種換気の場合の試算比較（LIXIL省エネ住宅シミュレーションによる社内試算例）。地域条件により変動します。</div>
+        <div class="card" style="margin-top:clamp(12px,1.2vw,26px)">
+          <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">☀️ 太陽光5kW標準搭載の経済効果（試算例）</div>
+          <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+            年間発電量 約7,399kWh ＝ <b style="color:var(--text)">年間約15.5万円・月々約1.3万円</b>の経済効果（売電15円/kWh試算）。
+            太陽光×オール電化なら、一般の家との光熱費差は<b style="color:var(--text)">年間約20.5万円</b>にも。
+            熱交換型第一種換気でも50年で約107万円お得の試算です。
+          </div>
+          <div class="note" style="margin-top:6px">※発電量・売電単価は地域・年度により変動します。買取価格を将来保証するものではありません。</div>
+        </div>
       </div>
     </div>
     <div class="talk-note"><span class="tn-tag">トーク</span>
@@ -586,6 +632,36 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
   <div>
     <div class="lbl" style="color:var(--acc)">TIMING ─ 失敗しない建て時</div>
     <div class="ttl">建て時に「遅すぎた」はあっても、<span class="grad">「早すぎる」はありません</span>。</div>
+    <div class="card" style="margin-bottom:clamp(14px,1.4vw,32px)">
+      <div style="font-weight:900;font-size:clamp(13px,1.15vw,27px);margin-bottom:8px">✅ 家づくりの4大きっかけ ─ 当てはまるものをタップしてください</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(8px,.8vw,18px)" class="hurdle-grid">
+        <div>
+          <div style="font-size:clamp(11px,.95vw,21px);font-weight:900;color:var(--pg1);margin-bottom:4px">💰 お金のこと</div>
+          <label class="kk"><input type="checkbox" onchange="kikkake()"> 毎月の家賃がもったいない</label>
+          <label class="kk"><input type="checkbox" onchange="kikkake()"> ローンが通るうちに買いたい</label>
+          <label class="kk"><input type="checkbox" onchange="kikkake()"> 建築費・金利が上がる前に</label>
+        </div>
+        <div>
+          <div style="font-size:clamp(11px,.95vw,21px);font-weight:900;color:var(--pg1);margin-bottom:4px">🕰️ 将来のこと</div>
+          <label class="kk"><input type="checkbox" onchange="kikkake()"> 定年後も賃貸では不安</label>
+          <label class="kk"><input type="checkbox" onchange="kikkake()"> 自身の年齢を考えて</label>
+          <label class="kk"><input type="checkbox" onchange="kikkake()"> マイホームで趣味を満喫したい</label>
+        </div>
+        <div>
+          <div style="font-size:clamp(11px,.95vw,21px);font-weight:900;color:var(--pg1);margin-bottom:4px">👨‍👩‍👧 ご家族のこと</div>
+          <label class="kk"><input type="checkbox" onchange="kikkake()"> 結婚・出産を機に</label>
+          <label class="kk"><input type="checkbox" onchange="kikkake()"> お子様の進学を考えて</label>
+          <label class="kk"><input type="checkbox" onchange="kikkake()"> ご両親との同居・別居を機に</label>
+        </div>
+        <div>
+          <div style="font-size:clamp(11px,.95vw,21px);font-weight:900;color:var(--pg1);margin-bottom:4px">🏡 暮らしのこと</div>
+          <label class="kk"><input type="checkbox" onchange="kikkake()"> 今の部屋が手狭になってきた</label>
+          <label class="kk"><input type="checkbox" onchange="kikkake()"> 賃貸の設備・騒音が不満</label>
+          <label class="kk"><input type="checkbox" onchange="kikkake()"> 子どもが遊べる部屋がほしい</label>
+        </div>
+      </div>
+      <div class="note" id="kkOut" style="margin-top:8px;font-weight:700"></div>
+    </div>
     <div class="two-col" style="align-items:start">
       <div>
         <div class="card">
@@ -638,6 +714,13 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
           <div class="sv" id="tDiff">―</div>
           <div class="note" style="margin-top:6px">※35年ローン・元利均等・ボーナスなし。物件価格上昇は木造住宅価格の長期平均（年1.65%）、金利は上昇シナリオの一例です。</div>
         </div>
+        <div style="margin-top:clamp(12px,1.2vw,26px)">
+          <div style="font-size:clamp(11px,.95vw,21px);font-weight:900;margin-bottom:6px">📈 金利が1%変わると？（同じ物件価格・35年）</div>
+          <div class="vrow" style="display:flex;justify-content:space-between;font-size:clamp(11px,.95vw,21px);padding:4px 0;border-bottom:1px dashed var(--border)"><span>金利0.8%の場合</span><b>月々 <span id="ra08">―</span> ／ 総額 <span id="rt08">―</span></b></div>
+          <div class="vrow" style="display:flex;justify-content:space-between;font-size:clamp(11px,.95vw,21px);padding:4px 0;border-bottom:1px dashed var(--border)"><span>金利1.0%の場合</span><b>月々 <span id="ra10">―</span> ／ 総額 <span id="rt10">―</span></b></div>
+          <div class="vrow" style="display:flex;justify-content:space-between;font-size:clamp(11px,.95vw,21px);padding:4px 0"><span style="color:#b91c1c">金利1.8%の場合</span><b style="color:#b91c1c">月々 <span id="ra18">―</span> ／ 総額 <span id="rt18">―</span></b></div>
+          <div class="note" style="margin-top:4px;font-weight:700">わずか1%の上昇で、総額 <span id="rDiff" style="color:#b91c1c">―</span> 増。同じ家なら、金利が低いうちに。</div>
+        </div>
       </div>
     </div>
     <div class="talk-note"><span class="tn-tag">トーク</span>
@@ -647,14 +730,26 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
   </div>
 </div>
 
-<!-- MIX:PAGE p11 資金計画 → マイホームシミュレーター -->
+<!-- MIX:PAGE p11 適正予算・資金計画 → マイホームシミュレーター -->
 <div class="page" id="p11">
   <div>
-    <div class="lbl" style="color:var(--pg1)">MONEY PLAN ─ 適正予算と資金計画</div>
+    <div class="lbl" style="color:var(--pg1)">MONEY PLAN ─ 家づくりの適正予算</div>
     <div class="ttl">「借りられる額」ではなく、<span class="grad">「無理なく払える額」</span>で考える。</div>
     <div class="two-col" style="align-items:start">
       <div>
         <div class="sim-box" style="margin-top:0">
+          <div style="font-size:clamp(13px,1.15vw,27px);font-weight:900;margin-bottom:clamp(10px,1vw,22px)">💡 借入限度額シミュレーター</div>
+          <div class="sim-grid" style="grid-template-columns:1fr">
+            <div><div class="sim-lbl"><span>世帯年収</span><b><span id="vI">450</span>万円</b></div>
+              <input type="range" id="rI" min="250" max="1200" step="10" value="450" oninput="limit()"></div>
+          </div>
+          <div class="sim-out" style="margin-top:clamp(10px,1vw,22px)">
+            <div style="font-size:clamp(11px,.95vw,21px);font-weight:700;color:var(--muted)">借入限度額の目安（金利0.7%・35年）</div>
+            <div class="sv" id="vLimit">―</div>
+            <div class="note" style="margin-top:6px">※返済比率：年収399万円まで30%／400万円以上35%で試算。他の借入がある方は減額されます。これは「上限」であり「適正」ではありません。</div>
+          </div>
+        </div>
+        <div class="sim-box">
           <div style="font-size:clamp(13px,1.15vw,27px);font-weight:900;margin-bottom:clamp(10px,1vw,22px)">💡 月々いくら？ミニシミュレーター</div>
           <div class="sim-grid">
             <div><div class="sim-lbl"><span>借入額</span><b><span id="vP">2,300</span>万円</b></div>
@@ -670,32 +765,125 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
             <div class="note" style="margin-top:6px">太陽光5kW標準（月々約1.3万円の経済効果目安）を含めた「実質負担」なら、今の家賃と同水準になるケースも。</div>
           </div>
         </div>
+      </div>
+      <div>
+        <div class="card">
+          <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🎯 適正予算の考え方</div>
+          <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+            適正予算は「<b style="color:var(--text)">借りられる金額</b>」と「<b style="color:var(--text)">今払っている家賃</b>」の間にあります。
+            上限いっぱいまで借りるのではなく、<b style="color:var(--text)">無理なくお支払いできる金額</b>を一緒に見つけましょう。
+          </div>
+        </div>
+        <div class="card" style="margin-top:clamp(12px,1.2vw,26px)">
+          <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🌈 「人生100年時代」の家づくり</div>
+          <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+            旅行も外食も、車の買い替えも、子どもの教育費も ── 家を建てたあとにも、やりたいことはたくさん。
+            <b style="color:var(--text)">できるだけ『家』にお金をかけ過ぎず、自分たちがしたい暮らしを実現する。</b>
+            それがPGハウスの家づくりの考え方です。だから「性能・間取り・価格」のバランスに、とことんこだわります。
+          </div>
+        </div>
         <div style="margin-top:clamp(16px,1.6vw,36px);text-align:center">
           <button class="pgbtn" onclick="openSim()">▶ マイホームシミュレーターで本格試算する</button>
           <div class="note" style="margin-top:10px">家族構成・光熱費・太陽光・ライフサイクルコスト（賃貸継続との生涯比較）・資金計画書の出力まで、その場で一緒に作成します。</div>
         </div>
       </div>
+    </div>
+    <div class="talk-note"><span class="tn-tag">MIX</span>
+      年収スライダーで「上限」を見せてから、「上限＝適正ではない」で家賃基準へ引き戻すのが型。
+      <b>script冒頭の SIM_URL にマイホームシミュレーターのURLを設定</b>するとボタンから直接遷移（.page構造・配色トークン共通なので統合も可能）。
+    </div>
+  </div>
+</div>
+
+<!-- MIX:PAGE p12 4STEP・ベストプラン・事前審査 -->
+<div class="page" id="p12">
+  <div>
+    <div class="lbl" style="color:var(--pg1)">4 STEPS ─ PGハウスの家づくり</div>
+    <div class="ttl">家づくりは、<span class="grad">たった4回の打ち合わせ</span>で全体像が見えます。</div>
+    <div class="step-grid">
+      <div class="stepc"><div class="sn">1</div><div class="sh">PG HOUSE説明会</div><div class="sb">会社紹介・PGハウスの特徴・スケジュール・資金計画のお話・ベストプランお申込み</div></div>
+      <div class="stepc"><div class="sn">2</div><div class="sh">事前審査</div><div class="sb">事前審査のお申込み・建物と土地のご要望確認・賢い土地の買い方</div></div>
+      <div class="stepc"><div class="sn">3</div><div class="sh">土地のご提案</div><div class="sb">事前審査結果のご報告・土地のご案内（水面下情報×近隣ヒアリング）</div></div>
+      <div class="stepc"><div class="sn">4</div><div class="sh">プランのご提案</div><div class="sb">建物プランのご提案・家づくりの総額（詳細資金計画書）をご提示 → 請負契約へ</div></div>
+    </div>
+    <div class="two-col" style="align-items:start;margin-top:clamp(14px,1.4vw,32px)">
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">📐 PGハウス ベストプラン（申込制）</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          土地探し・敷地/役所調査・御見積書・平面/立体/鳥観図・日照/通風シミュレーション・外観/内観パースまで、
+          <b style="color:var(--text)">プランニング一式をご提案</b>。申込金11,000円（ご契約時に充当）。<br>
+          お申込みの条件は2つ ── <b style="color:var(--text)">①PGハウスで建てる意思をいただけること ②事前審査を先に進めること</b>。
+          お客様の貴重な時間を無駄にしないためのお約束です。
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🏦 事前審査はPGハウスにお任せください</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          事前審査を通すと ── <b style="color:var(--text)">①詳細な資金計画が立てられる ②土地が買いやすくなる ③低金利を確定できる</b>。<br>
+          PGハウスなら<b style="color:var(--text)">複数の銀行に同条件で審査を出して競合</b>させ、金利・保証・団信までベストな条件を引き出します。
+          他社で審査に落ちた方が、対策の上で通ったケースも多数（借入500万円あり成功、勤続1年で2,430万円承認など）。
+        </div>
+      </div>
+    </div>
+    <div class="ans-band">審査に落ちてからでは打てる手が減ります。<br><u>信頼できる住宅会社と一緒に、対策してから申し込む</u>ことが重要です。</div>
+    <div class="talk-note"><span class="tn-tag">トーク</span>
+      4STEPは日程を<b>その場で仮押さえ</b>してこそ機能する（4STEP申込書に記入）。事前審査NGリスク（転職1年以内・ローン延滞歴・カード複数枚・持病等）は
+      ヒアリングで早めに把握し「心当たりがあればご相談ください、対策すれば通る可能性があります」と伝える。
+    </div>
+  </div>
+</div>
+
+<!-- MIX:PAGE p13 土地・プラン・保証 -->
+<div class="page" id="p13">
+  <div>
+    <div class="lbl" style="color:var(--pg1)">LAND & PLAN ─ 土地・プラン・その後の安心</div>
+    <div class="ttl">いい土地は、<span class="grad">ポータルサイトに出る前</span>に決まっています。</div>
+    <div class="two-col" style="align-items:start">
       <div>
-        <div style="font-size:clamp(12px,1.05vw,24px);font-weight:900;margin-bottom:8px">PGハウスの家づくり 4STEP</div>
-        <div class="step-grid" style="grid-template-columns:1fr 1fr">
-          <div class="stepc"><div class="sn">1</div><div class="sh">PG HOUSE説明会</div><div class="sb">会社紹介・PGハウスの特徴・スケジュール・資金計画のお話</div></div>
-          <div class="stepc"><div class="sn">2</div><div class="sh">事前審査</div><div class="sb">複数銀行へ同条件で申込み、金利交渉。適正予算を確定</div></div>
-          <div class="stepc"><div class="sn">3</div><div class="sh">土地のご提案</div><div class="sb">水面下情報×近隣ヒアリングで「本当に良い土地」をご案内</div></div>
-          <div class="stepc"><div class="sn">4</div><div class="sh">プランのご提案</div><div class="sb">建物プラン＋1円単位の詳細資金計画書・LCC資金計画書をご提示</div></div>
+        <div class="card">
+          <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:8px">🗺️ 土地情報の流れ ─ 勝負は「水面下」</div>
+          <div style="font-size:clamp(12px,1vw,23px);line-height:2;color:var(--muted)">
+            <b style="color:var(--pg1)">① 売主が査定に出す</b> → <b style="color:var(--pg1)">② 価格が決まる</b> <span style="color:var(--pg1);font-weight:900">←ここが水面下情報！</span><br>
+            ③ レインズ掲載 → ④ 業者間で取引 → ⑤ ポータルサイト掲載<span style="font-weight:700">（皆さんが見る頃には競争率大）</span><br>
+            PGハウスは不動産の査定・買取の入口を持つから、<b style="color:var(--text)">最も早く・最も品質の高い土地情報</b>をご案内できます。
+          </div>
+        </div>
+        <div class="card" style="margin-top:clamp(12px,1.2vw,26px)">
+          <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🔍 ご紹介前に「近隣ヒアリング」まで実施</div>
+          <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+            自治会費は？ごみ捨て場は？豪雨時の浸水は？ご近所トラブルは？ ── ハザードマップだけでは分からない
+            「土地の本当の品質」を事前調査し、<b style="color:var(--text)">ロケーションブック</b>にまとめてご提供します。
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">📘 豊富な「参考プラン集」×完全自由設計</div>
+          <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+            全国の施工事例・成約プランを共有する<b style="color:var(--text)">参考プラン集</b>（平屋・2階建）をご用意。
+            そのまま建てても、ご要望を積み重ねてもOK。「間取りの要望がまとまらないかも…」という不安を解消します。
+          </div>
+        </div>
+        <div class="card" style="margin-top:clamp(12px,1.2vw,26px)">
+          <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🧾 1円単位の「詳細資金計画書」＋LCC資金計画書</div>
+          <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+            諸経費は過去事例データのMAX金額で計上。「想定より上がってしまった」を発生させない、
+            <b style="color:var(--text)">安心できる資金計画書</b>です。ライフサイクルコスト（光熱費・修繕・税金）までセットでご提示します。
+          </div>
         </div>
         <div class="card" style="margin-top:clamp(12px,1.2vw,26px)">
           <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🤝 建てたあとも、ずっと。</div>
           <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
-            初期無償保証<b style="color:var(--text)">20年</b>（業界トップクラス）、最長<b style="color:var(--text)">60年</b>の長期保証。
-            無償定期点検は19年目まで、<b style="color:var(--text)">24時間365日</b>トラブル対応。
-            できるだけ家にお金をかけすぎず、<b style="color:var(--text)">自分たちのしたい暮らしを実現する</b> ── それがPGハウスの家づくりの考え方です。
+            初期無償保証<b style="color:var(--text)">20年</b>（業界トップクラス）・最長<b style="color:var(--text)">60年</b>の長期保証。
+            無償定期点検は19年目まで、<b style="color:var(--text)">24時間365日</b>トラブル対応。第三者機関の施工品質チェック付きです。
           </div>
         </div>
       </div>
     </div>
-    <div class="talk-note"><span class="tn-tag">MIX</span>
-      このアプローチブックはマイホームシミュレーターと同じ設計（.page構造・配色トークン共通）。<b>script冒頭の SIM_URL にシミュレーターのURLを設定</b>すると
-      ボタンから直接遷移。クロージングは「4STEPの1歩目＝説明会（ベストプラン申込）」の日程をその場で確定すること。
+    <div class="ans-band">一生に一度のお家づくり。<br><u>ぜひ、私たちと一緒に考えさせてください。</u></div>
+    <div class="talk-note"><span class="tn-tag">トーク</span>
+      土地の章は「土地に強い」の定義を再設定するのが肝：<b>スピード×品質の2条件</b>。自店の不動産事業・査定買取実績（例：浜松「物件王国」年間約720件）に
+      差し替えて語る。最後は⑫4STEPの申込みに戻してクロージング。
     </div>
   </div>
 </div>
@@ -704,7 +892,7 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
 /* ▼ マイホームシミュレーターのURLをここに設定（例:'./my_home_simulator.html' や本番URL） */
 const SIM_URL = '';
 
-const ORDER = ['p1','p2','p3','p4','p5','p6','p7','p8','p9','p10','p11'];
+const ORDER = ['p1','p2','p3','p4','p5','p6','p7','p8','p9','p10','p11','p12','p13'];
 function show(id, btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
   document.getElementById(id).classList.add('show');
@@ -745,6 +933,26 @@ function calc(){
   document.getElementById('vPay').innerHTML = fmt(pay(P*10000,R,Y)) + '<span style="font-family:\'Noto Sans JP\',sans-serif;font-size:.4em;font-weight:900"> 円/月</span>';
 }
 
+/* 借入限度額（返済比率方式） */
+function limit(){
+  const I = +document.getElementById('rI').value;   // 万円
+  document.getElementById('vI').textContent = I.toLocaleString('ja-JP');
+  const ratio = I >= 400 ? 0.35 : 0.30;
+  const monthly = I*10000*ratio/12;                 // 月々返済上限
+  const r = 0.7/100/12, n = 35*12;
+  const principal = monthly*(Math.pow(1+r,n)-1)/(r*Math.pow(1+r,n));
+  document.getElementById('vLimit').innerHTML =
+    (Math.floor(principal/100000)*10).toLocaleString('ja-JP') +
+    '<span style="font-family:\'Noto Sans JP\',sans-serif;font-size:.4em;font-weight:900"> 万円</span>';
+}
+
+/* きっかけチェック */
+function kikkake(){
+  const n = document.querySelectorAll('.kk input:checked').length;
+  document.getElementById('kkOut').textContent =
+    n===0 ? '' : `✔ ${n}個のきっかけに当てはまりました。きっかけが2つ以上ある方は、検討を始めるベストタイミングと言われています。`;
+}
+
 /* 今買う vs 5年後 */
 function timing(){
   const P = +document.getElementById('trP').value * 10000;
@@ -766,8 +974,18 @@ function timing(){
   const diff = latTotal+rent5-nowTotal;
   document.getElementById('tDiff').innerHTML = '＋' + man(diff).replace('万円','') +
     '<span style="font-family:\'Noto Sans JP\',sans-serif;font-size:.4em;font-weight:900"> 万円 多く払うことに</span>';
+  /* 金利1%比較（同じ物件価格・35年） */
+  const rates = [['08',0.8],['10',1.0],['18',1.8]];
+  const totals = {};
+  for(const [k,rt] of rates){
+    const m = pay(P,rt,yrs);
+    totals[k] = m*yrs*12;
+    document.getElementById('ra'+k).textContent = '約'+(m/10000).toFixed(1)+'万円';
+    document.getElementById('rt'+k).textContent = man(totals[k]);
+  }
+  document.getElementById('rDiff').textContent = '約'+man(totals['18']-totals['08']);
 }
-calc(); timing();
+calc(); timing(); limit();
 
 /* ←→キー・スワイプでページ送り */
 function step(d){
