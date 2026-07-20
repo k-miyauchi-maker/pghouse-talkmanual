@@ -648,6 +648,28 @@ footer a{color:#2f6df0;text-decoration:none;}
 .del-row-btn{width:16px;height:16px;border-radius:50%;border:none;background:rgba(192,57,43,.15);color:#C0392B;font-size:10px;cursor:pointer;line-height:1;padding:0;flex-shrink:0;}
 .del-row-btn:hover{background:rgba(192,57,43,.3);}
 
+/* ─── 事前審査シミュレーター ─── */
+.sy-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:20px;align-items:start;}
+@media screen and (max-width:960px){.sy-grid{grid-template-columns:1fr;}}
+.sy-rank-box{display:flex;align-items:center;gap:14px;border:2px solid;border-radius:12px;padding:14px 16px;margin-bottom:8px;background:#fff;}
+.sy-rank{width:54px;height:54px;border-radius:12px;color:#fff;font-family:'DM Mono',monospace;font-size:30px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.sy-rank-txt{font-size:15px;font-weight:900;}
+.sy-rank-sub{font-size:10px;color:var(--mu);margin-top:3px;}
+.sy-rank-sub b{font-family:'DM Mono',monospace;font-size:13px;color:var(--wh);}
+.sy-meter{height:8px;background:var(--bg2);border-radius:4px;overflow:hidden;margin-bottom:12px;}
+.sy-meter-fill{height:100%;border-radius:4px;transition:width .4s ease;}
+.sy-kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:6px;}
+.sy-kpis>div{background:#fff;border:1px solid var(--bdr2);border-radius:9px;padding:8px 10px;display:flex;flex-direction:column;gap:1px;}
+.sy-kpis span{font-size:8px;color:var(--mu);font-weight:700;line-height:1.4;}
+.sy-kpis b{font-family:'DM Mono',monospace;font-size:16px;}
+.sy-kpis small{font-size:8px;color:var(--mu2);}
+.sy-factor{display:flex;justify-content:space-between;gap:8px;font-size:10px;line-height:1.6;padding:5px 9px;border-radius:6px;margin-bottom:3px;}
+.sy-factor span{font-family:'DM Mono',monospace;flex-shrink:0;font-weight:700;}
+.sy-factor.good{background:rgba(31,157,99,.07);color:#1E7040;}
+.sy-factor.warn{background:rgba(201,106,26,.08);color:#9A4A0A;}
+.sy-factor.bad{background:rgba(192,57,43,.08);color:#8b1a1a;font-weight:700;}
+.sy-advice{font-size:10px;color:var(--wh);line-height:1.8;background:rgba(47,109,240,.05);border-left:3px solid #2f6df0;border-radius:0 6px 6px 0;padding:6px 10px;margin-bottom:4px;}
+
 /* ─── お客様カルテ ─── */
 .kr-card{border:2px solid rgba(47,109,240,.45)!important;background:linear-gradient(180deg,rgba(47,109,240,.04),#fff 60px)!important;}
 .kr-progress-wrap{margin-bottom:6px;}
@@ -2621,15 +2643,61 @@ body.print-fit{font-size:11px;}
 <div class="ph">
   <div class="ph-ey">Pre-Approval Guide — 大切な資金計画</div>
   <h2>住宅ローン <em>事前審査ガイド</em></h2>
-  <p>事前審査とは、本申込を行う前に、ローンが通るかどうかを事前にローン会社に見てもらうものです。「自分が払えると思っていても、借りることができない」場合があります。ただし、対策を打たずに安易に出すのはとても危険。まずはチェックリストで確認しましょう。</p>
+  <p>事前審査とは、本申込を行う前に、ローンが通るかどうかを事前にローン会社に見てもらうものです。「自分が払えると思っていても、借りることができない」場合があります。ただし、対策を打たずに安易に出すのはとても危険。まずは審査シミュレーターとチェックリストで確認しましょう。</p>
 </div>
 <div class="panel">
-  <div class="ph2">✅ 事前審査を出しておく3つのメリット</div>
+  <div class="ph2">✅ 事前審査を出しておく3つのメリット（2026年版）</div>
   <div class="pm3">
-    <div class="pm-card"><h4>① 詳細な計画が立てられる</h4><p>総額が明確になれば、土地・建物・諸費用のバランスを踏まえた詳細な資金計画が立てられます。</p></div>
-    <div class="pm-card"><h4>② 土地の値下げ交渉が可能に</h4><p>土地の売り主に対して価格・仲介手数料等の交渉がしやすくなり、土地申込の優先順位も上がります。</p></div>
-    <div class="pm-card"><h4>③ 低金利で住宅ローンを確定</h4><p>提出時の低金利で住宅ローンを確定できます。金利上昇局面では特に大きなメリットです。</p></div>
+    <div class="pm-card"><h4>① 詳細な計画が立てられる</h4><p>総額が明確になれば、土地・建物・諸費用のバランスを踏まえた詳細な資金計画が立てられます。Web完結の事前審査なら最短即日〜3営業日で結果が出ます。</p></div>
+    <div class="pm-card"><h4>② 土地の値下げ交渉が可能に</h4><p>土地の売り主に対して価格・仲介手数料等の交渉がしやすくなり、土地申込の優先順位も上がります。人気エリアでは事前審査済みが実質的な応募条件になりつつあります。</p></div>
+    <div class="pm-card"><h4>③ 金利上昇局面でも条件を確保</h4><p>提出時点の金利・優遇条件をベースに交渉できます。2026年のような金利上昇局面では、審査を先に済ませておくこと自体が大きな武器になります。</p></div>
   </div>
+</div>
+
+<!-- ═══ 事前審査シミュレーター ═══ -->
+<div class="panel">
+  <div class="ph2">🔍 事前審査シミュレーター — 銀行の審査基準に沿って判定<span class="preset-upd">審査金利3.0%・2026年基準</span></div>
+  <div class="sy-grid">
+    <div><!-- 入力 -->
+      <div class="sec" style="margin-top:0;">基本情報 <button class="tg" style="padding:3px 10px;font-size:9px;" onclick="sySyncAll()">📥 カルテ・資金計画から反映</button></div>
+      <div class="kr-grid">
+        <label>年齢<input id="sy-age" type="number" min="18" max="70" value="35" oninput="upShinsaSim()"></label>
+        <label>額面年収（源泉徴収ベース）<div class="kr-unit-wrap"><input id="sy-inc" type="number" min="0" max="3000" step="10" value="600" oninput="upShinsaSim()"><span>万円</span></div></label>
+        <label>配偶者 額面年収（合算する場合）<div class="kr-unit-wrap"><input id="sy-inc2" type="number" min="0" max="2000" step="10" value="0" oninput="upShinsaSim()"><span>万円</span></div></label>
+        <label>雇用形態<select id="sy-emptype" style="margin:0;" onchange="upShinsaSim()">
+          <option value="seishain" selected>正社員</option><option value="koumuin">公務員</option>
+          <option value="keiyaku">契約・派遣</option><option value="jiei">自営業・法人役員</option>
+        </select></label>
+        <label>勤続年数<div class="kr-unit-wrap"><input id="sy-tenure" type="number" min="0" max="50" value="5" oninput="upShinsaSim()"><span>年</span></div></label>
+      </div>
+      <div class="sec">借入計画</div>
+      <div class="kr-grid">
+        <label>借入希望額<div class="kr-unit-wrap"><input id="sy-amt" type="number" min="0" max="30000" step="100" value="4300" oninput="upShinsaSim()"><span>万円</span></div></label>
+        <label>返済期間<div class="kr-unit-wrap"><input id="sy-yrs" type="number" min="10" max="50" value="35" oninput="upShinsaSim()"><span>年</span></div></label>
+        <label>自己資金（頭金）<div class="kr-unit-wrap"><input id="sy-eq" type="number" min="0" max="10000" step="50" value="500" oninput="upShinsaSim()"><span>万円</span></div></label>
+      </div>
+      <div class="sec">既存の借入（月々の返済額・なければ0）</div>
+      <div class="kr-grid">
+        <label>車のローン・カーリース（月）<div class="kr-unit-wrap"><input id="sy-car-mo" type="number" min="0" max="30" step="0.1" value="0" oninput="upShinsaSim()"><span>万円</span></div></label>
+        <label>カードローン・キャッシング（月）<div class="kr-unit-wrap"><input id="sy-card-mo" type="number" min="0" max="30" step="0.1" value="0" oninput="upShinsaSim()"><span>万円</span></div></label>
+        <label>奨学金（月）<div class="kr-unit-wrap"><input id="sy-gaku-mo" type="number" min="0" max="10" step="0.1" value="0" oninput="upShinsaSim()"><span>万円</span></div></label>
+        <label>スマホ端末分割・BNPL（月）<div class="kr-unit-wrap"><input id="sy-phone-mo" type="number" min="0" max="10" step="0.1" value="0" oninput="upShinsaSim()"><span>万円</span></div></label>
+        <label>カードローン等の残高<div class="kr-unit-wrap"><input id="sy-card-bal" type="number" min="0" max="3000" step="10" value="0" oninput="upShinsaSim()"><span>万円</span></div></label>
+        <label>クレジットカード保有枚数<div class="kr-unit-wrap"><input id="sy-cards" type="number" min="0" max="20" value="2" oninput="upShinsaSim()"><span>枚</span></div></label>
+      </div>
+      <div class="sec">信用情報・その他（正直にチェックするほど判定が正確になります）</div>
+      <label class="gz-check"><input type="checkbox" id="sy-late61" onchange="upShinsaSim()"> 過去5年以内に61日以上の延滞（異動情報）がある</label>
+      <label class="gz-check"><input type="checkbox" id="sy-late-recent" onchange="upShinsaSim()"> 直近2年にクレカ・スマホ料金・家賃の支払遅れがある</label>
+      <label class="gz-check"><input type="checkbox" id="sy-seiri" onchange="upShinsaSim()"> 債務整理・自己破産をしたことがある（7年以内）</label>
+      <label class="gz-check"><input type="checkbox" id="sy-tax" onchange="upShinsaSim()"> 住民税・国民健康保険などの滞納がある</label>
+      <label class="gz-check"><input type="checkbox" id="sy-hosho" onchange="upShinsaSim()"> 連帯保証人になっている</label>
+      <label class="gz-check"><input type="checkbox" id="sy-health" onchange="upShinsaSim()"> 持病・服薬・直近の入院歴がある（団信に関わります）</label>
+    </div>
+    <div><!-- 判定結果 -->
+      <div id="sy-result"><!-- JS生成 --></div>
+    </div>
+  </div>
+  <div style="font-size:9px;color:var(--mu);line-height:1.8;margin-top:10px;">※ 本判定は一般的な銀行の審査基準（審査金利3.0%・総返済負担率・完済年齢80歳・信用情報）に基づく目安であり、承認を保証するものではありません。実際の審査は金融機関・保証会社により異なります。結果に関わらず、必ず担当者と一緒に対策を打ってから提出しましょう。</div>
 </div>
 <div class="panel">
   <div class="ph2">⚠️ 事前審査前チェックリスト — 当てはまるものはありますか？</div>
@@ -2646,11 +2714,12 @@ body.print-fit{font-size:11px;}
   <div class="shinsa-note"><b>銀行の審査では、過去から現在のローン履歴が全部わかります。</b>消費者金融・各種ローン・クレジットカードをお持ちの方は審査が厳しくなりますが、通らないとは限りません。自己申告のある方は心証が良く、年収・勤続年数に対しベストな条件で借入できることも。<b>過去・現在のローン履歴は必ず自己申告してください。</b>知識を持って対策を打てば、通る審査はあります。安易に出さず、担当者と一緒に打ち合わせを行いながら進めましょう。</div>
 </div>
 <div class="panel">
-  <div class="ph2">🤝 マイホームを叶えるために — 家が完成するまでの3つの約束</div>
+  <div class="ph2">🤝 マイホームを叶えるために — 家が完成するまでの4つの約束</div>
   <div class="yak"><span class="n">1</span>新たにクレジットカードを作らない</div>
-  <div class="yak"><span class="n">2</span>ローンの支払いを遅らせない</div>
-  <div class="yak"><span class="n">3</span>新たにお金を借りない</div>
-  <div style="font-size:9px;color:var(--mu);line-height:1.7;margin-top:8px;">この3点を守らなければ、事前審査を通過してもかなり高い確率で住宅ローンを借り入れできません。必ず守ってくださいね。</div>
+  <div class="yak"><span class="n">2</span>ローン・スマホ料金・後払い決済の支払いを遅らせない</div>
+  <div class="yak"><span class="n">3</span>新たにお金を借りない（スマホ端末の分割・車のリース契約も含む）</div>
+  <div class="yak"><span class="n">4</span>融資実行まで転職しない（内定段階でも必ず事前にご相談を）</div>
+  <div style="font-size:9px;color:var(--mu);line-height:1.7;margin-top:8px;">この4点を守らなければ、事前審査を通過してもかなり高い確率で住宅ローンを借り入れできません。必ず守ってくださいね。<br>💡 銀行はCIC・JICC・KSC（全国銀行個人信用情報センター）の3機関で信用情報を照会します。延滞などの「異動情報」は完済から約5年（自己破産等は5〜7年）残ります。心当たりがある方は本人開示（スマホから即日可能）で事前確認しておくと安心です。</div>
 </div>
 <div class="panel">
   <div class="ph2">💪 対策を講じた事前審査の成功事例</div>
@@ -2685,6 +2754,7 @@ body.print-fit{font-size:11px;}
       <tr><td class="v">v21.10</td><td class="d">2026年7月20日</td><td><span class="hist-badge">FP</span></td><td>FPシミュレーションをトップFP品質に刷新。収入は源泉徴収票の支払金額（額面）で入力し、所得税・住民税・社会保険料を自動計算して手取りベースで試算。本人・配偶者それぞれの退職年齢・退職金、児童手当（2024年10月改正対応）の自動加算、生命保険・車の買替サイクル・旅行レジャー・住宅維持費（ライフサイクルコスト連動）・貯蓄の運用利回りを新設し、65歳時点の貯蓄（老後資金2,000万円目安）をKPIに追加。</td></tr>
       <tr><td class="v">v21.11</td><td class="d">2026年7月20日</td><td><span class="hist-badge">FP</span></td><td>貯蓄の運用利回りを投資シミュレーションタブの選択ファンド（通常シナリオ利回り・毎日13時更新）と連動可能に（手動設定への切替も可）。生命保険・医療保険はメジャー10商品のプリセットから複数選択でき、商品・保険料はデータ更新可能。児童手当に加えて居住地（都道府県）別の子育て支援給付を自動加算（東京都018サポート等・更新可能データ）。額面年収の上限を本人3,000万円・配偶者2,000万円に拡大。</td></tr>
       <tr><td class="v">v21.12</td><td class="d">2026年7月20日</td><td><span class="hist-badge">カルテ</span></td><td>資金計画タブ左上に「お客様カルテ」を新設。お名前・年齢・年収（源泉徴収ベース）・勤務先・雇用形態・勤続年数・配偶者情報・現居/建築予定地を最初に記入すると、借入可能額の与信目安（審査金利3.0%・完済年齢80歳ルール・雇用形態/勤続補正付き）をその場で表示。入力内容は収入・ローン種別（ペアローン自動切替）・ローン商品の都道府県絞り込み・省エネ地域区分・FPシミュレーション・資金計画書ヘッダーへ自動反映。カルテ完成度バーと記入ガイドで入力完了率を高める設計。</td></tr>
+      <tr><td class="v">v21.13</td><td class="d">2026年7月20日</td><td><span class="hist-badge">事前審査</span></td><td>事前審査ガイドを2026年版に刷新し「事前審査シミュレーター」を新設。年齢・年収・雇用形態・勤続・借入計画・既存借入（車/カードローン/奨学金/スマホ分割・BNPL）・信用情報（61日延滞・債務整理・税滞納等）・健康状態から、審査スコアとS〜Dランク・承認確度目安・総返済負担率（審査金利3.0%）・完済年齢・年収倍率を判定し、承認率を上げる具体的対策を提示。チェックリストにスマホ分割・BNPL・カーリース等の最新項目を追加、約束を4つ（転職禁止を追加）に更新、CIC/JICC/KSCの本人開示案内を追記。</td></tr>
     </tbody>
   </table>
   <div style="font-size:9px;color:var(--mu);line-height:1.8;margin-top:12px;">※ 金利・利回りの数値データはバージョンに関わらず毎日13時に最新化されます。機能のご要望・不具合のご連絡はピュアグロース株式会社までお寄せください。</div>
@@ -3128,7 +3198,13 @@ const CKS=[
  {t:'ローンの希望額が年収の6倍以上になる',r:1},
  {t:'親族からの資金援助を考えているが、具体的な話をしていない',r:1},
  {t:'連帯保証人になっているが、順調に返済されている',r:1},
- {t:'配偶者の方のパートの収入も合算したい',r:1}
+ {t:'配偶者の方のパートの収入も合算したい',r:1},
+ {t:'スマホ端末の分割払いが残っている（実は割賦契約＝ローンです）',r:1},
+ {t:'後払い決済（BNPL）やリボ払いの残高がある',r:2},
+ {t:'奨学金の返済中、または延滞したことがある',r:1},
+ {t:'直近半年でクレジットカードを複数枚申し込んだ',r:1},
+ {t:'カーリース・車のサブスク契約がある',r:1},
+ {t:'ふるさと納税以外で住民税・国保の未納がある',r:2}
 ];
 function renderCK(){
   const l=document.getElementById('ck-list'); if(!l)return;
@@ -3140,6 +3216,114 @@ function upCK(el,i){
   const r=document.getElementById('ck-result');
   if(n===0){r.className='ck-result ck-ok';r.textContent='現在チェックはありません。当てはまる項目があればタップしてください。';}
   else{r.className='ck-result ck-ng';r.innerHTML='⚠️ '+n+'項目に該当しています。対策を打たずに事前審査を出すと審査に落ちてしまう可能性があります。<b>安易に提出せず、必ず担当者と一緒に対策を打ってから進めましょう。</b>過去・現在のローン履歴は必ず自己申告してください（銀行の審査ではローン履歴が全部わかります）。';}
+}
+
+// ═══ 事前審査シミュレーター（銀行の一般的な審査基準に基づくスコアリング判定） ═══
+function syV(id){var e=document.getElementById(id);return e?(parseFloat(e.value)||0):0;}
+function syC(id){var e=document.getElementById(id);return e?e.checked:false;}
+function sySyncAll(){
+  var set=function(id,v){var e=document.getElementById(id);if(e&&v!=null&&v!=='')e.value=v;};
+  if(KR.age)set('sy-age',Math.round(KR.age));
+  if(KR.inc1)set('sy-inc',KR.inc1);
+  set('sy-inc2',KR.inc2||0);
+  if(KR.tenure!==null)set('sy-tenure',KR.tenure);
+  var et=document.getElementById('sy-emptype');if(et&&KR.emptype)et.value=KR.emptype;
+  set('sy-amt',brw());
+  set('sy-yrs',S.baseYr);
+  set('sy-eq',S.eq);
+  upShinsaSim();
+}
+function syCalc(){
+  var age=syV('sy-age'),inc=syV('sy-inc'),inc2=syV('sy-inc2'),tenure=syV('sy-tenure');
+  var emptype=document.getElementById('sy-emptype')?.value||'seishain';
+  var amt=syV('sy-amt'),yrs=syV('sy-yrs')||35,eq=syV('sy-eq');
+  var debtMo=syV('sy-car-mo')+syV('sy-card-mo')+syV('sy-gaku-mo')+syV('sy-phone-mo'); // 万円/月
+  var incAll=inc+inc2;
+  if(incAll<=0||amt<=0)return null;
+  var loanMoShinsa=mo(amt,3.0,yrs)/10000;              // 審査金利3.0%での月返済（万円）
+  var ratio=((loanMoShinsa+debtMo)*12)/incAll*100;     // 総返済負担率（%）
+  var ratioNoDebt=(loanMoShinsa*12)/incAll*100;        // 既存借入完済後の負担率
+  var limit=incAll>=400?35:30;
+  var kanmsai=age+yrs;
+  var mult=inc>0?amt/incAll:99;
+
+  var score=100,factors=[],advice=[];
+  var add=function(pt,txt,good){score+=pt;factors.push({pt:pt,txt:txt,good:!!good});};
+
+  // 返済負担率
+  if(ratio<=25)add(0,'総返済負担率 '+ratio.toFixed(1)+'%（基準'+limit+'%以内・優良）',true);
+  else if(ratio<=30)add(-5,'総返済負担率 '+ratio.toFixed(1)+'%（基準内・良好）',true);
+  else if(ratio<=limit)add(-15,'総返済負担率 '+ratio.toFixed(1)+'%（基準'+limit+'%ぎりぎり）');
+  else if(ratio<=limit+5)add(-35,'総返済負担率 '+ratio.toFixed(1)+'%が基準'+limit+'%を超過');
+  else add(-55,'総返済負担率 '+ratio.toFixed(1)+'%が基準を大幅超過');
+  if(ratio>limit){
+    var maxAmt2=Math.floor(((incAll*limit/100/12)-debtMo)/(mo(100,3.0,yrs)/10000)*100/10)*10;
+    if(maxAmt2>0)advice.push('借入額を<b>'+maxAmt2.toLocaleString()+'万円</b>まで下げると負担率'+limit+'%以内に収まります');
+  }
+  // 既存借入
+  if(debtMo>0){
+    add(-Math.min(15,Math.round(debtMo*3)),'既存借入 月'+debtMo.toFixed(1)+'万円が負担率を+'+(ratio-ratioNoDebt).toFixed(1)+'pt押し上げ');
+    advice.push('既存借入を完済すると負担率 <b>'+ratio.toFixed(1)+'% → '+ratioNoDebt.toFixed(1)+'%</b> に改善。自己資金での完済・おまとめを検討');
+  }
+  if(syV('sy-card-bal')>0){add(-8,'カードローン等の残高あり（完済条件が付く場合あり）');advice.push('カードローン残高は「完済＋解約」まで求められるケースが多いです。申込前の整理が有効');}
+  if(syV('sy-cards')>=5){add(-4,'クレカ'+syV('sy-cards')+'枚保有（キャッシング枠が借入とみなされる場合あり）');advice.push('使っていないカードは解約し、キャッシング枠は0円に変更を');}
+  // 完済年齢
+  if(kanmsai<=79)add(0,'完済年齢 '+kanmsai+'歳（80歳以内・OK）',true);
+  else{add(kanmsai<=84?-10:-25,'完済年齢 '+kanmsai+'歳が上限80歳を超過');advice.push('期間を<b>'+Math.max(10,79-age)+'年</b>に短縮すると完済年齢79歳に収まります（月返済は増加）');}
+  // 年収倍率
+  if(mult>10)add(-20,'年収倍率 '+mult.toFixed(1)+'倍（10倍超は厳しい）');
+  else if(mult>8)add(-10,'年収倍率 '+mult.toFixed(1)+'倍（8倍超・やや高い）');
+  else add(0,'年収倍率 '+mult.toFixed(1)+'倍',true);
+  // 雇用形態・勤続
+  if(emptype==='koumuin')add(3,'公務員（安定性で加点）',true);
+  else if(emptype==='keiyaku'){add(-12,'契約・派遣社員（取扱不可の銀行あり）');advice.push('契約・派遣の方は<b>フラット35</b>や労金・ろうきん系が通りやすい傾向');}
+  else if(emptype==='jiei'){add(-15,'自営業・法人役員（直近3期の申告所得で審査）');advice.push('自営業の方は<b>直近3期の申告所得の平均</b>で見られます。節税しすぎは減額要因。フラット35は直近1期でも申込可');}
+  if(tenure<1){add(-15,'勤続1年未満');advice.push('勤続1年経過後の申込、または見込み年収で審査可能な銀行・フラット35を検討');}
+  else if(tenure<3)add(-5,'勤続'+tenure+'年（3年未満はやや不利）');
+  // 自己資金
+  var eqr=eq/(amt+eq)*100;
+  if(eqr>=10)add(3,'自己資金比率 '+eqr.toFixed(0)+'%（フルローン回避で加点）',true);
+  else if(eq<=0){add(-8,'自己資金0円（フルローン＋諸費用ローンは金利・審査とも不利）');advice.push('諸費用分だけでも自己資金を用意すると金利優遇・承認率が改善します');}
+  // 信用情報
+  if(syC('sy-late61')){add(-60,'61日以上の延滞（異動情報）あり — ほぼ全行で否決要因');advice.push('異動情報は完済から約5年で消えます。<b>CIC・JICC・KSCへ本人開示</b>して消える時期を確認し、申込タイミングを設計しましょう');}
+  if(syC('sy-late-recent')){add(-25,'直近2年に支払遅れあり（入金履歴に「A」マーク）');advice.push('直近24ヶ月の入金履歴が審査対象。今後の遅れを止め、履歴がきれいになってからの申込が有利');}
+  if(syC('sy-seiri')){add(-70,'債務整理・自己破産（7年以内）— 現時点の申込は非推奨');advice.push('官報情報は5〜7年残ります。時期を待つ間に自己資金を貯めるのが最短ルートです');}
+  if(syC('sy-tax')){add(-30,'税金・国保の滞納あり（納税証明が必要な銀行で否決要因）');advice.push('滞納分を完納し、納税証明書が揃ってからの申込に。分納中は要相談');}
+  if(syC('sy-hosho'))add(-8,'連帯保証人（保証債務が借入とみなされる場合あり）');
+  if(syC('sy-health')){add(-5,'健康リスク（団信の告知事項に該当の可能性）');advice.push('通常団信がNGでも<b>ワイド団信</b>（金利+0.3%程度）や<b>フラット35</b>（団信任意）で借入可能です。告知は正直に');}
+
+  score=Math.max(0,Math.min(100,score));
+  var rank,rankTxt,prob,col;
+  if(score>=85){rank='S';rankTxt='承認の見込み 非常に高い';prob='目安 90%以上';col='#1f9d63';}
+  else if(score>=70){rank='A';rankTxt='承認の見込み 高い';prob='目安 80%前後';col='#2f6df0';}
+  else if(score>=50){rank='B';rankTxt='条件付き・要対策';prob='目安 50〜70%';col='#C96A1A';}
+  else if(score>=30){rank='C';rankTxt='現状では厳しい・対策必須';prob='目安 30〜40%';col='#C0392B';}
+  else{rank='D';rankTxt='現状の申込は非推奨';prob='対策後の再挑戦を';col='#8b1a1a';}
+  return {score:score,rank:rank,rankTxt:rankTxt,prob:prob,col:col,ratio:ratio,limit:limit,kanmsai:kanmsai,mult:mult,factors:factors,advice:advice};
+}
+function upShinsaSim(){
+  var box=document.getElementById('sy-result');if(!box)return;
+  var r=syCalc();
+  if(!r){box.innerHTML='<div style="font-size:11px;color:var(--mu);padding:20px;text-align:center;">年収と借入希望額を入力すると判定が表示されます。<br>「📥 カルテ・資金計画から反映」で自動入力もできます。</div>';return;}
+  var h='<div class="sy-rank-box" style="border-color:'+r.col+'">'
+    +'<div class="sy-rank" style="background:'+r.col+'">'+r.rank+'</div>'
+    +'<div><div class="sy-rank-txt" style="color:'+r.col+'">'+r.rankTxt+'</div>'
+    +'<div class="sy-rank-sub">承認確度 '+r.prob+'｜審査スコア <b>'+r.score+'</b>/100</div></div></div>';
+  h+='<div class="sy-meter"><div class="sy-meter-fill" style="width:'+r.score+'%;background:'+r.col+'"></div></div>';
+  h+='<div class="sy-kpis">'
+    +'<div><span>総返済負担率<br>（審査金利3%）</span><b style="color:'+(r.ratio<=r.limit?'#1f9d63':'#C0392B')+'">'+r.ratio.toFixed(1)+'%</b><small>基準 '+r.limit+'%以内</small></div>'
+    +'<div><span>完済年齢</span><b style="color:'+(r.kanmsai<=79?'#1f9d63':'#C0392B')+'">'+r.kanmsai+'歳</b><small>上限 80歳</small></div>'
+    +'<div><span>年収倍率</span><b style="color:'+(r.mult<=8?'#1f9d63':'#C96A1A')+'">'+r.mult.toFixed(1)+'倍</b><small>目安 8倍以内</small></div>'
+    +'</div>';
+  h+='<div class="sec">判定の内訳</div>'+r.factors.map(function(f){
+    return '<div class="sy-factor '+(f.good?'good':(f.pt<=-25?'bad':'warn'))+'">'+(f.good?'✓':(f.pt<=-25?'✕':'△'))+' '+f.txt+(f.pt?'<span>'+(f.pt>0?'+':'')+f.pt+'</span>':'')+'</div>';
+  }).join('');
+  if(r.advice.length){
+    h+='<div class="sec">💡 承認率を上げる対策</div>'+r.advice.map(function(a){return '<div class="sy-advice">・'+a+'</div>';}).join('');
+  }else{
+    h+='<div class="sy-advice" style="color:#1E7040;font-weight:700;">この内容なら大きな懸念はありません。担当者と一緒に、最も条件の良い銀行へ提出しましょう。</div>';
+  }
+  box.innerHTML=h;
 }
 
 // ═══ 更新バッジ: 各タブの印刷/PDFボタンの上に「毎日13時更新」＋最終更新日時を表示 ═══
@@ -5165,13 +5349,14 @@ document.querySelectorAll('.tab-mi').forEach(btn=>{
     if(this.dataset.tab==='fp'){fpRenderMembers();upFP();}
     if(this.dataset.tab==='genzei')upGenzei();
     if(this.dataset.tab==='toki')upToki();
+    if(this.dataset.tab==='shinsa')upShinsaSim();
   });
 });
 
 // ═══ 印刷（A3横・全ページ出力）: 各タブを縮尺調整して1枚のA3横に収める ═══
 function renderAllTabs(){
   upPlan();upSolar();upLife();upInvest();estCalc();upRevSim();upGenzei();upToki();
-  fpRenderMembers();upFP();
+  fpRenderMembers();upFP();upShinsaSim();
 }
 // A3横の印字可能領域（CSS px換算・@page余白9mm/12mm差引＋安全マージン）
 var PRINT_PW=1490,PRINT_PH=1005;
@@ -5223,7 +5408,7 @@ updPkSum();
 recalcCosts();
 applyFamStyle();
 renderCK();
-upPlan();upSolar();upLife();upInvest();estCalc();upRevSim();upGenzei();upToki();
+upPlan();upSolar();upLife();upInvest();estCalc();upRevSim();upGenzei();upToki();upShinsaSim();
 </script>
 </body>
 </html>
