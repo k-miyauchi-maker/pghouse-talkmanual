@@ -16,11 +16,17 @@
 html,body{font-size:clamp(14px,1.11vw,32px)}
 body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
 
-/* ============ NAV ============ */
-#nav{position:fixed;top:0;left:0;right:0;z-index:9999;min-height:clamp(56px,4.5vw,110px);
+/* ============ NAV（2段：上段=コンテンツ / 下段=シミュレーター） ============ */
+#nav{position:fixed;top:0;left:0;right:0;z-index:9999;
   background:#fff;border-bottom:2px solid var(--border);box-shadow:0 1px 6px rgba(0,0,0,.08);
-  display:flex;align-items:center;justify-content:space-between;padding:6px 28px;gap:10px;
-  font-size:clamp(13px,1vw,28px)}
+  padding:6px 28px 0;font-size:clamp(13px,1vw,28px)}
+.nav-row1{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:clamp(50px,4vw,100px)}
+.nav-row2{display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  border-top:1.5px dashed var(--border);padding:5px 0 7px}
+.nav-row2 .nr2-lbl{font-size:.68em;font-weight:900;color:var(--pg1);letter-spacing:1px;white-space:nowrap}
+.nb.simtab{border-color:#bfdbfe;color:var(--pg1);background:rgba(92,200,232,.07)}
+.nb.simtab:hover{border-color:var(--pg1)}
+.nb.simtab.on{background:linear-gradient(90deg,var(--pg1),var(--pg2));color:#fff;border-color:transparent}
 .nav-logo{display:flex;align-items:center;gap:12px;flex:0 0 auto}
 .nav-logo img{height:clamp(34px,2.6vw,68px);object-fit:contain}
 .nav-title{font-size:.9em;font-weight:900;white-space:nowrap;
@@ -36,7 +42,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text
 .nb.talk-btn.on{background:#334155}
 
 /* ============ PAGE ============ */
-.page{display:none;min-height:100vh;padding:clamp(84px,8vw,150px) clamp(20px,3.4vw,64px) clamp(28px,2.6vw,52px);
+.page{display:none;min-height:100vh;padding:clamp(120px,10vw,190px) clamp(20px,3.4vw,64px) clamp(28px,2.6vw,52px);
   flex-direction:column;justify-content:center;background:var(--bg)}
 .page.show{display:flex}
 .lbl{font-size:clamp(10px,.85vw,22px);font-weight:700;letter-spacing:3px;text-transform:uppercase;
@@ -112,6 +118,17 @@ body.talk .talk-note{display:block}
 .spec .si{font-size:clamp(20px,1.9vw,44px)}
 .spec .st{font-size:clamp(10px,.85vw,19px);font-weight:900;margin-top:6px;line-height:1.35}
 .spec .ss{font-size:clamp(9px,.72vw,16px);color:var(--muted);margin-top:2px;line-height:1.4}
+
+/* ============ 汎用データ表 ============ */
+.tarif-wrap{overflow-x:auto}
+.tarif{width:100%;border-collapse:collapse;font-size:clamp(10px,.88vw,20px);white-space:nowrap}
+.tarif th,.tarif td{padding:clamp(5px,.5vw,12px) clamp(7px,.7vw,16px);border-bottom:1px solid var(--border);text-align:right}
+.tarif th{font-size:.85em;color:var(--muted);font-weight:700}
+.tarif td:first-child,.tarif th:first-child{text-align:left;font-weight:700}
+.tarif tr.me{background:linear-gradient(90deg,rgba(26,86,160,.08),rgba(92,200,232,.12));font-weight:900}
+.subh{font-size:clamp(15px,1.35vw,32px);font-weight:900;margin:clamp(20px,2vw,44px) 0 clamp(10px,1vw,22px);
+  display:flex;align-items:center;gap:10px}
+.subh::before{content:'';width:8px;height:1.2em;border-radius:4px;background:linear-gradient(180deg,var(--pg1),var(--pg2))}
 
 /* ============ ランキング表 ============ */
 .rank{width:100%;border-collapse:collapse;font-size:clamp(11px,.95vw,21px)}
@@ -210,8 +227,9 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
   .vs-mid{justify-content:center}
 }
 @media(max-width:640px){
-  #nav{flex-direction:column;padding:8px 10px}
-  .page{padding-top:150px}
+  #nav{padding:8px 10px 0}
+  .nav-row1{flex-direction:column;min-height:0;gap:6px}
+  .page{padding-top:235px}
   .nb{font-size:10px;padding:3px 7px}
   .hurdle-grid,.spec-grid{grid-template-columns:repeat(2,1fr)}
   .store-grid{grid-template-columns:repeat(2,1fr)}
@@ -222,25 +240,36 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
 <body>
 
 <nav id="nav">
-  <div class="nav-logo">
-    <img src="data:image/png;base64,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" alt="PG HOUSE">
-    <div class="nav-title">アプローチブック</div>
+  <div class="nav-row1">
+    <div class="nav-logo">
+      <img src="data:image/png;base64,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" alt="PG HOUSE">
+      <div class="nav-title">アプローチブック</div>
+    </div>
+    <div class="nav-btns">
+      <button class="nb on" data-page="p1" onclick="show('p1')">① はじめに</button>
+      <button class="nb" data-page="p2" onclick="show('p2')">② PGハウスとは</button>
+      <button class="nb" data-page="p3" onclick="show('p3')">③ 3つの特徴</button>
+      <button class="nb" data-page="p4" onclick="show('p4')">④ 超耐震</button>
+      <button class="nb" data-page="p5" onclick="show('p5')">⑤ 超ZEH</button>
+      <button class="nb" data-page="p6" onclick="show('p6')">⑥ 最強コスパ</button>
+      <button class="nb" data-page="p7" onclick="show('p7')">⑦ 話題性</button>
+      <button class="nb" data-page="p8" onclick="show('p8')">⑧ 全国展開</button>
+      <button class="nb" data-page="p9" onclick="show('p9')">⑨ 体感</button>
+      <button class="nb" data-page="p10" onclick="show('p10')">⑩ 建て時</button>
+      <button class="nb" data-page="p11" onclick="show('p11')">⑪ 予算・資金</button>
+      <button class="nb" data-page="p12" onclick="show('p12')">⑫ 4STEP</button>
+      <button class="nb" data-page="p13" onclick="show('p13')">⑬ 土地・プラン</button>
+      <button class="nb talk-btn" onclick="toggleTalk(this)">🎤 トークメモ</button>
+    </div>
   </div>
-  <div class="nav-btns">
-    <button class="nb on" onclick="show('p1',this)">① はじめに</button>
-    <button class="nb" onclick="show('p2',this)">② PGハウスとは</button>
-    <button class="nb" onclick="show('p3',this)">③ 3つの特徴</button>
-    <button class="nb" onclick="show('p4',this)">④ 超耐震</button>
-    <button class="nb" onclick="show('p5',this)">⑤ 超ZEH</button>
-    <button class="nb" onclick="show('p6',this)">⑥ 最強コスパ</button>
-    <button class="nb" onclick="show('p7',this)">⑦ 話題性</button>
-    <button class="nb" onclick="show('p8',this)">⑧ 全国展開</button>
-    <button class="nb" onclick="show('p9',this)">⑨ 体感</button>
-    <button class="nb" onclick="show('p10',this)">⑩ 建て時</button>
-    <button class="nb" onclick="show('p11',this)">⑪ 予算・資金</button>
-    <button class="nb" onclick="show('p12',this)">⑫ 4STEP</button>
-    <button class="nb" onclick="show('p13',this)">⑬ 土地・プラン</button>
-    <button class="nb talk-btn" onclick="toggleTalk(this)">🎤 トークメモ</button>
+  <div class="nav-row2">
+    <span class="nr2-lbl">🖩 シミュレーター</span>
+    <button class="nb simtab" data-page="sA" onclick="show('sA')">⚡ エリア別光熱費</button>
+    <button class="nb simtab" data-page="sB" onclick="show('sB')">🏠 エリア別価格</button>
+    <button class="nb simtab" data-page="sC" onclick="show('sC')">💰 月々返済</button>
+    <button class="nb simtab" data-page="sD" onclick="show('sD')">🏦 借入限度額</button>
+    <button class="nb simtab" data-page="sE" onclick="show('sE')">⏳ 今買う vs 5年後</button>
+    <button class="nb simtab" onclick="openSim()">▶ マイホームシミュレーター（本格試算）</button>
   </div>
 </nav>
 
@@ -446,6 +475,48 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
         <div class="ans-band" style="margin-top:clamp(12px,1.2vw,26px);font-size:clamp(13px,1.2vw,28px)">耐震・制震・100%保証。<br>3つ「標準」で揃うから、圧倒的1位。保険料まで安くなる。</div>
       </div>
     </div>
+    <div class="subh">もっと詳しく ─ PGハウスの「超耐震」を支える技術と保証</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.3vw,30px)" class="two-col">
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🧮 全棟「許容応力度計算」による耐震等級3</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          構造計算は3種類存在し、その中で<b style="color:var(--text)">許容応力度計算は検討する項目が最も多い</b>計算方法。
+          他では検討しない<b style="color:var(--text)">柱や梁・基礎など、すべての構造部材にかかる力を計算</b>します。<br>
+          「当社は耐震等級3<b style="color:var(--text)">相当</b>の構造です」と謳っている会社さんも、壁量計算・性能表示計算で計算している可能性があります。
+          <b style="color:var(--acc)">どの計算方法で計算しているのか、必ず確認してみてください！</b><br>
+          壁量充足率（＝実際の耐力壁量÷必要壁量）は1.00以上が最低ラインですが、PGハウスは<b style="color:var(--text)">2.4以上の壁量</b>を設置。
+          多くの検討項目をきちんと計算し、耐力壁の量を多く設置したのがPGハウスの耐震等級3の構造です。
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🧱 耐力壁が少ないと、どうなる？</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          地震時、耐力壁は建物の揺れを抑える<b style="color:var(--text)">ブレーキの役割</b>を果たします。
+          壁が少ないと揺れが大きくなり、柱や接合部に過剰な力が集中。一部の部材が壊れると他に負荷が移って<b style="color:var(--text)">破壊が連鎖</b>し、
+          建物全体が支えきれずに倒壊に至るのです。<br>
+          地震に強い家を作るには ── <b style="color:var(--text)">①耐力壁の量を確保する ②そのために許容応力度計算を行う</b>。この2つが結論です。
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🧲 制震ダンパー「ミューダム」を標準装備</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          地震による揺れを<b style="color:var(--text)">最大80%低減</b>。<b style="color:var(--text)">60年以上の耐久性</b>を持ち、
+          "万が一"錆が発生しても性能にまったく影響しません。<br>
+          「耐震」だけでは、家は長持ちしません。切れない丈夫さ（耐震）と、伸びて衝撃を吸収する力（制震）── 両方が揃ってこそ、
+          繰り返しの大地震から家と家族を守れます。
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">💯 あんしん地震保証（建替・修理費用100%保証）</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          耐震等級3＋長期優良住宅認定だから付けられる保証。<b style="color:var(--text)">過去日本で起きた地震の最大震度の1.2倍まで対応</b>可能。
+          地震により<b style="color:var(--text)">全壊・大規模半壊・中規模半壊・半壊</b>のいずれかに該当した場合、
+          保証対象物件の<b style="color:var(--text)">建替えまたは補修費用を100%保証</b>（保証期間10年間・1回の地震につき購入金額(税込)の100%まで）。<br>
+          <b style="color:var(--text)">掛け金は無料（弊社負担）</b>。地震保険との併用で、保険金の受け取りも可能です。
+          <span class="note">※一部損壊・付属建物・地盤沈下・津波・火災等は対象外など、保証には条件があります。詳細は店舗にてご確認ください。</span>
+        </div>
+      </div>
+    </div>
     <div class="talk-note"><span class="tn-tag">トーク</span>
       「耐震等級3<b>相当</b>」と謳う会社は壁量計算の場合あり。<b>「どの計算方法ですか？」と必ず聞いてください</b>と伝える（当社は最も厳密な許容応力度計算）。
       熊本地震では築数年の家も倒壊。繰り返しの揺れ→制震の必要性→起震機の体感（⑨体感へ）につなげる。
@@ -515,21 +586,151 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
         </div>
       </div>
     </div>
-    <div class="sim-box">
-      <div style="font-size:clamp(13px,1.15vw,27px);font-weight:900;margin-bottom:clamp(10px,1vw,22px)">💡 エリア別 光熱費シミュレーター ─ <span class="grad">お住まいの電力エリアでいくら違う？</span></div>
-      <div class="sim-grid" style="grid-template-columns:1fr 2fr;align-items:center">
-        <div>
-          <div class="sim-lbl"><span>電力エリアを選択</span></div>
-          <select id="enArea" onchange="energy()" style="width:100%;font-family:'Noto Sans JP',sans-serif;font-size:clamp(13px,1.1vw,26px);font-weight:700;padding:.5em .8em;border-radius:10px;border:1.5px solid #bfdbfe;background:#fff;color:var(--text);cursor:pointer"></select>
-          <div class="note" style="margin-top:8px">単価は2025年6月時点の実質料金（燃料調整・再エネ賦課込み試算）の昼夜平均。試算モデルは30坪・エアコン連続運転条件（LIXIL省エネ住宅シミュレーション準拠）。</div>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,.8vw,18px)">
-          <div class="sim-out" style="margin-top:0"><div style="font-size:clamp(10px,.85vw,19px);font-weight:700;color:var(--muted)">一般住宅との差（月）</div><div class="sv" id="enM" style="font-size:clamp(28px,2.6vw,60px)">―</div></div>
-          <div class="sim-out" style="margin-top:0"><div style="font-size:clamp(10px,.85vw,19px);font-weight:700;color:var(--muted)">年間の差</div><div class="sv" id="enY" style="font-size:clamp(28px,2.6vw,60px)">―</div></div>
-          <div class="sim-out" style="margin-top:0"><div style="font-size:clamp(10px,.85vw,19px);font-weight:700;color:var(--muted)">50年間の差</div><div class="sv" id="en50" style="font-size:clamp(28px,2.6vw,60px)">―</div></div>
+    <div class="subh">エビデンス① ─ 実質Ua値×換気システムで、50年間の光熱費はこう変わる</div>
+    <div class="card">
+      <div class="tarif-wrap">
+        <table class="tarif">
+          <tr><th></th><th>PGハウス</th><th>鉄骨系ハウスメーカー</th><th>ローコスト工務店</th></tr>
+          <tr class="me"><td>実質Ua値</td><td>0.48（Ua0.46×C0.5）</td><td>0.71（Ua0.46×C5.0）</td><td>0.85（Ua0.6×C5.0）</td></tr>
+          <tr><td>換気システム</td><td>第一種熱交換換気</td><td>全館空調システム</td><td>第三種換気</td></tr>
+          <tr><td>月間光熱費（平均）</td><td><b style="color:var(--pg1)">¥11,531</b></td><td>¥19,224</td><td>¥18,756</td></tr>
+          <tr><td>年間光熱費</td><td><b style="color:var(--pg1)">¥138,372</b></td><td>¥230,688</td><td>¥225,072</td></tr>
+          <tr><td>50年間光熱費</td><td><b style="color:var(--pg1)">¥6,918,600</b></td><td>¥11,534,400</td><td>¥11,253,600</td></tr>
+        </table>
+      </div>
+      <div class="note" style="margin-top:8px">【試算条件】年間平均気温16.6度の地域・2階建て30坪（約100㎡）・電力量料金16円/kWh・1階LDKエアコン24時間連続運転、他通常運転（「LIXIL省エネ住宅シミュレーション」にて試算）。
+      実質Ua値＆換気システムで<b>50年間で光熱費に¥4,615,800の差</b>が出ます。※C値を公表していない住宅会社はC値5.0（一般住宅基準）で計算。</div>
+    </div>
+    <div class="subh">エビデンス② ─ 断熱材・気密・窓の「中身」の違い</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.3vw,30px)" class="two-col">
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🧥 断熱材の厚みが約2倍・床は性能3倍以上</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          PGハウスの家が一般住宅や建売住宅より光熱費を抑えられるのは、天井・壁に<b style="color:var(--text)">ウレタン吹付断熱材『アクアフォーム』</b>を使用し、気密測定をしているから。<br>
+          天井の断熱材厚みは<b style="color:var(--text)">PG200mm vs 一般75mm、壁はPG100mm vs 一般55mm</b>で約2倍。
+          床は<b style="color:var(--text)">ミラフォームラムダ50mm（一般はミラフォーム25mm）</b>で断熱性能は約3倍以上。
+          ユニットバスの床下基礎・玄関基礎にも断熱材を施工しています。
         </div>
       </div>
-      <div class="note" id="enNote" style="margin-top:8px;font-weight:700"></div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">⚠️ 多くの会社が標準の「グラスウール断熱材」とは？</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          <b style="color:var(--text)">メリット</b>：安価である／切断・折り曲げなど自由に施工できる／加工に専用機械が不要。<br>
+          <b style="color:#b91c1c">デメリット</b>：必ず隙間ができる／湿気を含みカビが発生する／水に濡れると断熱効果を発揮しない／重みでずり落ちてくる／大工の技術で施工に差が出る。<br>
+          安価な断熱材では、数十年後にカビやずり落ちで断熱効果が低下してしまうことも…。せっかく建てる夢のマイホーム、永く快適に住みたいですよね？
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🚪 気密と換気の関係 ─ C値1.0以上だと給気量50%ダウン</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          気密性能はC値で表され、<b style="color:var(--text)">C値が低い＝隙間が少ない家</b>。一般的にC値1.0以下で「高気密」とされますが、
+          PGハウスは<b style="color:var(--text)">全棟気密測定を実施しC値0.5未満</b>を提供します。<br>
+          気密性が低いと24時間換気システムが正常に作用せず、空気の流れが一定にできず、換気効率が悪くなり、
+          <b style="color:var(--text)">汚れた空気が一定の場所に溜まります</b>。C値0.5未満なら、きれいな空気を効率良く換気し、いつでも快適な空気環境に。
+          なお、<b style="color:var(--text)">気密測定をする住宅メーカーは全体のたった5%</b>です。
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🪟 オール樹脂サッシ「EW」×アルゴンガス入りLow-Eトリプルガラス</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          サッシ実験では、冬場の室内側表面温度が<b style="color:var(--text)">アルミサッシ19.1℃／半樹脂サッシ21.3℃／PGのEW 29.6℃</b>（＋10.5℃暖かい）、
+          夏場は<b style="color:var(--text)">44.4℃／36.3℃／28.2℃</b>（−16.2℃涼しい）。<br>
+          注文住宅会社の約9割はアルミ＋樹脂の「半樹脂サッシ」で内部結露が発生しやすいのに対し、<b style="color:var(--text)">全樹脂採用で結露の発生を抑制</b>。
+          アルゴンガス入りLow-Eトリプルガラスなら一般的な複層ガラス比で<b style="color:var(--text)">遮熱性約3.7倍</b>、EWの熱貫流率は<b style="color:var(--text)">0.59W/(㎡・K)</b>です。
+        </div>
+      </div>
+    </div>
+    <div class="subh">エビデンス③ ─ エコ標準仕様・換気・太陽光の経済効果</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.3vw,30px)" class="two-col">
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">💡 LED照明・エコキュートも標準のエコ仕様</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          全室<b style="color:var(--text)">LED照明を標準装備</b>。寿命は白熱電球の約1,000〜3,000時間に対しLEDは約20,000〜40,000時間で<b style="color:var(--text)">約20倍長持ち</b>。
+          電気代は白熱電球の年間約29,234円に対しLEDは年間約3,676円 ── <b style="color:var(--text)">1年間で約25,558円もお得</b>。<br>
+          給湯は空気の熱でお湯を沸かす<b style="color:var(--text)">エコキュート</b>。給湯に使うエネルギー消費を大幅に削減できます。
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🔌 太陽光×オール電化で、光熱費はここまで変わる</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          一般の家の光熱費：電気代190,260円＋ガス代96,000円＝<b style="color:#b91c1c">年間286,260円</b>。<br>
+          PGハウスの超ZEH：電気代162,140円－太陽光81,159円（ガス代0円）＝<b style="color:var(--pg1)">年間80,981円</b>。<br>
+          その差額、<b style="color:var(--text)">年間なんと205,279円・10年間で約205万円もお得</b>！
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🌀 換気も「全熱交換型 第一種換気」が標準</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          第三種換気は外の冷たい空気がそのまま室内に入り、空気の入れ替え量も快適性も△。
+          PGハウスの<b style="color:var(--text)">第一種換気（熱交換型）</b>なら、捨てる熱を回収するので冬に給気口の近くで寒さを感じることもなく、快適で省エネ。
+          24時間自動で強制換気するから衛生的でウィルス対策にも。<b style="color:var(--text)">50年×2.15万円＝約107万円お得</b>になる試算です（パナソニック空質空調社データより）。
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">☀️ そもそもZEH（ゼロ・エネルギー・ハウス）って？</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          断熱性能の高い家で省エネ設備を使って消費電力を抑え、太陽光で電力を創ることで、消費エネルギーと創エネルギーを<b style="color:var(--text)">プラスマイナス「ゼロ」</b>にする住宅。
+          PGハウスは<b style="color:var(--text)">発電量が消費エネルギーより多い「超ZEH」</b>。世界的に導入実績豊富な<b style="color:var(--text)">ドイツ製太陽光発電システム5.16kW</b>を標準搭載
+          （日本でも毎年15万棟以上の搭載実績）。<br>
+          太陽光5.28kW設置の場合、年間発電量約7,399kWh＝<b style="color:var(--text)">売電換算155,540円/年・月々約12,961円の経済効果</b>（売電単価15円/kWh・令和7年度、買取価格を将来保証するものではありません）。
+        </div>
+      </div>
+    </div>
+    <div class="subh">エビデンス④ ─ これからの家の「新常識」</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(10px,1vw,24px)" class="taikan-grid">
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(12px,1.05vw,24px)">📋 BELS（燃費の良い家）</div>
+        <div class="note" style="margin-top:4px">重要なのは「燃費の良い家」。お家の燃費は家計に直結します。省エネ性能の評価書（BELS）で燃費を確認しましょう。確認ポイントは<b>一次エネルギー削減効果（削減率）</b>。光熱費の負担を最小限に。</div>
+      </div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(12px,1.05vw,24px)">📱 HEMS（電気の見える化）</div>
+        <div class="note" style="margin-top:4px">HEMS（Home Energy Management System）によって<b>買った電気・売った電気・発電した電気・家で使った電気・貯めた電気</b>の流れが全て見えるので安心です。</div>
+      </div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(12px,1.05vw,24px)">📈 FITからFIPの時代へ</div>
+        <div class="note" style="margin-top:4px">FIT（固定価格買取）は買取価格が市場と連動しない一方、FIP制度は<b>市場価格に補助額（プレミアム）が上乗せ</b>され、買取価格も変動。<b>高い買取価格の時間帯で売電できれば、新たな収入源に</b>。未来に対応した家が不可欠な理由です。</div>
+      </div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(12px,1.05vw,24px)">🚗 走る蓄電池「V2H」</div>
+        <div class="note" style="margin-top:4px">V2H（Vehicle to Home）は電気自動車を「走る蓄電池」として利用し、EVに貯めた電気を家庭で使う仕組み。<b>①毎月の光熱費を抑え ②非常時も安心して生活でき ③環境にやさしい暮らしへ</b>。太陽光標準のPGハウスと相性抜群の将来装備です。</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:clamp(12px,1.3vw,30px)">
+      <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🔥 毎月の光熱費を抑えるために ─ 家庭の消費エネルギーの比較</div>
+      <div class="bar-row"><div class="bn">動力・照明その他</div><div class="bt"><div class="bf" style="width:100%;background:#94a3b8"></div></div><div class="bv">32.9%</div></div>
+      <div class="bar-row"><div class="bn grad" style="font-weight:900">給湯</div><div class="bt"><div class="bf" style="width:87%;background:linear-gradient(90deg,var(--pg1),var(--pg2))"></div></div><div class="bv grad">28.7%</div></div>
+      <div class="bar-row"><div class="bn grad" style="font-weight:900">暖房</div><div class="bt"><div class="bf" style="width:80%;background:linear-gradient(90deg,var(--pg1),var(--pg2))"></div></div><div class="bv grad">26.3%</div></div>
+      <div class="bar-row"><div class="bn">厨房</div><div class="bt"><div class="bf" style="width:29%;background:#94a3b8"></div></div><div class="bv">9.7%</div></div>
+      <div class="bar-row"><div class="bn grad" style="font-weight:900">冷房</div><div class="bt"><div class="bf" style="width:7%;background:linear-gradient(90deg,var(--pg1),var(--pg2))"></div></div><div class="bv grad">2.4%</div></div>
+      <div class="note" style="margin-top:8px">出典：資源エネルギー庁「エネルギー白書2023」（ガス・石油・石炭・電気等をあわせた数値）。
+      給湯＋暖房＋冷房＝<b>57.4%が「熱」のエネルギー</b>。だから対策は ── 給湯設備の効率化（①高効率エコキュート ②太陽光の自家発電分で給湯 ＋α エコキュートの室内置き）と、
+      冷暖房の効率化（①家庭用エアコン※高気密・高断熱住宅に限る ②空調効率COP/エネルギー消費効率APF ＋α 空調負荷・空気の対流のプランニング）。PGハウスでは評価項目以上のご提案をさせていただきます。</div>
+    </div>
+    <div class="subh">エビデンス⑤ ─ 「結露のこわさ」と健康住宅の条件</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.3vw,30px)" class="two-col">
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">💧 壁体内結露を起こしてはいけない3つの理由</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          <b style="color:var(--text)">①「耐震性」の著しい劣化 ②「断熱性」の著しい劣化 ③ダニの繁殖・カビの発生</b>
+          ── 壁の中の結露は、<b style="color:var(--text)">命・健康・財産（補修費・光熱費・医療費）</b>に影響します。<br>
+          水蒸気の大きさは4/10万〜3/1000万mmと、建築材料の隙間（1/500〜1/1000mm）よりはるかに小さく、<b style="color:var(--text)">材料を通り抜けて壁の中へ移動</b>します。
+          冬、室温23度・湿度50%のとき、室内の水蒸気が5度の断熱材に触れると<b style="color:var(--text)">約3gの水蒸気が水に変わる</b>（物理現象）── これが壁体内結露です。
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🛡️ 対策は「水蒸気バリア（防湿気密シート）」の設置</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          壁体内結露は原理さえ分かれば対策が打てます。室内側に<b style="color:var(--text)">防湿気密シート</b>を張り、水蒸気の壁内への移動そのものをブロック。
+          シートは30mm以上重ねてタッカー留め、床も30mm以上折り返すなど、<b style="color:var(--text)">しっかりとした施工品質</b>が肝心です。<br>
+          最高クラスの健康住宅の条件は<b style="color:var(--text)">①室温（高断熱・高気密＋樹脂サッシ＋熱交換換気でエアコンつけっぱなしでも安い）
+          ②空気質（高性能フィルター×全熱交換型第一種換気） ③結露しない（防湿気密＋施工品質）</b>の3つ。
+          PGネットワークの会員企業には<b style="color:var(--text)">全棟平均C値0.24</b>（2024年度実績）の実例もあります。
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:clamp(16px,1.6vw,36px)">
+      <button class="pgbtn" onclick="go('sA')">⚡ エリア別 光熱費シミュレーターで試算する</button>
+      <div class="note" style="margin-top:8px">上のタブ「🖩 シミュレーター」からもいつでも開けます。お住まいの電力エリアで、一般住宅との差を月・年・50年で試算します。</div>
     </div>
     <div class="talk-note"><span class="tn-tag">トーク</span>
       断熱の話は「同じ服を着ていても、前が開いていたら寒い」の比喩が伝わる（断熱＝服の厚さ、気密＝前を閉める）。
@@ -586,24 +787,60 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
         <div class="note" style="margin-top:6px">※各社棟数は住宅産業研究所データ等をもとに作成。PGネットワークは会員企業の建築棟数合計。</div>
       </div>
     </div>
-    <div class="sim-box">
-      <div style="font-size:clamp(13px,1.15vw,27px);font-weight:900;margin-bottom:clamp(10px,1vw,22px)">💡 エリア別 価格シミュレーター ─ <span class="grad">あなたのエリアの相場と、いくら違う？</span></div>
-      <div class="sim-grid" style="grid-template-columns:1fr 2fr;align-items:center">
-        <div>
-          <div class="sim-lbl"><span>エリアを選択</span></div>
-          <select id="prArea" onchange="price()" style="width:100%;font-family:'Noto Sans JP',sans-serif;font-size:clamp(13px,1.1vw,26px);font-weight:700;padding:.5em .8em;border-radius:10px;border:1.5px solid #bfdbfe;background:#fff;color:var(--text);cursor:pointer"></select>
-          <div class="note" style="margin-top:8px" id="prNote"></div>
+    <div style="text-align:center;margin-top:clamp(16px,1.6vw,36px)">
+      <button class="pgbtn" onclick="go('sB')">🏠 エリア別 価格シミュレーターで試算する</button>
+      <div class="note" style="margin-top:8px">全国平均・県別坪単価・寒冷地仕様（北海道）を選んで、あなたのエリアの相場との差額と月々換算をその場で表示します。</div>
+    </div>
+    <div class="subh">エビデンス① ─ 家の価格の構成（重要なのは透明性！）</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,1vw,24px)" class="hurdle-grid">
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px)">① 本体工事</div>
+        <div class="note" style="margin-top:4px;font-size:clamp(11px,.95vw,21px)">商品ごとの坪単価 × 施工床面積。</div>
+      </div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px)">② 付帯工事</div>
+        <div class="note" style="margin-top:4px;font-size:clamp(11px,.95vw,21px)">各種申請・構造計算費用／設計・工事監理費用など／高低差処理（深基礎）／運搬・重機割増（道路幅）／照明費用／オプション費用／太陽光パネル／地盤改良費用。</div>
+      </div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px)">③ 諸費用</div>
+        <div class="note" style="margin-top:4px;font-size:clamp(11px,.95vw,21px)">外構工事費用／解体工事費用／住宅ローン諸費用／つなぎ融資費用／登記費用／印紙代／土地費用・土地関連費用。</div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:8px">※会社・商品によっては上記の一部が「別途」となっていることがありますので、ご注意ください。<b>重要なのは透明性！</b> PGハウスは3層すべてを最初からご提示します。</div>
+    <div class="subh">エビデンス② ─ 「イニシャルコスト」→「トータルコスト」で判断する時代へ</div>
+    <div class="two-col" style="align-items:start">
+      <div class="card" style="border-top:5px solid #94a3b8">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🧊 一般住宅 ─ 水面下のランニングコストが重い</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          「建築費は安くても、家を建ててからこんなに維持費がかかるなんて知らなかった…！」<br>
+          見えている部分：土地・建物代、太陽光（低額売電収入）、第三種換気設備、ガソリン車。<br>
+          水面下に隠れている部分：<b style="color:#b91c1c">高メンテナンス費・高額光熱費・高額医療費・高額火災保険・水道光熱費・教育費・高金利住宅ローン・ガソリン代高騰</b>
+          ── <b style="color:#b91c1c">住宅ローン以外のランニングコストの負担が重い</b>のです。
         </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,.8vw,18px)">
-          <div class="sim-out" style="margin-top:0"><div style="font-size:clamp(10px,.85vw,19px);font-weight:700;color:var(--muted)" id="prLbl1">エリア相場（28坪換算）</div><div class="sv" id="prBase" style="font-size:clamp(26px,2.5vw,58px)">―</div></div>
-          <div class="sim-out" style="margin-top:0"><div style="font-size:clamp(10px,.85vw,19px);font-weight:700;color:var(--muted)">PGハウス目安（28坪）</div><div class="sv" id="prPG" style="font-size:clamp(26px,2.5vw,58px)">―</div></div>
-          <div class="sim-out" style="margin-top:0;border-color:#fed7aa;background:rgba(234,88,12,.06)"><div style="font-size:clamp(10px,.85vw,19px);font-weight:700;color:var(--acc)">差額 ／ 月々換算</div><div class="sv" id="prDiff" style="font-size:clamp(26px,2.5vw,58px)">―</div></div>
+      </div>
+      <div class="card" style="border-top:5px solid var(--pg1)">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">💎 高性能住宅 ─ 建てた後のコストまで軽くなる</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          「健康な暮らしができて光熱費や維持管理費がかからず、補助金の優遇もあって良かったわ♥」<br>
+          <b style="color:var(--pg1)">長期優良住宅補助金・住宅ローン控除などの優遇／高額売電収入／気象病になりにくいキレイな空気／良質な睡眠／
+          低メンテナンス費・低額光熱費・低額医療費・低額火災保険・低金利住宅ローン</b>。<br>
+          <b style="color:var(--text)">建てた後のランニングコスト（光熱費・維持管理費）までを考える</b> ── これがPGハウスの価格の見方です。
         </div>
+      </div>
+    </div>
+    <div class="subh">エビデンス③ ─ 資産価値の高い家を建てたときのメリット</div>
+    <div class="card">
+      <div style="font-size:clamp(12px,1vw,23px);line-height:2;color:var(--muted)">
+        ① 建築物省エネ法に基づく<b style="color:var(--text)">省エネ性能の評価書 最高クラス（BELS）</b> ── 建物の省エネ性能表示制度は将来の資産価値に影響します。<br>
+        ② <b style="color:var(--text)">耐震等級3の証明書</b> ── 地震保険<b style="color:var(--pg1)">44%ダウン</b>。<br>
+        ③ <b style="color:var(--text)">省令準耐火構造</b> ── 火災保険<b style="color:var(--pg1)">40〜50%ダウン</b>。<br>
+        ④ <b style="color:var(--text)">長期優良認定住宅</b> ── 住宅ローン控除優遇／建物固定資産税の半額期間2年延長／子育てグリーン住宅支援事業の対象。<br>
+        <b style="color:var(--text)">資産価値の高い家＝経済的なメリットがある家。</b>PGハウスはこれらが標準採用できる仕様です。
       </div>
     </div>
     <div class="ans-band" style="margin-top:clamp(14px,1.4vw,32px)">
       家は「イニシャルコスト」ではなく<u>トータルコスト</u>で選ぶ時代。<br>
-      <span style="font-size:.8em;font-weight:700">建物価格の差 ＋ 光熱費・売電（⑤） ＋ 保険料割引（④） ＋ 税優遇（③） ── 合計は⑪の資金計画・マイホームシミュレーターで確認できます。</span>
+      <span style="font-size:.8em;font-weight:700">建物価格の差 ＋ 光熱費・売電（⑤） ＋ 保険料割引（④） ＋ 税優遇・補助金（③） ── 合計は⑪の資金計画・マイホームシミュレーターで確認できます。</span>
     </div>
     <div class="talk-note"><span class="tn-tag">本部PR</span>
       「安かろう悪かろう」ではなく<b>「まとめ買いだから安い」＝構造的なコスパ</b>を理解してもらうのが最重要。
@@ -783,44 +1020,21 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
           </div>
         </div>
       </div>
-      <div class="sim-box" style="margin-top:0">
-        <div style="font-size:clamp(13px,1.15vw,27px);font-weight:900;margin-bottom:clamp(10px,1vw,22px)">💡 その場で試算 ─ <span class="grad">「今買う」vs「5年後買う」</span></div>
-        <div class="sim-grid" style="grid-template-columns:1fr 1fr">
-          <div><div class="sim-lbl"><span>物件価格</span><b><span id="tP">3,500</span>万円</b></div>
-            <input type="range" id="trP" min="2000" max="5000" step="100" value="3500" oninput="timing()"></div>
-          <div><div class="sim-lbl"><span>今の家賃（月）</span><b><span id="tR">7</span>万円</b></div>
-            <input type="range" id="trR" min="4" max="15" step="0.5" value="7" oninput="timing()"></div>
-        </div>
-        <div class="vs-grid">
-          <div class="vs-col">
-            <div class="vh grad">今購入した場合</div>
-            <div class="vrow"><span>物件価格</span><b id="nowPrice">―</b></div>
-            <div class="vrow"><span>金利（想定）</span><b>0.8%</b></div>
-            <div class="vrow"><span>支払利息</span><b id="nowInt">―</b></div>
-            <div class="vrow"><span>5年分の家賃</span><b>0円</b></div>
-            <div class="vrow" style="border:none"><span>支払総額</span><b id="nowTotal" style="color:var(--pg1)">―</b></div>
+      <div>
+        <div class="card">
+          <div style="font-weight:900;font-size:clamp(13px,1.15vw,27px);margin-bottom:8px">🧮 「今買う」vs「5年後買う」試算の一例</div>
+          <div style="font-size:clamp(12px,1vw,23px);line-height:1.95;color:var(--muted)">
+            現居の家賃7万円・物件価格3,500万円・借入3,500万円の場合──<br>
+            <b style="color:var(--text)">今購入</b>：金利0.8%・支払利息590万円・支払総額<b style="color:var(--pg1)">4,090万円</b>（月々約8.5万円）<br>
+            <b style="color:var(--text)">5年後購入</b>：物件3,800万円（木造住宅価格は2002年以降、全国平均で年1.65%上昇中＝5年で108.5%）・金利1.8%・支払利息1,533万円・5年分の家賃420万円・支払総額<b style="color:#b91c1c">5,753万円</b>（月々約11.1万円）<br>
+            → 先延ばしにすると、同性能の家でも<b style="color:#b91c1c">1,663万円多く支払う</b>ことに…。
+            金利1.0%の上昇だけでも総額約822万円増・年間約20万円増（3,500万円・35年の場合）。
           </div>
-          <div class="vs-mid">VS</div>
-          <div class="vs-col bad">
-            <div class="vh" style="color:#b91c1c">5年後に購入した場合</div>
-            <div class="vrow"><span>物件価格<span class="note">（年1.65%上昇）</span></span><b id="latPrice">―</b></div>
-            <div class="vrow"><span>金利（想定）</span><b>1.8%</b></div>
-            <div class="vrow"><span>支払利息</span><b id="latInt">―</b></div>
-            <div class="vrow"><span>5年分の家賃</span><b id="latRent">―</b></div>
-            <div class="vrow" style="border:none"><span>支払総額</span><b id="latTotal" style="color:#b91c1c">―</b></div>
-          </div>
+          <div class="note" style="margin-top:6px">※建築価格の変動状況は国土交通省「建築工事費デフレータ」より。金利は上昇シナリオの一例です。</div>
         </div>
-        <div class="sim-out">
-          <div style="font-size:clamp(11px,.95vw,21px);font-weight:700;color:var(--muted)">5年待つと、同じ性能の家でも…</div>
-          <div class="sv" id="tDiff">―</div>
-          <div class="note" style="margin-top:6px">※35年ローン・元利均等・ボーナスなし。物件価格上昇は木造住宅価格の長期平均（年1.65%）、金利は上昇シナリオの一例です。</div>
-        </div>
-        <div style="margin-top:clamp(12px,1.2vw,26px)">
-          <div style="font-size:clamp(11px,.95vw,21px);font-weight:900;margin-bottom:6px">📈 金利が1%変わると？（同じ物件価格・35年）</div>
-          <div class="vrow" style="display:flex;justify-content:space-between;font-size:clamp(11px,.95vw,21px);padding:4px 0;border-bottom:1px dashed var(--border)"><span>金利0.8%の場合</span><b>月々 <span id="ra08">―</span> ／ 総額 <span id="rt08">―</span></b></div>
-          <div class="vrow" style="display:flex;justify-content:space-between;font-size:clamp(11px,.95vw,21px);padding:4px 0;border-bottom:1px dashed var(--border)"><span>金利1.0%の場合</span><b>月々 <span id="ra10">―</span> ／ 総額 <span id="rt10">―</span></b></div>
-          <div class="vrow" style="display:flex;justify-content:space-between;font-size:clamp(11px,.95vw,21px);padding:4px 0"><span style="color:#b91c1c">金利1.8%の場合</span><b style="color:#b91c1c">月々 <span id="ra18">―</span> ／ 総額 <span id="rt18">―</span></b></div>
-          <div class="note" style="margin-top:4px;font-weight:700">わずか1%の上昇で、総額 <span id="rDiff" style="color:#b91c1c">―</span> 増。同じ家なら、金利が低いうちに。</div>
+        <div style="text-align:center;margin-top:clamp(14px,1.4vw,32px)">
+          <button class="pgbtn" onclick="go('sE')">⏳ あなたの家賃・価格で「今 vs 5年後」を試算する</button>
+          <div class="note" style="margin-top:8px">上のタブ「🖩 シミュレーター」からもいつでも開けます。</div>
         </div>
       </div>
     </div>
@@ -838,54 +1052,39 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
     <div class="ttl">「借りられる額」ではなく、<span class="grad">「無理なく払える額」</span>で考える。</div>
     <div class="two-col" style="align-items:start">
       <div>
-        <div class="sim-box" style="margin-top:0">
-          <div style="font-size:clamp(13px,1.15vw,27px);font-weight:900;margin-bottom:clamp(10px,1vw,22px)">💡 借入限度額シミュレーター</div>
-          <div class="sim-grid" style="grid-template-columns:1fr">
-            <div><div class="sim-lbl"><span>世帯年収</span><b><span id="vI">450</span>万円</b></div>
-              <input type="range" id="rI" min="250" max="1200" step="10" value="450" oninput="limit()"></div>
-          </div>
-          <div class="sim-out" style="margin-top:clamp(10px,1vw,22px)">
-            <div style="font-size:clamp(11px,.95vw,21px);font-weight:700;color:var(--muted)">借入限度額の目安（金利0.7%・35年）</div>
-            <div class="sv" id="vLimit">―</div>
-            <div class="note" style="margin-top:6px">※返済比率：年収399万円まで30%／400万円以上35%で試算。他の借入がある方は減額されます。これは「上限」であり「適正」ではありません。</div>
+        <div class="card">
+          <div style="font-weight:900;font-size:clamp(13px,1.15vw,27px);margin-bottom:8px">📐 適正予算の範囲とは？</div>
+          <div style="font-size:clamp(12px,1vw,23px);line-height:1.95;color:var(--muted)">
+            ご自身の<b style="color:var(--text)">無理なくお支払いできる金額</b>を把握することが大切。
+            それは「<b style="color:var(--text)">借りられる金額</b>」と「<b style="color:var(--text)">今払っている家賃</b>」の間にあります。
+            借入限度額の目安は、金利0.7%・返済比率（年収399万円まで30%／400万円以上35%）で計算できます。
+            限度額を把握することで、ご自身の適正予算が見えてきます。ただし<b style="color:var(--text)">他に借入がある方は要注意</b>（限度額が減額されます）。
           </div>
         </div>
-        <div class="sim-box">
-          <div style="font-size:clamp(13px,1.15vw,27px);font-weight:900;margin-bottom:clamp(10px,1vw,22px)">💡 月々いくら？ミニシミュレーター</div>
-          <div class="sim-grid">
-            <div><div class="sim-lbl"><span>借入額</span><b><span id="vP">2,300</span>万円</b></div>
-              <input type="range" id="rP" min="1200" max="4500" step="50" value="2300" oninput="calc()"></div>
-            <div><div class="sim-lbl"><span>金利（年）</span><b><span id="vR">0.80</span>%</b></div>
-              <input type="range" id="rR" min="0.3" max="2.5" step="0.05" value="0.8" oninput="calc()"></div>
-            <div><div class="sim-lbl"><span>返済期間</span><b><span id="vY">35</span>年</b></div>
-              <input type="range" id="rY" min="20" max="40" step="1" value="35" oninput="calc()"></div>
-          </div>
-          <div class="sim-out">
-            <div style="font-size:clamp(11px,.95vw,21px);font-weight:700;color:var(--muted)">毎月の返済額（元利均等・ボーナスなし）</div>
-            <div class="sv" id="vPay">―</div>
-            <div class="note" style="margin-top:6px">太陽光5kW標準（月々約1.3万円の経済効果目安）を含めた「実質負担」なら、今の家賃と同水準になるケースも。</div>
-          </div>
+        <div style="display:grid;gap:clamp(10px,1vw,22px);margin-top:clamp(14px,1.4vw,32px)">
+          <button class="pgbtn" style="width:100%;justify-content:center" onclick="go('sD')">🏦 借入限度額シミュレーターで「上限」を知る</button>
+          <button class="pgbtn" style="width:100%;justify-content:center" onclick="go('sC')">💰 月々返済シミュレーターで「家賃」と比べる</button>
+          <button class="pgbtn" style="width:100%;justify-content:center;background:#1e293b;box-shadow:0 6px 20px rgba(30,41,59,.35)" onclick="openSim()">▶ マイホームシミュレーターで本格試算する</button>
+          <div class="note" style="text-align:center">本格試算では、家族構成・光熱費・太陽光・ライフサイクルコスト（賃貸継続との生涯比較）・資金計画書の出力まで、その場で一緒に作成します。</div>
         </div>
       </div>
       <div>
         <div class="card">
-          <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🎯 適正予算の考え方</div>
+          <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🌈 「人生100年時代」の家づくり</div>
           <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
-            適正予算は「<b style="color:var(--text)">借りられる金額</b>」と「<b style="color:var(--text)">今払っている家賃</b>」の間にあります。
-            上限いっぱいまで借りるのではなく、<b style="color:var(--text)">無理なくお支払いできる金額</b>を一緒に見つけましょう。
+            長い人生、様々なお金がかかります。「家賃と同じくらいの支払いがいいなぁ」「旅行に行きたいし外食もしたい！」
+            「月々の光熱費のことを考えると…」「いつかは車も買い替えたい」「子どもの教育費もかかるし…」──
+            家を建てたあとにも、やりたいことはたくさん。でも家づくりを間違えば、住宅ローンの支払いが家計の大半になってしまいます。
+            「やりたいことができない…」「ガマンをしないといけない…」とならないよう、しっかり計画しましょう。
           </div>
         </div>
         <div class="card" style="margin-top:clamp(12px,1.2vw,26px)">
-          <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🌈 「人生100年時代」の家づくり</div>
+          <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🧭 PGハウスの家づくりの考え方</div>
           <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
-            旅行も外食も、車の買い替えも、子どもの教育費も ── 家を建てたあとにも、やりたいことはたくさん。
             <b style="color:var(--text)">できるだけ『家』にお金をかけ過ぎず、自分たちがしたい暮らしを実現する。</b>
-            それがPGハウスの家づくりの考え方です。だから「性能・間取り・価格」のバランスに、とことんこだわります。
+            それがPGハウスの家づくりの考え方です。人によって重視するポイントは様々ですが、
+            失敗しない家づくりは「<b style="color:var(--text)">性能」「間取り」「価格」のバランス</b>が大切。理想の家づくりを一緒にサポートいたします。
           </div>
-        </div>
-        <div style="margin-top:clamp(16px,1.6vw,36px);text-align:center">
-          <button class="pgbtn" onclick="openSim()">▶ マイホームシミュレーターで本格試算する</button>
-          <div class="note" style="margin-top:10px">家族構成・光熱費・太陽光・ライフサイクルコスト（賃貸継続との生涯比較）・資金計画書の出力まで、その場で一緒に作成します。</div>
         </div>
       </div>
     </div>
@@ -981,6 +1180,36 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
         </div>
       </div>
     </div>
+    <div class="subh">暮らしをデザインする家づくり ─ 間取りと「家事ラク」</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.3vw,30px)" class="two-col">
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">✏️ 夢のマイホームの間取り、誰が描きますか？</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          まだまだ<b style="color:var(--text)">営業担当が間取りを描く会社が多い実情</b>があります。「高性能だけどデザインが…」「間取りを見てもワクワクしない…」となりがち。<br>
+          間取りで大事なのは<b style="color:var(--text)">生活動線・光の抜け・効率的なエアコン位置・適切な収納量・スイッチの位置</b>。
+          PGハウスでは要望を細やかに汲み取るアドバイザーのプランニングに加え、<b style="color:var(--text)">一級建築士・有資格者が申請・法令遵守のリーガルチェック</b>を担当。
+          全国の成約事例が詰まった<b style="color:var(--text)">参考プラン集</b>×完全自由設計で、ワクワクする間取りを実現します。
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🧺 「水廻り4点セット」から「水廻り＋家事ラク8点セット」へ</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          これまでの家は<b style="color:var(--text)">キッチン・ユニットバス・洗面化粧台・トイレ</b>の「水廻り4点セット」。これからの家は、そこに
+          <b style="color:var(--text)">①自動洗剤投入式 洗濯乾燥機 ②ダストボックス付ロボット掃除機 ③大容量食洗機 ④太陽光パネル</b>の「家事ラク4点セット（推奨）」を加えた
+          <b style="color:var(--text)">8点セット</b>で暮らすのがおすすめ。<b style="color:var(--text)">住宅ローンに組み込むご提案も可能</b>です。<br>
+          オプションの<b style="color:var(--text)">ナノバブル発生装置</b>は、給水管に設置するだけで家中の水道水をナノバブル水へ変換。保温・保湿・洗浄・消臭に関心の高い方に人気の、
+          ランニングコストがかからない時短＋清潔アイテムです。<span class="note">※設備の標準/推奨/オプション区分は店舗・プランにより異なります。</span>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:clamp(12px,1.3vw,30px)">
+      <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">🌿 家事ラクで余裕ができた時間を ── 家族旅行や、自己投資・自己育成・ゆとりの時間に</div>
+      <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+        暮らしのデザイン（綺麗な暮らし・ラクになる暮らし）＝<b style="color:var(--text)">①間取り（デザイン・家事動線・収納力） ②家事ラク8点セット</b>。
+        あとラク（はじめに対処しておけば長期で住みやすくなる→QOLの向上）＝<b style="color:var(--text)">①制振ダンパー ②防湿気密シート ③ZEHを超える断熱・気密性能 ④太陽光発電（推奨） ⑤ナノバブル発生装置（オプション）</b>。<br>
+        <b style="color:var(--text)">住んだその日から暮らしが変わる家づくりへ。</b>
+      </div>
+    </div>
     <div class="ans-band">一生に一度のお家づくり。<br><u>ぜひ、私たちと一緒に考えさせてください。</u></div>
     <div class="talk-note"><span class="tn-tag">トーク</span>
       土地の章は「土地に強い」の定義を再設定するのが肝：<b>スピード×品質の2条件</b>。自店の不動産事業・査定買取実績（例：浜松「物件王国」年間約720件）に
@@ -989,20 +1218,205 @@ input[type=range]{width:100%;accent-color:var(--pg1);height:22px;cursor:pointer}
   </div>
 </div>
 
+<!-- ============ シミュレーターページ（ナビ2段目タブ） ============ -->
+
+<!-- SIM sA エリア別光熱費 -->
+<div class="page" id="sA">
+  <div>
+    <div class="lbl" style="color:var(--pg1)">SIMULATOR ─ エリア別 光熱費</div>
+    <div class="ttl">⚡ お住まいの電力エリアで、<span class="grad">光熱費はいくら違う？</span></div>
+    <div class="sim-box" style="margin-top:0">
+      <div class="sim-grid" style="grid-template-columns:1fr 2fr;align-items:center">
+        <div>
+          <div class="sim-lbl"><span>電力エリアを選択</span></div>
+          <select id="enArea" onchange="energy()" style="width:100%;font-family:'Noto Sans JP',sans-serif;font-size:clamp(13px,1.1vw,26px);font-weight:700;padding:.5em .8em;border-radius:10px;border:1.5px solid #bfdbfe;background:#fff;color:var(--text);cursor:pointer"></select>
+          <div class="note" style="margin-top:8px">単価は2025年6月時点の実質料金（燃料調整・再エネ賦課込み試算）の昼夜平均。試算モデルは30坪・1階LDKエアコン24時間連続運転・他通常運転条件（LIXIL省エネ住宅シミュレーション準拠）。</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,.8vw,18px)">
+          <div class="sim-out" style="margin-top:0"><div style="font-size:clamp(10px,.85vw,19px);font-weight:700;color:var(--muted)">一般住宅との差（月）</div><div class="sv" id="enM" style="font-size:clamp(28px,2.6vw,60px)">―</div></div>
+          <div class="sim-out" style="margin-top:0"><div style="font-size:clamp(10px,.85vw,19px);font-weight:700;color:var(--muted)">年間の差</div><div class="sv" id="enY" style="font-size:clamp(28px,2.6vw,60px)">―</div></div>
+          <div class="sim-out" style="margin-top:0"><div style="font-size:clamp(10px,.85vw,19px);font-weight:700;color:var(--muted)">50年間の差</div><div class="sv" id="en50" style="font-size:clamp(28px,2.6vw,60px)">―</div></div>
+        </div>
+      </div>
+      <div class="note" id="enNote" style="margin-top:8px;font-weight:700"></div>
+    </div>
+    <div class="card" style="margin-top:clamp(14px,1.4vw,32px)">
+      <div style="font-weight:900;font-size:clamp(13px,1.15vw,27px);margin-bottom:8px">📊 大手電力9社の電気料金（2025年6月・燃料調整込み試算）</div>
+      <div class="tarif-wrap">
+        <table class="tarif">
+          <tr><th>電力会社</th><th>昼間(円/kWh)</th><th>実質昼間料金</th><th>夜間(円/kWh)</th><th>実質夜間料金</th><th>燃料調整単価</th></tr>
+          <tr><td>北海道電力</td><td>37.93</td><td>50.55</td><td>28.99</td><td>41.61</td><td>−6.26円</td></tr>
+          <tr><td>東北電力</td><td>36.86</td><td>48.91</td><td>29.86</td><td>41.91</td><td>−7.43円</td></tr>
+          <tr><td>東京電力</td><td>35.76</td><td>45.51</td><td>27.86</td><td>37.61</td><td>−6.39円</td></tr>
+          <tr><td>中部電力</td><td>38.80</td><td>46.18</td><td>16.52</td><td>23.90</td><td>＋2.63円</td></tr>
+          <tr><td>北陸電力</td><td>39.87</td><td>48.02</td><td>26.98</td><td>35.13</td><td>−7.00円</td></tr>
+          <tr><td>関西電力</td><td>28.87</td><td>37.31</td><td>15.37</td><td>23.91</td><td>＋3.78円</td></tr>
+          <tr><td>中国電力</td><td>46.46</td><td>54.18</td><td>30.35</td><td>38.07</td><td>−8.84円</td></tr>
+          <tr><td>四国電力</td><td>44.47</td><td>61.94</td><td>33.78</td><td>51.25</td><td>−6.22円</td></tr>
+          <tr><td>九州電力</td><td>27.63</td><td>35.11</td><td>14.59</td><td>20.07</td><td>＋1.91円</td></tr>
+        </table>
+      </div>
+      <div class="note" style="margin-top:8px">※各社の主なオール電化系プラン。実質料金は基本料金・再エネ賦課金等を含む1か月540kWh使用時の単価試算。<b>インフレ・物価高騰に対して「自己防衛」の必要性が出ています。</b></div>
+    </div>
+    <div style="text-align:center;margin-top:clamp(14px,1.4vw,32px)">
+      <button class="pgbtn" style="background:#fff;color:var(--pg1);border:2px solid var(--pg1);box-shadow:none" onclick="go('p5')">← ⑤超ZEH の説明に戻る</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIM sB エリア別価格 -->
+<div class="page" id="sB">
+  <div>
+    <div class="lbl" style="color:var(--pg1)">SIMULATOR ─ エリア別 価格</div>
+    <div class="ttl">🏠 あなたのエリアの相場と、<span class="grad">いくら違う？</span></div>
+    <div class="sim-box" style="margin-top:0">
+      <div class="sim-grid" style="grid-template-columns:1fr 2fr;align-items:center">
+        <div>
+          <div class="sim-lbl"><span>エリアを選択</span></div>
+          <select id="prArea" onchange="price()" style="width:100%;font-family:'Noto Sans JP',sans-serif;font-size:clamp(13px,1.1vw,26px);font-weight:700;padding:.5em .8em;border-radius:10px;border:1.5px solid #bfdbfe;background:#fff;color:var(--text);cursor:pointer"></select>
+          <div class="note" style="margin-top:8px" id="prNote"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,.8vw,18px)">
+          <div class="sim-out" style="margin-top:0"><div style="font-size:clamp(10px,.85vw,19px);font-weight:700;color:var(--muted)" id="prLbl1">エリア相場（28坪換算）</div><div class="sv" id="prBase" style="font-size:clamp(26px,2.5vw,58px)">―</div></div>
+          <div class="sim-out" style="margin-top:0"><div style="font-size:clamp(10px,.85vw,19px);font-weight:700;color:var(--muted)">PGハウス目安（28坪）</div><div class="sv" id="prPG" style="font-size:clamp(26px,2.5vw,58px)">―</div></div>
+          <div class="sim-out" style="margin-top:0;border-color:#fed7aa;background:rgba(234,88,12,.06)"><div style="font-size:clamp(10px,.85vw,19px);font-weight:700;color:var(--acc)">差額 ／ 月々換算</div><div class="sv" id="prDiff" style="font-size:clamp(26px,2.5vw,58px)">―</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="two-col" style="align-items:start;margin-top:clamp(14px,1.4vw,32px)">
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">📈 注文住宅の価格は上がり続けている</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          注文住宅の建築費用は2024年度で<b style="color:var(--text)">平均3,620万円</b>。2011年の2,194万円から13年で<b style="color:var(--text)">約165%</b>に上昇し、
+          2012年以降は<b style="color:var(--text)">毎年平均100万円以上</b>も価格が上昇し続けています。価格上昇が元に戻ることはほぼ無く、現在も上昇傾向が続いています。
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-weight:900;font-size:clamp(13px,1.1vw,26px);margin-bottom:6px">💎 それでもPGハウスがこの価格でできる理由</div>
+        <div style="font-size:clamp(12px,1vw,23px);line-height:1.9;color:var(--muted)">
+          全国180社・年間<b style="color:var(--text)">20,000棟</b>の「流通量」で、プレカット・断熱材・外壁・太陽光・制震装置の主要5項目を一括交渉。
+          品質はそのまま、価格だけが下がる仕組みです（詳しくは⑥最強コスパへ）。
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:clamp(14px,1.4vw,32px)">
+      <button class="pgbtn" style="background:#fff;color:var(--pg1);border:2px solid var(--pg1);box-shadow:none" onclick="go('p6')">← ⑥最強コスパ の説明に戻る</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIM sC 月々返済 -->
+<div class="page" id="sC">
+  <div>
+    <div class="lbl" style="color:var(--pg1)">SIMULATOR ─ 月々返済</div>
+    <div class="ttl">💰 月々いくら？<span class="grad">家賃と比べてみてください。</span></div>
+    <div class="sim-box" style="margin-top:0">
+      <div class="sim-grid">
+        <div><div class="sim-lbl"><span>借入額</span><b><span id="vP">2,300</span>万円</b></div>
+          <input type="range" id="rP" min="1200" max="4500" step="50" value="2300" oninput="calc()"></div>
+        <div><div class="sim-lbl"><span>金利（年）</span><b><span id="vR">0.80</span>%</b></div>
+          <input type="range" id="rR" min="0.3" max="2.5" step="0.05" value="0.8" oninput="calc()"></div>
+        <div><div class="sim-lbl"><span>返済期間</span><b><span id="vY">35</span>年</b></div>
+          <input type="range" id="rY" min="20" max="40" step="1" value="35" oninput="calc()"></div>
+      </div>
+      <div class="sim-out">
+        <div style="font-size:clamp(11px,.95vw,21px);font-weight:700;color:var(--muted)">毎月の返済額（元利均等・ボーナスなし）</div>
+        <div class="sv" id="vPay">―</div>
+        <div class="note" style="margin-top:6px">太陽光5kW標準（月々約1.3万円の経済効果目安）を含めた「実質負担」なら、今の家賃と同水準になるケースも。売電収入＋自家消費で、家賃並みの月々支払いに。</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:clamp(14px,1.4vw,32px)">
+      <button class="pgbtn" onclick="openSim()">▶ マイホームシミュレーターで本格試算する</button>
+      <button class="pgbtn" style="background:#fff;color:var(--pg1);border:2px solid var(--pg1);box-shadow:none;margin-left:10px" onclick="go('p11')">← ⑪予算・資金 に戻る</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIM sD 借入限度額 -->
+<div class="page" id="sD">
+  <div>
+    <div class="lbl" style="color:var(--pg1)">SIMULATOR ─ 借入限度額</div>
+    <div class="ttl">🏦 年収からわかる、<span class="grad">借入限度額の目安。</span></div>
+    <div class="sim-box" style="margin-top:0">
+      <div class="sim-grid" style="grid-template-columns:1fr">
+        <div><div class="sim-lbl"><span>世帯年収</span><b><span id="vI">450</span>万円</b></div>
+          <input type="range" id="rI" min="250" max="1200" step="10" value="450" oninput="limit()"></div>
+      </div>
+      <div class="sim-out" style="margin-top:clamp(10px,1vw,22px)">
+        <div style="font-size:clamp(11px,.95vw,21px);font-weight:700;color:var(--muted)">借入限度額の目安（金利0.7%・35年）</div>
+        <div class="sv" id="vLimit">―</div>
+        <div class="note" style="margin-top:6px">※返済比率：年収399万円まで30%／400万円以上35%で試算（借入限度額早見表の条件）。他に借入がある方は減額されます。これは「上限」であり「適正」ではありません──適正予算は「今の家賃」との間で一緒に見つけましょう（⑪へ）。</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:clamp(14px,1.4vw,32px)">
+      <button class="pgbtn" onclick="go('sC')">💰 続けて月々返済を試算する</button>
+      <button class="pgbtn" style="background:#fff;color:var(--pg1);border:2px solid var(--pg1);box-shadow:none;margin-left:10px" onclick="go('p11')">← ⑪予算・資金 に戻る</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIM sE 今買う vs 5年後 -->
+<div class="page" id="sE">
+  <div>
+    <div class="lbl" style="color:var(--acc)">SIMULATOR ─ 建て時</div>
+    <div class="ttl">⏳ 「<span class="grad">今買う</span>」vs「5年後買う」──あなたの数字で。</div>
+    <div class="sim-box" style="margin-top:0">
+      <div class="sim-grid" style="grid-template-columns:1fr 1fr">
+        <div><div class="sim-lbl"><span>物件価格</span><b><span id="tP">3,500</span>万円</b></div>
+          <input type="range" id="trP" min="2000" max="5000" step="100" value="3500" oninput="timing()"></div>
+        <div><div class="sim-lbl"><span>今の家賃（月）</span><b><span id="tR">7</span>万円</b></div>
+          <input type="range" id="trR" min="4" max="15" step="0.5" value="7" oninput="timing()"></div>
+      </div>
+      <div class="vs-grid">
+        <div class="vs-col">
+          <div class="vh grad">今購入した場合</div>
+          <div class="vrow"><span>物件価格</span><b id="nowPrice">―</b></div>
+          <div class="vrow"><span>金利（想定）</span><b>0.8%</b></div>
+          <div class="vrow"><span>支払利息</span><b id="nowInt">―</b></div>
+          <div class="vrow"><span>5年分の家賃</span><b>0円</b></div>
+          <div class="vrow" style="border:none"><span>支払総額</span><b id="nowTotal" style="color:var(--pg1)">―</b></div>
+        </div>
+        <div class="vs-mid">VS</div>
+        <div class="vs-col bad">
+          <div class="vh" style="color:#b91c1c">5年後に購入した場合</div>
+          <div class="vrow"><span>物件価格<span class="note">（年1.65%上昇）</span></span><b id="latPrice">―</b></div>
+          <div class="vrow"><span>金利（想定）</span><b>1.8%</b></div>
+          <div class="vrow"><span>支払利息</span><b id="latInt">―</b></div>
+          <div class="vrow"><span>5年分の家賃</span><b id="latRent">―</b></div>
+          <div class="vrow" style="border:none"><span>支払総額</span><b id="latTotal" style="color:#b91c1c">―</b></div>
+        </div>
+      </div>
+      <div class="sim-out">
+        <div style="font-size:clamp(11px,.95vw,21px);font-weight:700;color:var(--muted)">5年待つと、同じ性能の家でも…</div>
+        <div class="sv" id="tDiff">―</div>
+        <div class="note" style="margin-top:6px">※40年ローン・元利均等・ボーナスなし（原本試算の前提条件：金利0.8%）。物件価格上昇は木造住宅価格の長期平均（2002年以降・年1.65%＝5年で108.5%、国土交通省 建築工事費デフレータより）、金利は上昇シナリオの一例です。</div>
+      </div>
+      <div style="margin-top:clamp(12px,1.2vw,26px)">
+        <div style="font-size:clamp(11px,.95vw,21px);font-weight:900;margin-bottom:6px">📈 金利が1%変わると？（同じ物件価格・40年）</div>
+        <div class="vrow" style="display:flex;justify-content:space-between;font-size:clamp(11px,.95vw,21px);padding:4px 0;border-bottom:1px dashed var(--border)"><span>金利0.8%の場合</span><b>月々 <span id="ra08">―</span> ／ 総額 <span id="rt08">―</span></b></div>
+        <div class="vrow" style="display:flex;justify-content:space-between;font-size:clamp(11px,.95vw,21px);padding:4px 0;border-bottom:1px dashed var(--border)"><span>金利1.0%の場合</span><b>月々 <span id="ra10">―</span> ／ 総額 <span id="rt10">―</span></b></div>
+        <div class="vrow" style="display:flex;justify-content:space-between;font-size:clamp(11px,.95vw,21px);padding:4px 0"><span style="color:#b91c1c">金利1.8%の場合</span><b style="color:#b91c1c">月々 <span id="ra18">―</span> ／ 総額 <span id="rt18">―</span></b></div>
+        <div class="note" style="margin-top:4px;font-weight:700">わずか1%の上昇で、総額 <span id="rDiff" style="color:#b91c1c">―</span> 増。同じ家なら、金利が低いうちに。</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:clamp(14px,1.4vw,32px)">
+      <button class="pgbtn" style="background:#fff;color:var(--pg1);border:2px solid var(--pg1);box-shadow:none" onclick="go('p10')">← ⑩建て時 の説明に戻る</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ▼ マイホームシミュレーターのURLをここに設定（例:'./my_home_simulator.html' や本番URL） */
 const SIM_URL = '';
 
-const ORDER = ['p1','p2','p3','p4','p5','p6','p7','p8','p9','p10','p11','p12','p13'];
-function show(id, btn){
+const ORDER = ['p1','p2','p3','p4','p5','p6','p7','p8','p9','p10','p11','p12','p13','sA','sB','sC','sD','sE'];
+function show(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
   document.getElementById(id).classList.add('show');
-  document.querySelectorAll('#nav .nb').forEach(b=>{ if(!b.classList.contains('talk-btn')) b.classList.remove('on'); });
-  if(btn) btn.classList.add('on');
+  document.querySelectorAll('#nav .nb[data-page]').forEach(b=>b.classList.toggle('on', b.dataset.page===id));
   window.scrollTo(0,0);
 }
-function navBtns(){ return [...document.querySelectorAll('#nav .nb')].filter(b=>!b.classList.contains('talk-btn')); }
-function go(id){ show(id, navBtns()[ORDER.indexOf(id)]); }
+function go(id){ show(id); }
 function toggleTalk(btn){ document.body.classList.toggle('talk'); btn.classList.toggle('on'); }
 function openSim(){
   if(SIM_URL){ window.open(SIM_URL, '_blank'); }
@@ -1122,7 +1536,7 @@ function timing(){
   const R = +document.getElementById('trR').value * 10000;
   document.getElementById('tP').textContent = (P/10000).toLocaleString('ja-JP');
   document.getElementById('tR').textContent = (+document.getElementById('trR').value).toLocaleString('ja-JP');
-  const yrs = 35;
+  const yrs = 40;   // 原本スライドの前提条件（金利0.8%・40年）に合わせる
   const nowTotal = pay(P,0.8,yrs)*yrs*12;
   const latP = P*Math.pow(1.0165,5);
   const latTotal = pay(latP,1.8,yrs)*yrs*12;
@@ -1154,7 +1568,7 @@ calc(); timing(); limit(); initAreas();
 function step(d){
   const cur = document.querySelector('.page.show').id;
   const i = Math.min(Math.max(ORDER.indexOf(cur)+d,0),ORDER.length-1);
-  show(ORDER[i], navBtns()[i]);
+  show(ORDER[i]);
 }
 document.addEventListener('keydown',e=>{
   if(e.key==='ArrowRight'||e.key==='PageDown') step(1);
